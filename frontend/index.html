@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Compatibility Framework</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Main ── -->
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title" id="ptitle">API Compatibility Framework</div>
+      <div class="topbar-actions">
+        <button class="nav-item active" onclick="show('schema-viewer')">
+            Schema viewer
+        </button>
+        <button class="nav-item" onclick="show('schema-comparison')">
+            Schema comparison
+        </button>
+        <button class="nav-item" onclick="show('compat-result')">
+            Compatibility result
+        </button>
+        <button class="nav-item" onclick="show('matrix')">
+            Matrix
+        </button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ── Schema Viewer panel ── -->
+      <div class="panel active" id="panel-schema-viewer">
+        <div class="sv-grid">
+          <div>
+            <div class="card" style="margin-bottom:14px">
+              <div class="card-lbl">Add schema</div>
+              <div class="ig">
+                <div class="ig-lbl">API endpoint URL</div>
+                <input class="ifield" id="sv-url" placeholder="https://api.example.com/endpoint">
+              </div>
+              <div class="ig">
+                <div class="ig-lbl">Response format</div>
+                <div class="fmt-row">
+                  <button class="fmt-btn on" id="fj" onclick="setFmt('json')">JSON</button>
+                  <button class="fmt-btn"    id="fx" onclick="setFmt('xml')">XML</button>
+                </div>
+              </div>
+              <div class="ig">
+                <div class="ig-lbl">API name (optional)</div>
+                <input class="ifield" id="sv-name" placeholder="e.g. ESS Validator">
+              </div>
+              <button class="analyse-btn" onclick="svAnalyse()">Analyse schema</button>
+            </div>
+            <div class="card">
+              <div class="card-lbl">Loaded schemas</div>
+              <div class="sv-list" id="sv-list">
+                <div class="empty-hint">No schemas loaded yet</div>
+              </div>
+            </div>
+          </div>
+          <div class="card" id="sv-viewer">
+          </div>
+        </div>
+      </div>
+
+      
+
+<!-- Load order: data first, then feature modules, then app bootstrap -->
+<script src="data.js"></script>
+<script src="schema-viewer.js"></script>
+<script src="compatibility-result.js"></script>
+<script src="matrix.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
