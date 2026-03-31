@@ -1,129 +1,109 @@
-import requests
-import xml.etree.ElementTree as ET
-import sys
 import json
 import os
+import requests
+import sys
+import xml.etree.ElementTree as ET
+
 
 def save_schema(schema, status, headers):
-    try:
-        os.mkdir("schema_data")
-    except:
-        pass
+    os.makedirs("schema_data", exist_ok=True)
 
     schema_number = 1
-    schema_path = f"schema_data/XML1"
-
+    schema_path = f"schema_data/XML{schema_number}"
     while os.path.exists(schema_path):
         schema_number += 1
         schema_path = f"schema_data/XML{schema_number}"
 
-    with open(schema_path, "w") as file:
-        file.write(json.dumps(schema))
+    with open(schema_path, "w", encoding="utf-8") as file:
+        file.write(json.dumps(schema, indent=2))
 
     schema_metadata_path = schema_path + "_metadata"
-
-    with open(schema_metadata_path, "w") as file:
-        file.write(f"Status: {status}\nHeaders: {headers}")    
+    with open(schema_metadata_path, "w", encoding="utf-8") as file:
+        file.write(f"Status: {status}\nHeaders: {dict(headers)}")
 
     print(f"Schema saved at {schema_path}")
     print(f"Schema metadata saved at {schema_metadata_path}")
 
 def infer_type(value):
-    """Infer primitive type from text."""
     if value is None or value.strip() == "":
         return "string"
 
     value = value.strip()
-
     try:
         int(value)
         return "integer"
-    except:
+    except ValueError:
         pass
 
     try:
         float(value)
         return "number"
-    except:
+    except ValueError:
         pass
 
-    if value.lower() in ["true", "false"]:
+    if value.lower() in {"true", "false"}:
         return "boolean"
-
     return "string"
-
 
 def analyze_element(element):
     schema = {
         "type": "object",
         "attributes": {},
-        "properties": {}
+        "properties": {},
+        "required": [],
     }
 
-    # attributes
-    for attr, val in element.attrib.items():
-        schema["attributes"][attr] = infer_type(val)
+    for attr, value in element.attrib.items():
+        key = f"@{attr}"
+        schema["properties"][key] = {"type": infer_type(value)}
+        schema["required"].append(key)
 
     children = list(element)
-
-    # text-only element
     if not children:
         if element.text and element.text.strip():
-            schema["type"] = infer_type(element.text)
-        return schema
+            return {"type": infer_type(element.text)}
+        return {"type": "string"}
 
-    child_map = {}
-
+    grouped_children = {}
     for child in children:
-        child_schema = analyze_element(child)
+        grouped_children.setdefault(child.tag, []).append(analyze_element(child))
 
-        if child.tag not in child_map:
-            child_map[child.tag] = []
-        child_map[child.tag].append(child_schema)
-
-    for tag, schemas in child_map.items():
-
-        if len(schemas) > 1:
+    for tag, child_schemas in grouped_children.items():
+        schema["required"].append(tag)
+        if len(child_schemas) > 1:
             schema["properties"][tag] = {
                 "type": "array",
-                "items": schemas[0]
+                "items": child_schemas[0],
             }
         else:
-            schema["properties"][tag] = schemas[0]
+            schema["properties"][tag] = child_schemas[0]
 
+    schema["required"] = sorted(set(schema["required"]))
     return schema
 
 def extract_schema_from_xml(xml_string):
     root = ET.fromstring(xml_string)
-
     return {
         "root": root.tag,
-        "schema": analyze_element(root)
+        "schema": analyze_element(root),
     }
 
 def analyze_api(url):
     try:
-        response = requests.get(url)
-
+        response = requests.get(url, timeout=15)
         status = response.status_code
         headers = response.headers
-
-        try:
-            xml_data = response.text
-            schema = extract_schema_from_xml(xml_data)
-            save_schema(schema, status, headers)
-        except Exception as e:
-            print("Response is not XML")
-            print(e)
-
-    except requests.exceptions.RequestException as e:
+        schema = extract_schema_from_xml(response.text)
+        save_schema(schema, status, headers)
+    except ET.ParseError as error:
+        print("Response is not XML")
+        print(error)
+    except requests.exceptions.RequestException as error:
         print("Invalid URL:")
-        print(e)
+        print(error)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print(f"Usage: {sys.argv[0]} API_URL")
-        quit()
-    api_url = sys.argv[1]
-    analyze_api(api_url)
-
+        raise SystemExit(1)
+    analyze_api(sys.argv[1])

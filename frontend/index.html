@@ -8,30 +8,18 @@
 </head>
 <body>
 <div class="shell">
-
-  <!-- ── Main ── -->
   <div class="main">
     <div class="topbar">
       <div class="page-title" id="ptitle">API Compatibility Framework</div>
       <div class="topbar-actions">
-        <button class="nav-item active" onclick="show('schema-viewer')">
-            Schema viewer
-        </button>
-        <button class="nav-item" onclick="show('schema-comparison')">
-            Schema comparison
-        </button>
-        <button class="nav-item" onclick="show('compat-result')">
-            Compatibility result
-        </button>
-        <button class="nav-item" onclick="show('matrix')">
-            Matrix
-        </button>
+        <button class="nav-item active" data-panel="schema-viewer" onclick="show('schema-viewer')">Schema viewer</button>
+        <button class="nav-item" data-panel="schema-comparison" onclick="show('schema-comparison')">Schema comparison</button>
+        <button class="nav-item" data-panel="compat-result" onclick="show('compat-result')">Compatibility result</button>
+        <button class="nav-item" data-panel="matrix" onclick="show('matrix')">Matrix</button>
       </div>
     </div>
 
     <div class="content">
-
-      <!-- ── Schema Viewer panel ── -->
       <div class="panel active" id="panel-schema-viewer">
         <div class="sv-grid">
           <div>
@@ -45,7 +33,7 @@
                 <div class="ig-lbl">Response format</div>
                 <div class="fmt-row">
                   <button class="fmt-btn on" id="fj" onclick="setFmt('json')">JSON</button>
-                  <button class="fmt-btn"    id="fx" onclick="setFmt('xml')">XML</button>
+                  <button class="fmt-btn" id="fx" onclick="setFmt('xml')">XML</button>
                 </div>
               </div>
               <div class="ig">
@@ -61,14 +49,25 @@
               </div>
             </div>
           </div>
-          <div class="card" id="sv-viewer">
-          </div>
+          <div class="card" id="sv-viewer"></div>
         </div>
       </div>
 
-      
+      <div class="panel" id="panel-schema-comparison">
+        <div id="comparison-root"></div>
+      </div>
 
-<!-- Load order: data first, then feature modules, then app bootstrap -->
+      <div class="panel" id="panel-compat-result">
+        <div id="compat-root"></div>
+      </div>
+
+      <div class="panel" id="panel-matrix">
+        <div id="matrix-root"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="data.js"></script>
 <script src="schema-viewer.js"></script>
 <script src="compatibility-result.js"></script>

@@ -307,3 +307,96 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .tt-unknown             { background: var(--bg2); color: var(--text3); }
 .tree-enum { font-size: 11px; color: var(--text3); margin-left: 4px; }
 .tree-kids { margin-left: 18px; border-left: 1px dashed var(--border2); padding-left: 8px; }
+
+
+.panel { display: none; }
+.panel.active { display: block; }
+.card {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+.card-lbl {
+  color: var(--text2);
+  font-size: 12px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.ig { margin-bottom: 14px; }
+.ig-lbl { color: var(--text2); margin-bottom: 6px; font-size: 12px; }
+.ifield, select.ifield {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg2);
+  color: var(--text);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  font-family: var(--mono);
+}
+.analyse-btn, .fmt-btn {
+  border: 1px solid var(--border2);
+  background: var(--bg2);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: var(--sans);
+}
+.analyse-btn { background: var(--accent2); border-color: var(--accent2); }
+.fmt-row { display: flex; gap: 8px; }
+.fmt-btn.on { background: var(--accent2); border-color: var(--accent2); }
+.sv-grid { display: grid; grid-template-columns: 360px 1fr; gap: 16px; }
+.sv-list { display: flex; flex-direction: column; gap: 8px; }
+.sv-item {
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 12px; cursor: pointer;
+}
+.sv-item.on { border-color: var(--accent); }
+.fmt-pill, .status-pill, .issue-severity, .issue-code {
+  padding: 4px 8px; border-radius: 999px; font-size: 11px;
+  border: 1px solid var(--border2);
+}
+.fp-json { background: rgba(127,119,221,0.12); }
+.fp-xml { background: rgba(93,202,165,0.12); }
+.schema-hdr, .result-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.schema-big { font-size: 22px; font-weight: 600; }
+.schema-meta, .muted-copy, .issue-paths, .issue-suggestion { color: var(--text2); }
+.s200, .status-pill.ok, .m-ok { background: var(--green-bg); color: var(--green); }
+.status-pill.warn, .m-warn { background: var(--amber-bg); color: var(--amber); }
+.status-pill.bad, .m-bad { background: var(--red-bg); color: var(--red); }
+.tree, .tree-kids { display: flex; flex-direction: column; gap: 8px; }
+.tree-kids { margin-left: 18px; margin-top: 6px; }
+.tree-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.tree-dot { width: 8px; height: 8px; border-radius: 999px; display: inline-block; }
+.td-req { background: var(--green); }
+.td-opt { background: var(--amber); }
+.tree-key { font-family: var(--mono); }
+.tree-type, .tree-enum { color: var(--text2); font-family: var(--mono); }
+.cmp-grid, .summary-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px;
+}
+.summary-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.stat-box { background: var(--bg2); border-radius: 12px; padding: 14px; border: 1px solid var(--border); }
+.stat-num { font-size: 24px; font-weight: 700; }
+.stat-lbl { color: var(--text2); font-size: 12px; }
+.issue {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+  padding: 14px; margin-top: 12px;
+}
+.issue-head { display: flex; justify-content: space-between; margin-bottom: 8px; gap: 10px; }
+.issue-blocking { border-color: var(--red-bd); }
+.issue-mapping { border-color: var(--amber-bd); }
+.issue-info { border-color: var(--green-bd); }
+.issue-message { margin-bottom: 8px; }
+.matrix-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.matrix-table th, .matrix-table td { border: 1px solid var(--border); padding: 10px; text-align: center; }
+.empty-card { min-height: 160px; display: flex; flex-direction: column; justify-content: center; }
+
+@media (max-width: 1100px) {
+  .content { padding: 20px; }
+  .sv-grid, .summary-grid, .cmp-grid { grid-template-columns: 1fr; }
+}
