@@ -359,6 +359,8 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .fmt-pill, .status-pill, .issue-severity, .issue-code {
   padding: 4px 8px; border-radius: 999px; font-size: 11px;
   border: 1px solid var(--border2);
+  display: inline-flex;
+  align-items: center;
 }
 .fp-json { background: rgba(127,119,221,0.12); }
 .fp-xml { background: rgba(93,202,165,0.12); }
@@ -399,4 +401,29 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 @media (max-width: 1100px) {
   .content { padding: 20px; }
   .sv-grid, .summary-grid, .cmp-grid { grid-template-columns: 1fr; }
+}
+
+.download-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.download-bar .analyse-btn {
+  width: auto;
+  margin-top: 0;
+  font-size: 12px;
+  padding: 8px 14px;
+}
+
+.download-bar .analyse-btn.secondary {
+  background: var(--bg3);
+  border-color: var(--border2);
+  color: var(--text2);
+}
+
+.download-bar .analyse-btn.secondary:hover {
+  background: var(--bg2);
+  color: var(--text);
 }
