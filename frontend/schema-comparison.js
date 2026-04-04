@@ -4,6 +4,8 @@ function schemaOptions(selectedName = '') {
   return svSchemas.map((schema, index) => `
     <option value="${index}" ${schema.name === selectedName ? 'selected' : ''}>${schema.name}</option>
   `).join('');
+
+  
 }
 
 function renderComparisonSelectors() {
@@ -21,13 +23,17 @@ function renderComparisonSelectors() {
           <select class="ifield" id="cmp-target">${schemaOptions()}</select>
         </div>
       </div>
-        <button class="analyse-btn" onclick="runComparison()">Run compatibility analysis</button>
     </div>
     <div class="card" id="comparison-output">
       <div class="card-lbl">What the classifier checks</div>
       <p class="muted-copy">Missing fields, extra fields, nesting differences, type mismatches, enum conflicts, and places where a mapping layer can bridge the gap.</p>
     </div>
   `;
+    document.getElementById('cmp-source').addEventListener('change', runComparison)
+    document.getElementById('cmp-target').addEventListener('change', runComparison)
+    if (svSchemas.length >= 2) {
+        runComparison();
+    }
 }
 
 
@@ -59,24 +65,12 @@ async function runComparison() {
   }
 }
 
-
 function renderComparison(comparison) {
     const el = document.getElementById('comparison-output')
     const source = comparison.normalized_source
     const target = comparison.normalized_target
-    console.log("helloe", comparison)
 
-    const test1 = source.properties
-    const test2 = target.properties
-
-    const allKeys = new Set([...Object.keys(test1), ...Object.keys(test2)]);
-
-    const merged = Array.from(allKeys).reduce((acc, key) => {
-        acc[key] = (test1[key] !== undefined && test2[key] !== undefined) 
-            ? [test1[key], test2[key]] 
-            : null; 
-        return acc;
-    }, {});
+    // console.log("sourec", source)
 
     const src = source?.properties || {};
     const tgt = target?.properties || {};
@@ -86,6 +80,12 @@ function renderComparison(comparison) {
     ...Object.keys(tgt)
     ]);
 
+    const allReqs = new Set([
+        ...(source?.required || []),
+        ...(target?.required || [])
+    ])
+
+    console.log("allReqs", allReqs)
     
     const aligned = Object.fromEntries(
     [...allBalls].map(key => [
@@ -96,19 +96,19 @@ function renderComparison(comparison) {
         ]
     ])
     );
-    console.log("BALLS", aligned)
+    // console.log("BALLS", aligned)
 
-    console.log(merged)
-
-    const renderFields = (obj, tgt, comp) => {
+    const renderFields = (obj, tgt, reqs) => {
         const idx = tgt === 'src' ? 0 : 1;
         return Object.entries(obj || {})
         .map(([key, [srcVal, tgtVal]]) => {
             const val = idx === 0 ? srcVal : tgtVal;
             let missing;
+            const req = allReqs.has(key) ? 'required' : 'optional';
 
-            if (val == null) missing = 'missing';
-            if (val == null) {
+            if ((idx === 0 && tgtVal == null) || (idx === 1 && srcVal == null)) {
+                missing = 'missing';
+            } else if (val == null) {
                 return `<div class="field-row null">
                         <span class="field-name">--</span>
                         <span class="field-type">not present</span>
@@ -120,24 +120,23 @@ function renderComparison(comparison) {
             const type = val.type || 'unknown';
             return `<div class="field-row ${missing}">
                         <span class="field-name">${key}</span>
-                        <span class="field-type">${type}</span>
+                        <span class="field-type">${type}•${req}</span>
                     </div>`;
         })
         .join('') 
     };
-
 
     el.innerHTML = `
         <div class="card-lbl"></div>
         <div class="cmp-split">
             <div class "cmp-col">
                 <div class="cmp-title">Field•type•required</div>
-                ${renderFields(aligned, "src", merged)}
+                ${renderFields(aligned, "src", allReqs)}
             </div>
 
             <div class "cmp-col">
                 <div class="cmp-title">Field•type•required</div>
-                ${renderFields(aligned, "tgt", merged)}
+                ${renderFields(aligned, "tgt", allReqs)}
             </div>
         </div>
     `

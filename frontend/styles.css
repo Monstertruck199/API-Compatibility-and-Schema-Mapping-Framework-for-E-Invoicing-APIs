@@ -423,20 +423,26 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .field-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 13px;
   padding: 4px ;
   margin-bottom: 10px;
+  border-radius: 5px;
 }
 
 .field-row.missing {
-  background: #e24b4a;
+  border: 2px solid #4a1515;
+  background: #2d0e0c;
 }
 
 .field-row.direct {
-  background: #5dcaa5;
+  border: 2px solid #0f4a30;
+  background: #0c2e0d;
+  height: 40px;
 }
 
 .field-row.null {
+  border: 2px dotted grey;
   background: transparent;
 }
 
@@ -446,4 +452,5 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 
 .field-type {
   color: #888;
+  font-size: 0.8em;
 }
