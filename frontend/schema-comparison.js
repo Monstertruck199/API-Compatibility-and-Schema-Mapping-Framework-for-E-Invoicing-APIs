@@ -1,11 +1,8 @@
-let compSchemas = []
 
 function schemaOptions(selectedName = '') {
   return svSchemas.map((schema, index) => `
     <option value="${index}" ${schema.name === selectedName ? 'selected' : ''}>${schema.name}</option>
   `).join('');
-
-  
 }
 
 function renderComparisonSelectors() {
@@ -70,8 +67,6 @@ function renderComparison(comparison) {
     const source = comparison.normalized_source
     const target = comparison.normalized_target
 
-    // console.log("sourec", source)
-
     const src = source?.properties || {};
     const tgt = target?.properties || {};
 
@@ -85,8 +80,6 @@ function renderComparison(comparison) {
         ...(target?.required || [])
     ])
 
-    console.log("allReqs", allReqs)
-    
     const aligned = Object.fromEntries(
     [...allBalls].map(key => [
         key,
@@ -96,7 +89,6 @@ function renderComparison(comparison) {
         ]
     ])
     );
-    // console.log("BALLS", aligned)
 
     const renderFields = (obj, tgt, reqs) => {
         const idx = tgt === 'src' ? 0 : 1;
