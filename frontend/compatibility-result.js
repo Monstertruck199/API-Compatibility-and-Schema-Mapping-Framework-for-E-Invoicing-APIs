@@ -29,12 +29,51 @@ function schemaOptions(selectedName = '') {
 //   `;
 // }
 
+async function downloadReport(format = 'pdf') {
+  const el = document.getElementById('compat-root');
+  if (!el || !lastComparison) return;
+
+  const btn = document.getElementById('download-btn');
+  btn.textContent = 'Generating...';
+  btn.disabled = true;
+
+  try {
+    const canvas = await html2canvas(el, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null,
+    });
+
+    const filename = `${lastComparison.source}-to-${lastComparison.target}`.replace(/\s+/g, '_');
+
+    if (format === 'png') {
+      const link = document.createElement('a');
+      link.download = `${filename}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } else {
+      const { jsPDF } = window.jspdf;
+      const imgData = canvas.toDataURL('image/png');
+      const pxToMm = 0.264583;
+      const imgW = canvas.width * pxToMm;
+      const imgH = canvas.height * pxToMm;
+      const pdf = new jsPDF({ orientation: imgW > imgH ? 'l' : 'p', unit: 'mm', format: [imgW, imgH] });
+      pdf.addImage(imgData, 'PNG', 0, 0, imgW, imgH);
+      pdf.save(`${filename}.pdf`);
+    }
+  } finally {
+    btn.textContent = '\u2913 Download report';
+    btn.disabled = false;
+  }
+
+}
+
 // async function runComparison() {
 //   const sourceIndex = Number(document.getElementById('cmp-source').value);
 //   const targetIndex = Number(document.getElementById('cmp-target').value);
 //   const source = svSchemas[sourceIndex];
 //   const target = svSchemas[targetIndex];
-
+// 
 //   try {
 //     const response = await fetch('http://localhost:5000/api/compare', {
 //       method: 'POST',
@@ -97,7 +136,13 @@ function renderCompatibilityResult() {
           <div class="card-lbl">Result</div>
           <div class="schema-big">${lastComparison.source} → ${lastComparison.target}</div>
         </div>
-        <span class="status-pill ${badgeClass(summary.compatibility_label)}">${summary.compatibility_label}</span>
+        <div>
+          <div class="download-bar">
+            <button id="download-btn" class="analyse-btn" onclick="downloadReport('pdf')">↓ Download report</button>
+            <button class="analyse-btn secondary" onclick="downloadReport('png')">↓ Save as PNG</button>
+            <span class="status-pill ${badgeClass(summary.compatibility_label)}">${summary.compatibility_label}</span>
+          </div>
+        </div>
       </div>
       <div class="summary-grid">
         <div class="stat-box"><div class="stat-num">${summary.blocking_issues}</div><div class="stat-lbl">Blocking issues</div></div>
