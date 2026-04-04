@@ -529,3 +529,58 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
   color: var(--text2) !important;
   font-size: 12px;
 }
+
+
+.cmp-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.cmp-col {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 10px;
+  background: #fafafa;
+}
+
+.cmp-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  padding: 4px ;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.field-row.missing {
+  border: 2px solid #4a1515;
+  background: #2d0e0c;
+}
+
+.field-row.direct {
+  border: 2px solid #0f4a30;
+  background: #0c2e0d;
+  height: 40px;
+}
+
+.field-row.null {
+  border: 2px dotted grey;
+  background: transparent;
+}
+
+.field-name {
+  font-weight: 500;
+}
+
+.field-type {
+  color: #888;
+  font-size: 0.8em;
+}
