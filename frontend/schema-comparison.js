@@ -129,12 +129,12 @@ function renderComparison(comparison) {
     el.innerHTML = `
         <div class="card-lbl"></div>
         <div class="cmp-split">
-            <div class "cmp-col">
+            <div class="cmp-col">
                 <div class="cmp-title">Field•type•required</div>
                 ${renderFields(aligned, "src", allReqs)}
             </div>
 
-            <div class "cmp-col">
+            <div class="cmp-col">
                 <div class="cmp-title">Field•type•required</div>
                 ${renderFields(aligned, "tgt", allReqs)}
             </div>
