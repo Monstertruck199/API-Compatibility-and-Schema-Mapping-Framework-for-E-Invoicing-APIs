@@ -53,47 +53,92 @@ async function runComparison() {
       alert(lastComparison.error || 'Comparison failed');
       return;
     }
-    // show('compat-result');
-    // svSchemas.push({ name: useName, url, fmt: svFmt, schema: data.schema, status: data.status });
-    // svActive = svSchemas.length - 1;
-
-    /// Normalized_source and normalized_target
-    ///lastComparison.normalized_source.properties.data.properties
-    console.log("hello")
-    console.log(lastComparison)
     renderComparison(lastComparison)
   } catch (error) {
-    alert('Could not reach backend. Start backend/app.py before running the comparison.');
+    alert(error);
   }
 }
 
 
 function renderComparison(comparison) {
     const el = document.getElementById('comparison-output')
-    const source = comparison.normalized_source.properties.data.properties
-    const target = comparison.normalized_target.properties.data.properties
+    const source = comparison.normalized_source
+    const target = comparison.normalized_target
+    console.log("helloe", comparison)
 
-    const renderFields = (obj) => {
+    const test1 = source.properties
+    const test2 = target.properties
+
+    const allKeys = new Set([...Object.keys(test1), ...Object.keys(test2)]);
+
+    const merged = Array.from(allKeys).reduce((acc, key) => {
+        acc[key] = (test1[key] !== undefined && test2[key] !== undefined) 
+            ? [test1[key], test2[key]] 
+            : null; 
+        return acc;
+    }, {});
+
+    const src = source?.properties || {};
+    const tgt = target?.properties || {};
+
+    const allBalls = new Set([
+    ...Object.keys(src),
+    ...Object.keys(tgt)
+    ]);
+
+    
+    const aligned = Object.fromEntries(
+    [...allBalls].map(key => [
+        key,
+        [
+        key in src ? src[key] : null,
+        key in tgt ? tgt[key] : null
+        ]
+    ])
+    );
+    console.log("BALLS", aligned)
+
+    console.log(merged)
+
+    const renderFields = (obj, tgt, comp) => {
+        const idx = tgt === 'src' ? 0 : 1;
         return Object.entries(obj || {})
-        .map(([KeyboardEvent, val]) => {
+        .map(([key, [srcVal, tgtVal]]) => {
+            const val = idx === 0 ? srcVal : tgtVal;
+            let missing;
+
+            if (val == null) missing = 'missing';
+            if (val == null) {
+                return `<div class="field-row null">
+                        <span class="field-name">--</span>
+                        <span class="field-type">not present</span>
+                    </div>`;
+            } else {
+                missing = "direct"
+            }
+
             const type = val.type || 'unknown';
-            return `<div class="field-row">
-                        <span class="field-name>${key}</span>
-                        <span class="field-type>${key}</span>
+            return `<div class="field-row ${missing}">
+                        <span class="field-name">${key}</span>
+                        <span class="field-type">${type}</span>
                     </div>`;
         })
-        .join('')
+        .join('') 
     };
 
 
     el.innerHTML = `
-        <div class="card-lbl">Schema Comparison</div>
+        <div class="card-lbl"></div>
         <div class="cmp-split">
             <div class "cmp-col">
-                <div class="cmp-title">Source</div>
-                ${renderFields(source)}
+                <div class="cmp-title">Field•type•required</div>
+                ${renderFields(aligned, "src", merged)}
             </div>
 
-        
+            <div class "cmp-col">
+                <div class="cmp-title">Field•type•required</div>
+                ${renderFields(aligned, "tgt", merged)}
+            </div>
+        </div>
     `
 }
