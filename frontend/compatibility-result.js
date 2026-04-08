@@ -122,6 +122,7 @@ function renderCompatibilityOutput() {
   }
 
   const summary = lastComparison.summary;
+  console.log(lastComparison)
   const issues = lastComparison.issues.map(issue => `
     <div class="issue issue-${issue.kind}">
       <div class="issue-message">${issue.message}</div>
@@ -144,13 +145,12 @@ function renderCompatibilityOutput() {
         </div>
       </div>
       <div class="summary-grid">
-        <div class="stat-box"><div class="stat-num">${summary.blocking_issues}</div><div class="stat-lbl">Blocking issues</div></div>
-        <div class="stat-box"><div class="stat-num">${summary.mapping_issues}</div><div class="stat-lbl">Mapping issues</div></div>
-        <div class="stat-box"><div class="stat-num">${summary.informational_issues}</div><div class="stat-lbl">Info issues</div></div>
-        <div class="stat-box"><div class="stat-num">${summary.issue_count}</div><div class="stat-lbl">Total findings</div></div>
+        <div class="stat-box blocking"><div class="stat-num">${summary.blocking_issues}</div><div class="stat-lbl blocking">Blocking issues</div></div>
+        <div class="stat-box mapping"><div class="stat-num">${summary.mapping_issues}</div><div class="stat-lbl mapping">Mapping issues</div></div>
+        <div class="stat-box info"><div class="stat-num">${summary.informational_issues}</div><div class="stat-lbl info">Info issues</div></div>
       </div>
     </div>
     <div class="card-lbl">Issues and Recommendations</div>
-    ${issues || '<div class="stat-box">Schemas align - no mapping required</div>'}
+    ${issues || '<div class="stat-box align">Schemas align - no mapping required</div>'}
   `;
 }
