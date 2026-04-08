@@ -1,0 +1,89 @@
+/* ------------------- Summary --------------------- */
+
+.summary-grid { 
+  grid-template-columns: repeat(4, minmax(0, 1fr)); 
+}
+
+.stat-box { 
+  background: var(--bg2); 
+  border-radius: 12px; 
+  padding: 14px; 
+  border: 1px solid var(--border); 
+}
+
+.stat-num { 
+  font-size: 24px; 
+  font-weight: 700; 
+}
+
+.stat-lbl { 
+  color: var(--text2); 
+  font-size: 12px; 
+}
+
+/* -------------------- Issues --------------------- */
+
+.issue {
+  background: var(--bg2); 
+  border: 1px solid var(--border); 
+  border-radius: 12px;
+  padding: 14px; 
+  margin-top: 12px;
+}
+
+.issue-head { 
+  display: flex; 
+  justify-content: space-between; 
+  margin-bottom: 8px; 
+  gap: 10px; 
+}
+
+.issue-blocking { 
+  border-color: var(--red-bd); 
+}
+
+.issue-mapping { 
+  border-color: var(--amber-bd); 
+}
+
+.issue-info { 
+  border-color: var(--green-bd); 
+}
+
+.issue-message { 
+  margin-bottom: 8px; 
+}
+
+.issue-severity, .issue-code {
+  padding: 4px 8px; border-radius: 999px; font-size: 11px;
+  border: 1px solid var(--border2);
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ------------------- Downloads -------------------- */
+
+.download-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.download-bar .analyse-btn {
+  width: auto;
+  margin-top: 0;
+  font-size: 12px;
+  padding: 8px 14px;
+}
+
+.download-bar .analyse-btn.secondary {
+  background: var(--bg3);
+  border-color: var(--border2);
+  color: var(--text2);
+}
+
+.download-bar .analyse-btn.secondary:hover {
+  background: var(--bg2);
+  color: var(--text);
+}

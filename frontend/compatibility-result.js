@@ -4,57 +4,43 @@ function schemaOptions(selectedName = '') {
   `).join('');
 }
 
-function renderComparisonSelectors() {
-  const el = document.getElementById('comparison-root');
-  if (!el) return;
-  el.innerHTML = `
-    <div class="card" style="margin-bottom:14px">
-      <div class="card-lbl">Choose source and target schemas</div>
-      <div class="cmp-grid">
-        <div>
-          <div class="ig-lbl">Source schema (API output)</div>
-          <select class="ifield" id="cmp-source">${schemaOptions()}</select>
-        </div>
-        <div>
-          <div class="ig-lbl">Target schema (API input)</div>
-          <select class="ifield" id="cmp-target">${schemaOptions()}</select>
-        </div>
-      </div>
-      <button class="analyse-btn" onclick="runComparison()">Run compatibility analysis</button>
-    </div>
-    <div class="card">
-      <div class="card-lbl">What the classifier checks</div>
-      <p class="muted-copy">Missing fields, extra fields, nesting differences, type mismatches, enum conflicts, and places where a mapping layer can bridge the gap.</p>
-    </div>
-  `;
-}
+async function downloadReport(format = 'pdf') {
+  const el = document.getElementById('compat-root');
+  if (!el || !lastComparison) return;
 
-async function runComparison() {
-  const sourceIndex = Number(document.getElementById('cmp-source').value);
-  const targetIndex = Number(document.getElementById('cmp-target').value);
-  const source = svSchemas[sourceIndex];
-  const target = svSchemas[targetIndex];
+  const btn = document.getElementById('download-btn');
+  btn.textContent = 'Generating...';
+  btn.disabled = true;
 
   try {
-    const response = await fetch('http://localhost:5000/api/compare', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        source_name: source.name,
-        target_name: target.name,
-        source_schema: source.schema,
-        target_schema: target.schema,
-      }),
+    const canvas = await html2canvas(el, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null,
     });
-    lastComparison = await response.json();
-    if (!response.ok) {
-      alert(lastComparison.error || 'Comparison failed');
-      return;
+
+    const filename = `${lastComparison.source}-to-${lastComparison.target}`.replace(/\s+/g, '_');
+
+    if (format === 'png') {
+      const link = document.createElement('a');
+      link.download = `${filename}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } else {
+      const { jsPDF } = window.jspdf;
+      const imgData = canvas.toDataURL('image/png');
+      const pxToMm = 0.264583;
+      const imgW = canvas.width * pxToMm;
+      const imgH = canvas.height * pxToMm;
+      const pdf = new jsPDF({ orientation: imgW > imgH ? 'l' : 'p', unit: 'mm', format: [imgW, imgH] });
+      pdf.addImage(imgData, 'PNG', 0, 0, imgW, imgH);
+      pdf.save(`${filename}.pdf`);
     }
-    show('compat-result');
-  } catch (error) {
-    alert('Could not reach backend. Start backend/app.py before running the comparison.');
+  } finally {
+    btn.textContent = '\u2913 Download report';
+    btn.disabled = false;
   }
+
 }
 
 function badgeClass(label) {
@@ -97,7 +83,13 @@ function renderCompatibilityResult() {
           <div class="card-lbl">Result</div>
           <div class="schema-big">${lastComparison.source} → ${lastComparison.target}</div>
         </div>
-        <span class="status-pill ${badgeClass(summary.compatibility_label)}">${summary.compatibility_label}</span>
+        <div>
+          <div class="download-bar">
+            <button id="download-btn" class="analyse-btn" onclick="downloadReport('pdf')">↓ Download report</button>
+            <button class="analyse-btn secondary" onclick="downloadReport('png')">↓ Save as PNG</button>
+            <span class="status-pill ${badgeClass(summary.compatibility_label)}">${summary.compatibility_label}</span>
+          </div>
+        </div>
       </div>
       <div class="summary-grid">
         <div class="stat-box"><div class="stat-num">${summary.blocking_issues}</div><div class="stat-lbl">Blocking issues</div></div>

@@ -1,0 +1,207 @@
+/* --------------------- Fonts --------------------- */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Syne:wght@400;500;600&display=swap');
+
+/* ------------------- Variables ------------------- */
+
+:root {
+  /* Dark Mode */
+  --bg:       #0b0e16;
+  --bg1:      #111520;
+  --bg2:      #181d2c;
+  --bg3:      #1e2435;
+
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.13);
+
+  --text:     #e2e8f0;
+  --text2:    #8892a4;
+  --text3:    #4a5568;
+
+  --accent:   #7f77dd;
+  --accent2:  #534ab7;
+
+  --green:    #5dcaa5;
+  --green-bg: #0a1f16;
+  --green-bd: #0f4a30;
+
+  --amber:    #ef9f27;
+  --amber-bg: #1e1200;
+  --amber-bd: #4a2e00;
+
+  --red:      #f09595;
+  --red-bg:   #1a0808;
+  --red-bd:   #4a1515;
+
+  --mono:     'JetBrains Mono', monospace;
+  --sans:     'Syne', sans-serif;
+
+  --r:        8px;
+  --rl:       12px;
+}
+
+/* ----------------- Reset and Base ---------------- */
+
+* { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+
+html, body { 
+  height: 100%; 
+  background: var(--bg); 
+  color: var(--text); 
+  font-family: var(--sans); 
+  font-size: 14px; 
+  line-height: 1.5; 
+}
+
+::-webkit-scrollbar { 
+  width: 5px; 
+  height: 5px; 
+}
+
+::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+
+::-webkit-scrollbar-thumb { 
+  background: var(--bg3); 
+  border-radius: 3px; 
+}
+
+/* -------------------- Buttons -------------------- */
+
+.btn { 
+  padding: 7px 16px; 
+  border-radius: var(--r); 
+  font-size: 12px; 
+  font-weight: 500; 
+  cursor: pointer; 
+  border: 1px solid var(--border2); 
+  background: var(--bg3); 
+  color: var(--text2); 
+  transition: all 0.15s; 
+  font-family: var(--sans); 
+}
+
+.btn:hover { 
+  color: var(--text); 
+  border-color: rgba(255,255,255,0.2); 
+}
+
+.btn-primary { 
+  background: var(--accent2); 
+  color: #fff; 
+  border-color: var(--accent); 
+}
+
+.btn-primary:hover { 
+  background: var(--accent); 
+}
+
+/* --------------------- Cards --------------------- */
+
+.card { 
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+
+.card-lbl {
+  color: var(--text2);
+  font-size: 12px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.empty-hint { 
+  color: var(--text3); 
+  font-size: 12px; 
+  text-align: center; 
+  padding: 30px 0; 
+}
+
+.divider { 
+  border: none; 
+  border-top: 1px solid var(--border); 
+  margin: 18px 0; 
+}
+
+.empty-card { 
+  min-height: 160px; 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+}
+
+.muted-copy {
+  color: var(--text2);
+}
+
+/* ------------ Status Pills and Badges ------------ */
+
+.s200 { 
+  font-size: 11px; 
+  padding: 3px 10px; 
+  border-radius: 10px; 
+  font-weight: 500; 
+  background: var(--green-bg); 
+  color: var(--green); 
+  border: 1px solid var(--green-bd); 
+}
+
+.fmt-pill { 
+  font-size: 10px; 
+  padding: 2px 7px; 
+  border-radius: 10px; 
+  font-weight: 500; 
+  font-family: var(--mono); 
+}
+
+.fmt-pill, .status-pill {
+  padding: 4px 8px; border-radius: 999px; font-size: 11px;
+  border: 1px solid var(--border2);
+  display: inline-flex;
+  align-items: center;
+}
+
+.s200, .status-pill.ok, .m-ok { 
+  background: var(--green-bg); 
+  color: var(--green); 
+  border-color: var(--green-bd);
+}
+
+.fp-json { 
+  background: rgba(127,119,221,0.2); 
+  color: #a09ae8; 
+}
+
+.fp-xml  { 
+  background: rgba(93,202,165,0.15); 
+  color: var(--green); 
+}
+
+.status-pill.warn, .m-warn { 
+  background: var(--amber-bg); 
+  color: var(--amber); 
+}
+
+.status-pill.bad, .m-bad { 
+  background: var(--red-bg); 
+  color: var(--red); 
+}
+
+/* --------------------- Panels -------------------- */
+
+.panel { 
+  display: none; 
+}
+
+.panel.active { 
+  display: block; 
+}
