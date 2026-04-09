@@ -53,26 +53,79 @@ function renderCompatibilityResult() {
   const el = document.getElementById('compat-root');
   if (!el) return;
 
+  el.innerHTML = `
+    <div class="card" style="margin-bottom:14px">
+      <div class="cmp-grid">
+        <div>
+          <div class="ig-lbl">Source schema (API output)</div>
+          <select class="ifield" id="compat-source">${schemaOptions(lastComparison?.source)}</select>
+        </div>
+        <div>
+          <div class="ig-lbl">Target schema (API input)</div>
+          <select class="ifield" id="compat-target">${schemaOptions(lastComparison?.target)}</select>
+        </div>
+      </div>
+    </div>
+    <div id="compat-result-output"></div>
+  `;
+
+  document.getElementById('compat-source').addEventListener('change', runCompatibilityComparison);
+  document.getElementById('compat-target').addEventListener('change', runCompatibilityComparison);
+
+  if (lastComparison) {
+    renderCompatibilityOutput();
+  } else if (svSchemas.length >= 2) {
+    runCompatibilityComparison();
+  }
+}
+
+async function runCompatibilityComparison() {
+  const sourceIndex = Number(document.getElementById('compat-source').value);
+  const targetIndex = Number(document.getElementById('compat-target').value);
+  const source = svSchemas[sourceIndex];
+  const target = svSchemas[targetIndex];
+
+  try {
+    const response = await fetch('http://localhost:5000/api/compare', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        source_name: source.name,
+        target_name: target.name,
+        source_schema: source.schema,
+        target_schema: target.schema,
+      }),
+    });
+    lastComparison = await response.json();
+    if (!response.ok) {
+      alert(lastComparison.error || 'Comparison failed');
+      return;
+    }
+    renderCompatibilityOutput();
+  } catch (error) {
+    alert(error);
+  }
+}
+
+function renderCompatibilityOutput() {
+  const el = document.getElementById('compat-result-output');
+  if (!el) return;
+
   if (!lastComparison) {
     el.innerHTML = `
       <div class="card empty-card">
         <div class="card-lbl">No comparison yet</div>
-        <p class="muted-copy">Go to Schema Comparison and run an analysis first.</p>
+        <p class="muted-copy">Select two schemas above to run an analysis.</p>
       </div>
     `;
     return;
   }
 
   const summary = lastComparison.summary;
+  console.log(lastComparison)
   const issues = lastComparison.issues.map(issue => `
     <div class="issue issue-${issue.kind}">
-      <div class="issue-head">
-        <span class="issue-code">${issue.code}</span>
-        <span class="issue-severity">${issue.severity}</span>
-      </div>
       <div class="issue-message">${issue.message}</div>
-      <div class="issue-paths"><strong>Source:</strong> ${issue.source_path} &nbsp;·&nbsp; <strong>Target:</strong> ${issue.target_path}</div>
-      <div class="issue-suggestion">${issue.suggestion}</div>
     </div>
   `).join('');
 
@@ -92,15 +145,12 @@ function renderCompatibilityResult() {
         </div>
       </div>
       <div class="summary-grid">
-        <div class="stat-box"><div class="stat-num">${summary.blocking_issues}</div><div class="stat-lbl">Blocking issues</div></div>
-        <div class="stat-box"><div class="stat-num">${summary.mapping_issues}</div><div class="stat-lbl">Mapping issues</div></div>
-        <div class="stat-box"><div class="stat-num">${summary.informational_issues}</div><div class="stat-lbl">Info issues</div></div>
-        <div class="stat-box"><div class="stat-num">${summary.issue_count}</div><div class="stat-lbl">Total findings</div></div>
+        <div class="stat-box blocking"><div class="stat-num">${summary.blocking_issues}</div><div class="stat-lbl blocking">Blocking issues</div></div>
+        <div class="stat-box mapping"><div class="stat-num">${summary.mapping_issues}</div><div class="stat-lbl mapping">Mapping issues</div></div>
+        <div class="stat-box info"><div class="stat-num">${summary.informational_issues}</div><div class="stat-lbl info">Info issues</div></div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-lbl">Detailed findings</div>
-      ${issues || '<div class="muted-copy">No issues detected.</div>'}
-    </div>
+    <div class="card-lbl">Issues and Recommendations</div>
+    ${issues || '<div class="stat-box align">Schemas align - no mapping required</div>'}
   `;
 }

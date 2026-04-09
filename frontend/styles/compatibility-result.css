@@ -1,7 +1,8 @@
 /* ------------------- Summary --------------------- */
 
 .summary-grid { 
-  grid-template-columns: repeat(4, minmax(0, 1fr)); 
+  margin-top: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr)); 
 }
 
 .stat-box { 
@@ -9,6 +10,34 @@
   border-radius: 12px; 
   padding: 14px; 
   border: 1px solid var(--border); 
+  display: flex;
+  flex-direction: column;
+  align-items: center;     
+  justify-content: center; 
+  text-align: center;
+}
+
+.stat-box.blocking {
+  border: 2px solid #4a1515;
+  background: #2d0e0c;
+  color: #7a3f42;
+}
+
+.stat-box.mapping {
+  border: 2px solid #634c2c;
+  background: #2e1a01;
+  color: #ca9347;
+}
+
+.stat-box.info {
+  border: 2px solid #39355a;
+  background: #150e3b;  
+  color: #674080;
+}
+
+.stat-box.align {
+  border: 2px solid #0f4a30;
+  background: #0c2e0d;  
 }
 
 .stat-num { 
@@ -17,8 +46,23 @@
 }
 
 .stat-lbl { 
-  color: var(--text2); 
   font-size: 12px; 
+}
+
+.stat-lbl.blocking { 
+  color: #7a3f42; 
+}
+
+.stat-lbl.mapping { 
+  color: #ca9347; 
+}
+
+.stat-lbl.info { 
+  color: #674080; 
+}
+
+.card-lbl {
+  font-size: 1.2em;
 }
 
 /* -------------------- Issues --------------------- */
@@ -39,15 +83,18 @@
 }
 
 .issue-blocking { 
-  border-color: var(--red-bd); 
+  border: 2px solid #4a1515;
+  background: #2d0e0c;
 }
 
 .issue-mapping { 
-  border-color: var(--amber-bd); 
+  border: 2px solid #634c2c;
+  background: #2e1a01;
 }
 
 .issue-info { 
-  border-color: var(--green-bd); 
+  border: 2px solid #39355a;
+  background: #150e3b;  
 }
 
 .issue-message { 
