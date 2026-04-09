@@ -32,7 +32,19 @@ function preloadExamples() {
   renderViewer(svActive);
 }
 
+function toggleTheme() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  const next = isLight ? 'dark' : 'light'; 
+  document.documentElement.setAttribute('data-theme', next);
+  document.getElementById('theme-icon').textContent = next === 'light' ? '⏾' : '☀︎';
+  localStorage.setItem('theme', next);
+}
+
 window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('theme') || 'dark';
+  const icon = document.getElementById('theme-icon');
+  if (icon) icon.textContent = saved === 'light' ? '⏾' : '☀︎';
+
   preloadExamples();
   show('schema-viewer');
 });

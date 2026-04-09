@@ -47,13 +47,13 @@
 }
 
 .field-row.missing {
-  border: 2px solid #4a1515;
-  background: #2d0e0c;
+  border: 2px solid var(--red-bd);
+  background: var(--red-bg);
 }
 
 .field-row.direct {
-  border: 2px solid #0f4a30;
-  background: #0c2e0d;
+  border: 2px solid var(--green-bd);
+  background: var(--green-bd);
   height: 40px;
 }
 

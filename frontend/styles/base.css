@@ -5,7 +5,12 @@
 /* ------------------- Variables ------------------- */
 
 :root {
-  /* Dark Mode */
+  --mono:     'JetBrains Mono', monospace;
+  --sans:     'Syne', sans-serif;
+  
+  --r:        8px;
+  --rl:       12px;
+  
   --bg:       #0b0e16;
   --bg1:      #111520;
   --bg2:      #181d2c;
@@ -20,6 +25,7 @@
 
   --accent:   #7f77dd;
   --accent2:  #534ab7;
+  --purplefont: #a09ae8;
 
   --green:    #5dcaa5;
   --green-bg: #0a1f16;
@@ -33,11 +39,36 @@
   --red-bg:   #1a0808;
   --red-bd:   #4a1515;
 
-  --mono:     'JetBrains Mono', monospace;
-  --sans:     'Syne', sans-serif;
+}
 
-  --r:        8px;
-  --rl:       12px;
+[data-theme="light"] {
+  --bg:       #f0f2f7;
+  --bg1:      #ffffff;
+  --bg2:      #f7f8fb;
+  --bg3:      #eceef4;
+
+  --border:   rgba(0,0,0,0.08);
+  --border2:  rgba(0,0,0,0.14);
+
+  --text:     #1a1f2e;
+  --text2:    #5a6478;
+  --text3:    #9ba3b4;
+
+  --accent:   #6c65cc;
+  --accent2:  #a09ae8;
+  --purplefont: #674080;
+
+  --green:    #1e8a63;
+  --green-bg: #edf7f3;
+  --green-bd: #b6e2d3;
+
+  --amber:    #c47c0a;
+  --amber-bg: #fef6e7;
+  --amber-bd: #f5d48a;
+
+  --red:      #c94040;
+  --red-bg:   #fdf0f0;
+  --red-bd:   #f0b8b8;
 }
 
 /* ----------------- Reset and Base ---------------- */

@@ -63,7 +63,7 @@
 .fmt-btn.on { 
     background: var(--accent2); 
     border-color: var(--accent); 
-    color: #a09ae8; 
+    color: var(--text); 
 }
 
 .analyse-btn { 
