@@ -18,26 +18,26 @@
 }
 
 .stat-box.blocking {
-  border: 2px solid #4a1515;
-  background: #2d0e0c;
-  color: #7a3f42;
+  border: 2px solid var(--red-bd);
+  background: var(--red-bg);
+  color: var(--red);
 }
 
 .stat-box.mapping {
-  border: 2px solid #634c2c;
-  background: #2e1a01;
-  color: #ca9347;
+  border: 2px solid var(--amber-bd);
+  background: var(--amber-bg);
+  color: var(--amber);
 }
 
 .stat-box.info {
-  border: 2px solid #39355a;
-  background: #150e3b;  
-  color: #674080;
+  border: 2px solid var(--accent);
+  background: var(--accent2);  
+  color: var(--purplefont);
 }
 
 .stat-box.align {
-  border: 2px solid #0f4a30;
-  background: #0c2e0d;  
+  border: 2px solid var(--green-bd);
+  background: var(--green-bg);  
 }
 
 .stat-num { 
@@ -50,15 +50,15 @@
 }
 
 .stat-lbl.blocking { 
-  color: #7a3f42; 
+  color: var(--red); 
 }
 
 .stat-lbl.mapping { 
-  color: #ca9347; 
+  color: var(--amber); 
 }
 
 .stat-lbl.info { 
-  color: #674080; 
+  color: var(--purplefont); 
 }
 
 .card-lbl {
@@ -83,18 +83,18 @@
 }
 
 .issue-blocking { 
-  border: 2px solid #4a1515;
-  background: #2d0e0c;
+  border: 2px solid var(--red-bd);
+  background: var(--red-bg);
 }
 
 .issue-mapping { 
-  border: 2px solid #634c2c;
-  background: #2e1a01;
+  border: 2px solid var(--amber-bd);
+  background: var(--amber-bd);
 }
 
 .issue-info { 
-  border: 2px solid #39355a;
-  background: #150e3b;  
+  border: 2px solid var(--accent);
+  background: var(--accent2);  
 }
 
 .issue-message { 
