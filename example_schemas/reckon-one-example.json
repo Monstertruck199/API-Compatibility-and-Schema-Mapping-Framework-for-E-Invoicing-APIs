@@ -1,0 +1,40 @@
+{
+  "customer": "Company Ltd",
+  "invoiceDate": "2020-02-06",
+  "dueDate": "2020-03-06",
+  "invoiceDiscountAmount": 10,
+  "invoiceDiscountPercent": 7.5,
+  "amountTaxStatus": "Inclusive",
+  "paymentTerms": "30 days net",
+  "reference": "My reference",
+  "purchaseOrderNumber": "ABC123",
+  "classification": "My classification",
+  "template": "Professional invoice",
+  "includeInInvoiceReminders": true,
+  "notes": "This is a note.",
+  "paymentDetails": "BSB 134-456, Account 987654",
+  "customFields": null,
+  "invoiceNumber": "null",
+  "transactionLinks": null,
+  "lineItems": [
+    {
+      "lineNumber": 2,
+      "serviceDate": "2020-01-01",
+      "project": "Project A:Project B:Project C",
+      "itemDetails": null,
+      "accountDetails": null,
+      "description": "This is my new line",
+      "taxAmount": 10,
+      "taxRate": "GST",
+      "isFullWidthDescription": false,
+      "parentLineId": "null",
+      "rowType": null,
+      "group": {
+        "printAsSingleLine": true,
+        "key": "string"
+      },
+      "transactionLinks": null,
+      "classification": "Classification A:Classification B"
+    }
+  ]
+}
