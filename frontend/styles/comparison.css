@@ -1,0 +1,78 @@
+/* -------------------- Layout --------------------- */
+
+.cmp-grid, .summary-grid {
+  display: grid; 
+  grid-template-columns: repeat(2, minmax(0, 1fr)); 
+  gap: 14px; 
+  margin-bottom: 14px;
+}
+
+.cmp-split { 
+  display: flex; 
+  gap: 14px; 
+}
+
+.cmp-col { 
+  flex: 1; 
+}
+
+/* ------------------- Headings -------------------- */
+
+.cmp-title { 
+  font-size: 11px; 
+  color: var(--text2); 
+  margin-bottom: 8px; 
+  font-weight: 500; 
+}
+
+.card-lbl { 
+  font-size: 10px; 
+  letter-spacing: 0.1em; 
+  color: var(--text3); 
+  font-weight: 500; 
+  text-transform: uppercase; 
+  margin-bottom: 10px; 
+}
+
+/* ------------------ Field rows ------------------- */
+
+.field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  padding: 4px ;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.field-row.missing {
+  border: 2px solid var(--red-bd);
+  background: var(--red-bg);
+}
+
+.field-row.direct {
+  border: 2px solid var(--green-bd);
+  background: var(--green-bd);
+  height: 40px;
+}
+
+.field-row.null {
+  border: 2px dotted grey;
+  background: transparent;
+}
+
+.field-name {
+  font-weight: 500;
+}
+
+.field-type {
+  color: #888;
+  font-size: 0.8em;
+}
+
+/* ------------------ Responsive ------------------- */
+@media (max-width: 1100px) {
+  .content { padding: 20px; }
+  .sv-grid, .summary-grid, .cmp-grid { grid-template-columns: 1fr; }
+}

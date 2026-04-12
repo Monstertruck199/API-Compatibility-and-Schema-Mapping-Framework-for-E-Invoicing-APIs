@@ -1,0 +1,148 @@
+/* --------------------- Shell --------------------- */
+
+.shell { 
+    display: flex; 
+    height: 100vh; 
+    overflow: hidden; 
+}
+
+/* -------------------- Sidebar -------------------- */
+
+.sidebar { 
+    width: 220px; 
+    flex-shrink: 0; 
+    background: var(--bg1); 
+    border-right: 1px solid var(--border); 
+    display: flex; 
+    flex-direction: column; 
+}
+
+.sidebar-logo { 
+    padding: 22px 20px 18px; 
+    border-bottom: 1px solid var(--border); 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+}
+
+.sidebar-nav { 
+    padding: 12px 10px; 
+    flex: 1; 
+}
+
+.sidebar-foot { 
+    padding: 12px 20px; 
+    border-top: 1px solid var(--border); 
+}
+
+.logo-dot { 
+    width: 9px; 
+    height: 9px; 
+    background: var(--accent); 
+    border-radius: 50%; 
+    flex-shrink: 0; 
+}
+
+.logo-text { 
+    font-size: 13px; 
+    font-weight: 600; 
+    color: var(--text); 
+    line-height: 1.3; 
+}
+
+/* ------------------- Nav items ------------------- */
+
+.nav-lbl { 
+    font-size: 10px; 
+    letter-spacing: 0.1em; 
+    color: var(--text3); 
+    padding: 10px 10px 5px; 
+    font-weight: 500; 
+    text-transform: uppercase; 
+}
+
+.nav-item { 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 20px; 
+    padding: 9px 10px; 
+    border-radius: var(--r); 
+    cursor: pointer; 
+    color: var(--text2); 
+    font-size: 13px; 
+    transition: all 0.15s; 
+    margin-bottom: 2px; 
+    border: none; 
+    background: none; 
+    width: 100%; 
+    text-align: left; 
+    font-family: var(--sans); 
+}
+
+.nav-item:hover { 
+    background: var(--bg2); 
+    color: var(--text); 
+}
+
+.nav-item.active {
+    border-color: var(--border2);
+    background: var(--bg3); 
+    color: var(--text); 
+    font-weight: 500; 
+}
+
+.nav-item.theme {
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-icon { 
+    width: 15px; 
+    height: 15px; 
+    flex-shrink: 0; 
+    opacity: 0.55; 
+}
+
+.nav-item.active .nav-icon { 
+    opacity: 1; 
+}
+
+/* ------------------- Main area ------------------- */
+
+.main { 
+    flex: 1; 
+    overflow-y: auto; 
+    display: flex; 
+    flex-direction: column; 
+    min-width: 0; 
+    
+}
+
+.topbar { 
+    padding: 15px 28px; 
+    border-bottom: 1px solid var(--border); 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    background: var(--bg1); 
+    flex-shrink: 0; 
+    position: sticky; 
+    top: 0; 
+    z-index: 10; 
+}
+
+.page-title { 
+    font-size: 15px; 
+    font-weight: 600; 
+    color: var(--text); 
+}
+
+.topbar-actions { 
+    display: flex; 
+    gap: 8px; 
+}
+
+.content { 
+    padding: 28px 150px 0 150px;
+    flex: 1; 
+}

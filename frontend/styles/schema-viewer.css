@@ -1,0 +1,261 @@
+/* -------------------- Layout  -------------------- */
+
+.sv-grid { 
+    display: grid; 
+    grid-template-columns: 300px 1fr; 
+    gap: 16px; 
+}
+
+/* ----------------- Form controls ----------------- */
+
+.ig { 
+    margin-bottom: 14px; 
+}
+
+.ig-lbl { 
+    font-size: 11px; 
+    color: var(--text2); 
+    margin-bottom: 6px; 
+}
+
+.ifield, select.ifield {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg2);
+  color: var(--text);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  font-family: var(--mono);
+  font-size: 12px; 
+  outline: none; 
+  font-family: var(--mono); 
+  transition: border-color 0.15s;
+}
+
+.ifield:focus { 
+    border-color: var(--accent); 
+}
+
+.ifield::placeholder { 
+    color: var(--text3); 
+}
+
+.fmt-row { 
+    display: flex; 
+    gap: 6px; 
+}
+
+.fmt-btn { 
+    flex: 1; 
+    padding: 8px; 
+    text-align: center; 
+    font-size: 12px; 
+    font-weight: 500; 
+    border: 1px solid var(--border2); 
+    border-radius: var(--r); 
+    cursor: pointer; 
+    background: var(--bg2); 
+    color: var(--text2); 
+    transition: all 0.15s; 
+    font-family: var(--sans); 
+}
+
+.fmt-btn.on { 
+    background: var(--accent2); 
+    border-color: var(--accent); 
+    color: var(--text); 
+}
+
+.analyse-btn { 
+    width: 100%; 
+    padding: 10px; 
+    font-size: 13px; 
+    font-weight: 600; 
+    background: var(--accent2); 
+    color: var(--text); 
+    border: 1px solid var(--accent); 
+    border-radius: var(--r); 
+    cursor: pointer; 
+    font-family: var(--sans); 
+    transition: all 0.15s; 
+    margin-top: 4px; 
+    letter-spacing: 0.02em; 
+}
+
+.analyse-btn:hover { 
+    background: var(--accent); 
+}
+
+/* ------------------ Schema list ------------------ */
+
+.sv-list { display: flex; flex-direction: column; gap: 8px; }
+
+.sv-item {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  background: var(--bg2); 
+  border: 1px solid var(--border);
+  border-radius: var(--r); 
+  padding: 10px 12px; 
+  cursor: pointer;
+  gap: 8px; 
+  transition: all 0.15s;
+}
+
+.sv-item.on { 
+    border-color: var(--accent); 
+    background: rgba(127,119,221,0.1);
+    color: #a09ae8;
+}
+
+.sv-item:hover { 
+    border-color: var(--border2); 
+    background: var(--bg2); 
+}
+
+.sv-item-name { 
+    font-size: 12px; 
+    font-weight: 500; 
+    flex: 1; 
+    color: var(--text); 
+}
+
+/* ----------------- Schema Header ----------------- */
+
+.schema-meta { 
+    font-size: 11px; 
+    color: var(--text3); 
+    margin-top: 3px; 
+    font-family: var(--mono); 
+}
+
+.schema-hdr, .result-top { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    gap: 12px; 
+}
+
+.schema-big { 
+    font-size: 22px; 
+    font-weight: 600; 
+}
+
+.schema-meta, .issue-paths, .issue-suggestion { 
+    color: var(--text2); 
+}
+
+/* ------------------ Schema Tree ------------------ */
+
+.tree { 
+    font-family: var(--mono); 
+    font-size: 12px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px;
+}
+
+.tree-row { 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    padding: 4px 6px; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background 0.1s; 
+    flex-wrap: wrap; 
+}
+
+.tree-row:hover { 
+    background: var(--bg2); 
+}
+
+.tree-tog { 
+    width: 12px; 
+    font-size: 9px; 
+    color: var(--text3); 
+    flex-shrink: 0; 
+    text-align: center; 
+}
+
+.tree-dot { 
+    width: 5px; 
+    height: 5px; 
+    border-radius: 50%; 
+    flex-shrink: 0; 
+    display: inline-block;
+}
+.td-req { 
+    background: #e24b4a; 
+    background: var(--green);
+}
+.td-opt { 
+    background: var(--bg3); 
+    border: 1px solid var(--border2); 
+}
+
+.tree-key { 
+    color: #a09ae8; 
+    font-weight: 500; 
+    font-family: var(--mono);
+}
+
+.tree-type { 
+    font-size: 10px; 
+    padding: 1px 5px; 
+    border-radius: 3px; 
+    font-weight: 500; 
+    margin-left: 2px; 
+    color: var(--text2); 
+    font-family: var(--mono);
+}
+
+.tree-enum { 
+    font-size: 11px; 
+    color: var(--text3); 
+    margin-left: 4px; 
+    font-family: var(--mono);
+}
+
+.tree-kids { 
+    margin-left: 18px; 
+    border-left: 1px dashed var(--border2); 
+    padding-left: 8px; 
+    margin-top: 6px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+}
+
+/* ---------------- Tree type badges --------------- */
+
+.tt-string { 
+    background: rgba(93,202,165,0.15);  
+    color: #5dcaa5; 
+}
+
+.tt-integer, .tt-number { 
+    background: rgba(56,138,221,0.15);  
+    color: #85b7eb; 
+}
+
+.tt-boolean { 
+    background: rgba(239,159,39,0.15);  
+    color: #ef9f27; 
+}
+
+.tt-object { 
+    background: rgba(127,119,221,0.15); 
+    color: #a09ae8; 
+}
+
+.tt-array {
+    background: rgba(212,83,126,0.15);  
+    color: #ed93b1; 
+}
+
+.tt-unknown { 
+    background: var(--bg2); 
+    color: var(--text3); 
+}

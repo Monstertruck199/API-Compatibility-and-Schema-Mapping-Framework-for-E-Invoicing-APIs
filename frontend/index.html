@@ -4,7 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>API Compatibility Framework</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/comparison.css">
+  <link rel="stylesheet" href="styles/compatibility-result.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/matrix.css">
+  <link rel="stylesheet" href="styles/schema-viewer.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    (function () {
+      const saved = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+  </script>
 </head>
 <body>
 <div class="shell">
@@ -12,6 +26,10 @@
     <div class="topbar">
       <div class="page-title" id="ptitle">API Compatibility Framework</div>
       <div class="topbar-actions">
+        <button class="nav-item theme" id="theme-toggle" onclick="toggleTheme()">
+          <span id = "theme-label">Toggle Theme</span>
+          <span id = "theme-icon">⏾</span>
+        </button>
         <button class="nav-item active" data-panel="schema-viewer" onclick="show('schema-viewer')">Schema viewer</button>
         <button class="nav-item" data-panel="schema-comparison" onclick="show('schema-comparison')">Schema comparison</button>
         <button class="nav-item" data-panel="compat-result" onclick="show('compat-result')">Compatibility result</button>
@@ -70,6 +88,7 @@
 
 <script src="data.js"></script>
 <script src="schema-viewer.js"></script>
+<script src="schema-comparison.js"></script>
 <script src="compatibility-result.js"></script>
 <script src="matrix.js"></script>
 <script src="app.js"></script>

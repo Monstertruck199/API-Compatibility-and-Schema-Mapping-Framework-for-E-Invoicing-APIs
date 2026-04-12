@@ -4,34 +4,84 @@ function schemaOptions(selectedName = '') {
   `).join('');
 }
 
-function renderComparisonSelectors() {
-  const el = document.getElementById('comparison-root');
+async function downloadReport(format = 'pdf') {
+  const el = document.getElementById('compat-root');
+  if (!el || !lastComparison) return;
+
+  const btn = document.getElementById('download-btn');
+  btn.textContent = 'Generating...';
+  btn.disabled = true;
+
+  try {
+    const canvas = await html2canvas(el, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null,
+    });
+
+    const filename = `${lastComparison.source}-to-${lastComparison.target}`.replace(/\s+/g, '_');
+
+    if (format === 'png') {
+      const link = document.createElement('a');
+      link.download = `${filename}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } else {
+      const { jsPDF } = window.jspdf;
+      const imgData = canvas.toDataURL('image/png');
+      const pxToMm = 0.264583;
+      const imgW = canvas.width * pxToMm;
+      const imgH = canvas.height * pxToMm;
+      const pdf = new jsPDF({ orientation: imgW > imgH ? 'l' : 'p', unit: 'mm', format: [imgW, imgH] });
+      pdf.addImage(imgData, 'PNG', 0, 0, imgW, imgH);
+      pdf.save(`${filename}.pdf`);
+    }
+  } finally {
+    btn.textContent = '\u2913 Download report';
+    btn.disabled = false;
+  }
+
+}
+
+function badgeClass(label) {
+  if (label === 'Directly compatible') return 'ok';
+  if (label === 'Compatible with mapping') return 'warn';
+  return 'bad';
+}
+
+function renderCompatibilityResult() {
+  const el = document.getElementById('compat-root');
   if (!el) return;
+
   el.innerHTML = `
     <div class="card" style="margin-bottom:14px">
-      <div class="card-lbl">Choose source and target schemas</div>
       <div class="cmp-grid">
         <div>
           <div class="ig-lbl">Source schema (API output)</div>
-          <select class="ifield" id="cmp-source">${schemaOptions()}</select>
+          <select class="ifield" id="compat-source">${schemaOptions(lastComparison?.source)}</select>
         </div>
         <div>
           <div class="ig-lbl">Target schema (API input)</div>
-          <select class="ifield" id="cmp-target">${schemaOptions()}</select>
+          <select class="ifield" id="compat-target">${schemaOptions(lastComparison?.target)}</select>
         </div>
       </div>
-      <button class="analyse-btn" onclick="runComparison()">Run compatibility analysis</button>
     </div>
-    <div class="card">
-      <div class="card-lbl">What the classifier checks</div>
-      <p class="muted-copy">Missing fields, extra fields, nesting differences, type mismatches, enum conflicts, and places where a mapping layer can bridge the gap.</p>
-    </div>
+    <div id="compat-result-output"></div>
   `;
+
+  document.getElementById('compat-source').addEventListener('change', runCompatibilityComparison);
+  document.getElementById('compat-target').addEventListener('change', runCompatibilityComparison);
+
+  if (lastComparison) {
+    renderCompatibilityOutput();
+  } else if (svSchemas.length >= 2) {
+    runCompatibilityComparison();
+  }
 }
 
-async function runComparison() {
-  const sourceIndex = Number(document.getElementById('cmp-source').value);
-  const targetIndex = Number(document.getElementById('cmp-target').value);
+async function runCompatibilityComparison() {
+  const sourceIndex = Number(document.getElementById('compat-source').value);
+  const targetIndex = Number(document.getElementById('compat-target').value);
   const source = svSchemas[sourceIndex];
   const target = svSchemas[targetIndex];
 
@@ -51,42 +101,31 @@ async function runComparison() {
       alert(lastComparison.error || 'Comparison failed');
       return;
     }
-    show('compat-result');
+    renderCompatibilityOutput();
   } catch (error) {
-    alert('Could not reach backend. Start backend/app.py before running the comparison.');
+    alert(error);
   }
 }
 
-function badgeClass(label) {
-  if (label === 'Directly compatible') return 'ok';
-  if (label === 'Compatible with mapping') return 'warn';
-  return 'bad';
-}
-
-function renderCompatibilityResult() {
-  const el = document.getElementById('compat-root');
+function renderCompatibilityOutput() {
+  const el = document.getElementById('compat-result-output');
   if (!el) return;
 
   if (!lastComparison) {
     el.innerHTML = `
       <div class="card empty-card">
         <div class="card-lbl">No comparison yet</div>
-        <p class="muted-copy">Go to Schema Comparison and run an analysis first.</p>
+        <p class="muted-copy">Select two schemas above to run an analysis.</p>
       </div>
     `;
     return;
   }
 
   const summary = lastComparison.summary;
+  console.log(lastComparison)
   const issues = lastComparison.issues.map(issue => `
     <div class="issue issue-${issue.kind}">
-      <div class="issue-head">
-        <span class="issue-code">${issue.code}</span>
-        <span class="issue-severity">${issue.severity}</span>
-      </div>
       <div class="issue-message">${issue.message}</div>
-      <div class="issue-paths"><strong>Source:</strong> ${issue.source_path} &nbsp;·&nbsp; <strong>Target:</strong> ${issue.target_path}</div>
-      <div class="issue-suggestion">${issue.suggestion}</div>
     </div>
   `).join('');
 
@@ -97,18 +136,21 @@ function renderCompatibilityResult() {
           <div class="card-lbl">Result</div>
           <div class="schema-big">${lastComparison.source} → ${lastComparison.target}</div>
         </div>
-        <span class="status-pill ${badgeClass(summary.compatibility_label)}">${summary.compatibility_label}</span>
+        <div>
+          <div class="download-bar">
+            <button id="download-btn" class="analyse-btn" onclick="downloadReport('pdf')">↓ Download report</button>
+            <button class="analyse-btn secondary" onclick="downloadReport('png')">↓ Save as PNG</button>
+            <span class="status-pill ${badgeClass(summary.compatibility_label)}">${summary.compatibility_label}</span>
+          </div>
+        </div>
       </div>
       <div class="summary-grid">
-        <div class="stat-box"><div class="stat-num">${summary.blocking_issues}</div><div class="stat-lbl">Blocking issues</div></div>
-        <div class="stat-box"><div class="stat-num">${summary.mapping_issues}</div><div class="stat-lbl">Mapping issues</div></div>
-        <div class="stat-box"><div class="stat-num">${summary.informational_issues}</div><div class="stat-lbl">Info issues</div></div>
-        <div class="stat-box"><div class="stat-num">${summary.issue_count}</div><div class="stat-lbl">Total findings</div></div>
+        <div class="stat-box blocking"><div class="stat-num">${summary.blocking_issues}</div><div class="stat-lbl blocking">Blocking issues</div></div>
+        <div class="stat-box mapping"><div class="stat-num">${summary.mapping_issues}</div><div class="stat-lbl mapping">Mapping issues</div></div>
+        <div class="stat-box info"><div class="stat-num">${summary.informational_issues}</div><div class="stat-lbl info">Info issues</div></div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-lbl">Detailed findings</div>
-      ${issues || '<div class="muted-copy">No issues detected.</div>'}
-    </div>
+    <div class="card-lbl">Issues and Recommendations</div>
+    ${issues || '<div class="stat-box align">Schemas align - no mapping required</div>'}
   `;
 }
