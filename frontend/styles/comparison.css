@@ -76,3 +76,53 @@
   .content { padding: 20px; }
   .sv-grid, .summary-grid, .cmp-grid { grid-template-columns: 1fr; }
 }
+
+/* ------------------ Transformer ------------------ */
+
+.transformer-card {
+  margin-top: 14px;
+}
+
+.transformer-grid {
+  align-items: start;
+  gap: 12px;
+}
+
+.transformer-textarea {
+  font-family: monospace;
+  font-size: 12px;
+  resize: vertical;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.transformer-output {
+  font-family: monospace;
+  font-size: 12px;
+  min-height: 220px;
+  white-space: pre-wrap;
+  overflow: auto;
+  margin: 0;
+}
+
+.transformer-output:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text3);
+}
+
+.transformer-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+  gap: 10px;
+  align-items: center;
+}
+
+.transformer-status {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.transformer-btn {
+  margin: 0;
+}
