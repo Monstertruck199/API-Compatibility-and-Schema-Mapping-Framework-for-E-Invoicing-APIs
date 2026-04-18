@@ -11,16 +11,50 @@ DB_CONFIG = {
     "password": os.environ.get("DB_PASSWORD", "password"),
 }
 
+
 def get_connection():
     return psycopg2.connect(**DB_CONFIG)
+
+
+def ensure_runtime_tables(conn):
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            CREATE TABLE IF NOT EXISTS transform_runs (
+                id SERIAL PRIMARY KEY,
+                source_api_id INTEGER REFERENCES apis(id) ON DELETE SET NULL,
+                target_api_id INTEGER REFERENCES apis(id) ON DELETE SET NULL,
+                source_schema_id INTEGER REFERENCES schemas(id) ON DELETE SET NULL,
+                target_schema_id INTEGER REFERENCES schemas(id) ON DELETE SET NULL,
+                input_data JSONB NOT NULL,
+                output_data JSONB,
+                output_text TEXT,
+                output_format VARCHAR(20) NOT NULL CHECK (output_format IN ('json', 'xml')),
+                mapping_status VARCHAR(50),
+                warnings JSONB DEFAULT '[]'::jsonb,
+                success BOOLEAN NOT NULL DEFAULT TRUE,
+                error_message TEXT,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+            """
+        )
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_transform_runs_source_api ON transform_runs(source_api_id)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_transform_runs_target_api ON transform_runs(target_api_id)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_transform_runs_created_at ON transform_runs(created_at DESC)")
+    conn.commit()
+
 
 def init_db():
     try:
         conn = get_connection()
-        conn.close()
+        try:
+            ensure_runtime_tables(conn)
+        finally:
+            conn.close()
         return True
     except Exception:
         return False
+
 
 def create_api(name, category, description=None, base_url=None, auth_method=None):
     conn = get_connection()
@@ -44,6 +78,7 @@ def create_api(name, category, description=None, base_url=None, auth_method=None
     finally:
         conn.close()
 
+
 def get_api(api_id):
     conn = get_connection()
     try:
@@ -53,6 +88,7 @@ def get_api(api_id):
             return dict(row) if row else None
     finally:
         conn.close()
+
 
 def get_api_by_name(name):
     conn = get_connection()
@@ -64,6 +100,7 @@ def get_api_by_name(name):
     finally:
         conn.close()
 
+
 def list_apis():
     conn = get_connection()
     try:
@@ -72,6 +109,7 @@ def list_apis():
             return [dict(r) for r in cur.fetchall()]
     finally:
         conn.close()
+
 
 def delete_api(api_id):
     conn = get_connection()
@@ -83,6 +121,7 @@ def delete_api(api_id):
             return deleted is not None
     finally:
         conn.close()
+
 
 def store_schema(api_id, direction, fmt, raw_schema, normalized_schema=None):
     conn = get_connection()
@@ -98,7 +137,14 @@ def store_schema(api_id, direction, fmt, raw_schema, normalized_schema=None):
                 """INSERT INTO schemas (api_id, direction, format, raw_schema, normalized_schema, version)
                    VALUES (%s, %s, %s, %s, %s, %s)
                    RETURNING *""",
-                (api_id, direction, fmt, json.dumps(raw_schema), json.dumps(normalized_schema) if normalized_schema else None, next_ver),
+                (
+                    api_id,
+                    direction,
+                    fmt,
+                    json.dumps(raw_schema),
+                    json.dumps(normalized_schema) if normalized_schema else None,
+                    next_ver,
+                ),
             )
             row = cur.fetchone()
             schema_id = row["id"]
@@ -110,13 +156,13 @@ def store_schema(api_id, direction, fmt, raw_schema, normalized_schema=None):
     finally:
         conn.close()
 
+
 def _store_fields(cur, schema_id, schema, path="$", depth=0):
     if not isinstance(schema, dict):
         return
 
     schema_type = schema.get("type", "unknown")
 
-    # Normalise oneOf / anyOf at this level — Bug #4 fix
     for key in ("oneOf", "anyOf"):
         if key in schema:
             for variant in schema[key]:
@@ -143,6 +189,7 @@ def _store_fields(cur, schema_id, schema, path="$", depth=0):
         if isinstance(items, dict):
             _store_fields(cur, schema_id, items, f"{path}[]", depth + 1)
 
+
 def get_schema(schema_id):
     conn = get_connection()
     try:
@@ -153,6 +200,7 @@ def get_schema(schema_id):
     finally:
         conn.close()
 
+
 def get_schemas_for_api(api_id):
     conn = get_connection()
     try:
@@ -161,6 +209,7 @@ def get_schemas_for_api(api_id):
             return [dict(r) for r in cur.fetchall()]
     finally:
         conn.close()
+
 
 def get_latest_schema(api_id, direction):
     conn = get_connection()
@@ -175,6 +224,7 @@ def get_latest_schema(api_id, direction):
     finally:
         conn.close()
 
+
 def get_fields_for_schema(schema_id):
     conn = get_connection()
     try:
@@ -183,6 +233,7 @@ def get_fields_for_schema(schema_id):
             return [dict(r) for r in cur.fetchall()]
     finally:
         conn.close()
+
 
 def store_compatibility_result(source_api_id, target_api_id, source_schema_id, target_schema_id, result):
     conn = get_connection()
@@ -234,6 +285,7 @@ def store_compatibility_result(source_api_id, target_api_id, source_schema_id, t
     finally:
         conn.close()
 
+
 def get_compatibility_result(source_schema_id, target_schema_id):
     conn = get_connection()
     try:
@@ -251,6 +303,7 @@ def get_compatibility_result(source_schema_id, target_schema_id):
             return result
     finally:
         conn.close()
+
 
 def list_compatibility_results(api_id=None):
     conn = get_connection()
@@ -278,6 +331,7 @@ def list_compatibility_results(api_id=None):
     finally:
         conn.close()
 
+
 def store_mapping_rule(source_api_id, target_api_id, source_field, target_field, transform_type="rename", source_type=None, target_type=None, confidence="high", note=None):
     conn = get_connection()
     try:
@@ -293,6 +347,7 @@ def store_mapping_rule(source_api_id, target_api_id, source_field, target_field,
             return dict(row)
     finally:
         conn.close()
+
 
 def store_mapping_rules_bulk(source_api_id, target_api_id, rules):
     conn = get_connection()
@@ -326,6 +381,7 @@ def store_mapping_rules_bulk(source_api_id, target_api_id, rules):
     finally:
         conn.close()
 
+
 def get_mapping_rules(source_api_id, target_api_id):
     conn = get_connection()
     try:
@@ -337,6 +393,7 @@ def get_mapping_rules(source_api_id, target_api_id):
             return [dict(r) for r in cur.fetchall()]
     finally:
         conn.close()
+
 
 def delete_mapping_rules(source_api_id, target_api_id):
     conn = get_connection()
@@ -351,6 +408,7 @@ def delete_mapping_rules(source_api_id, target_api_id):
             return count
     finally:
         conn.close()
+
 
 def get_compatibility_matrix(api_ids=None):
     conn = get_connection()
@@ -404,6 +462,90 @@ def get_compatibility_matrix(api_ids=None):
             return {"apis": [dict(a) for a in apis], "matrix": matrix}
     finally:
         conn.close()
+
+
+def store_transform_run(
+    source_api_id=None,
+    target_api_id=None,
+    source_schema_id=None,
+    target_schema_id=None,
+    input_data=None,
+    output_data=None,
+    output_text=None,
+    output_format="json",
+    mapping_status=None,
+    warnings=None,
+    success=True,
+    error_message=None,
+):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                """INSERT INTO transform_runs (
+                       source_api_id, target_api_id, source_schema_id, target_schema_id,
+                       input_data, output_data, output_text, output_format,
+                       mapping_status, warnings, success, error_message
+                   )
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                   RETURNING *""",
+                (
+                    source_api_id,
+                    target_api_id,
+                    source_schema_id,
+                    target_schema_id,
+                    psycopg2.extras.Json(input_data if input_data is not None else {}),
+                    psycopg2.extras.Json(output_data) if output_data is not None else None,
+                    output_text,
+                    output_format,
+                    mapping_status,
+                    psycopg2.extras.Json(warnings or []),
+                    success,
+                    error_message,
+                ),
+            )
+            row = cur.fetchone()
+            conn.commit()
+            return dict(row)
+    finally:
+        conn.close()
+
+
+def list_transform_runs(limit=50):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                """SELECT tr.*, sa.name AS source_name, ta.name AS target_name
+                   FROM transform_runs tr
+                   LEFT JOIN apis sa ON tr.source_api_id = sa.id
+                   LEFT JOIN apis ta ON tr.target_api_id = ta.id
+                   ORDER BY tr.created_at DESC, tr.id DESC
+                   LIMIT %s""",
+                (limit,),
+            )
+            return [dict(r) for r in cur.fetchall()]
+    finally:
+        conn.close()
+
+
+def get_transform_run(run_id):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                """SELECT tr.*, sa.name AS source_name, ta.name AS target_name
+                   FROM transform_runs tr
+                   LEFT JOIN apis sa ON tr.source_api_id = sa.id
+                   LEFT JOIN apis ta ON tr.target_api_id = ta.id
+                   WHERE tr.id = %s""",
+                (run_id,),
+            )
+            row = cur.fetchone()
+            return dict(row) if row else None
+    finally:
+        conn.close()
+
 
 def _serialize_row(row):
     if row is None:

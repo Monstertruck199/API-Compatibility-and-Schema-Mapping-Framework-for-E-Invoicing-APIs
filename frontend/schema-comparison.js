@@ -251,6 +251,10 @@ async function runTransform() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        source_api_id: source.apiId,
+        target_api_id: target.apiId,
+        source_schema_id: source.outputSchemaId,
+        target_schema_id: target.inputSchemaId,
         source_schema: source.schema,
         target_schema: target.schema,
         data: inputData,
@@ -284,7 +288,10 @@ async function runTransform() {
       ? json.result
       : JSON.stringify(json.result, null, 2);
 
-    statusEl.textContent = (status === 'ok' || status === 'full') ? '✓ Done' : `⚠ Done (${status})`;
+    const baseStatus = (status === 'ok' || status === 'full') ? '✓ Done' : `⚠ Done (${status})`;
+    statusEl.textContent = json.stored_transform_id
+      ? `${baseStatus} · saved to DB (#${json.stored_transform_id})`
+      : baseStatus;
   } catch (err) {
     outputEl.textContent = `Error: ${err.message}`;
     statusEl.textContent = '';
