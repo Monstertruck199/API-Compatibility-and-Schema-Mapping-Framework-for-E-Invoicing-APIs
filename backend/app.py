@@ -7,6 +7,7 @@ import datetime
 from compatibility_engine import compare_schemas
 from extract_JSON_schema import infer_schema
 from extract_XML_schema import extract_schema_from_xml
+from schema_transformer import build_transformer, transform_to_xml
 from mapping_engine import build_mapping
 
 app = Flask(__name__)
@@ -106,6 +107,41 @@ def matrix():
 
     return jsonify({"matrix": results})
 
+@app.route('/api/transform', methods=['POST'])
+def transform():
+    data = request.get_json()
+    source_schema = data.get('source_schema')
+    target_schema = data.get('target_schema')
+    source_data   = data.get('data')
+    output_format = data.get('format', 'json') 
+
+    try:
+        result  = compare_schemas(source_schema, target_schema, 'Source', 'Target')
+        mapping = build_mapping(result)
+        fn      = build_transformer(mapping)
+
+        mapping_status = mapping.status
+        warnings = getattr(mapping, 'warnings', [])
+
+        if output_format == 'xml':
+            xml = transform_to_xml(fn, source_data, root_tag='record')
+            return jsonify({ 
+                'result': xml, 
+                'format': 'xml',
+                'mapping_status': mapping_status,
+                'warnings': warnings,
+            })
+        else:
+            return jsonify({ 
+                'result': fn(source_data), 
+                'format': 'json',
+                'mapping_status': mapping_status,
+                'warnings': warnings,
+            })
+
+    except Exception as e:
+        return jsonify({ 'error': str(e) }), 400
+        
 @app.route("/api/apis", methods=["GET"])
 def list_apis():
     if not db_available:
