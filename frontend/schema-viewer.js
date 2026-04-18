@@ -15,7 +15,7 @@ async function svAnalyse() {
   if (!url) { highlightError('sv-url'); return; }
 
   try {
-    const res  = await fetch(`http://localhost:5050/api/analyze?url=${encodeURIComponent(url)}&format=${svFmt}`);
+    const res  = await fetch(`http://localhost:5000/api/analyze?url=${encodeURIComponent(url)}&format=${svFmt}`);
     const data = await res.json();
 
     if (!res.ok) {

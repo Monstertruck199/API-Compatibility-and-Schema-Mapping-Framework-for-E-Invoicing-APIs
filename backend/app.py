@@ -312,4 +312,4 @@ def delete_mappings(source_api_id, target_api_id):
     return jsonify({"deleted": count})
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5050)
+    app.run(debug=True, port=5000)

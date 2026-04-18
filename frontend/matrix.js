@@ -22,7 +22,7 @@ function matrixCellClass(code) {
 
 async function buildMatrix() {
   try {
-    const response = await fetch('http://localhost:5050/api/matrix', {
+    const response = await fetch('http://localhost:5000/api/matrix', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ schemas: svSchemas.map(({ name, schema }) => ({ name, schema })) }),
