@@ -1,5 +1,4 @@
 let svFmt     = 'json';
-let svCat     = 'transformation';
 let svSchemas = [];
 let svActive  = null;
 
@@ -9,11 +8,40 @@ function setFmt(f) {
   document.getElementById('fx').classList.toggle('on', f === 'xml');
 }
 
-function setCat(c) {
-  svCat = c;
-  document.getElementById('ct').classList.toggle('on', c === 'transformation');
-  document.getElementById('cv').classList.toggle('on', c === 'validation');
-  document.getElementById('cc').classList.toggle('on', c === 'communication');
+function inferSchemaCategory(name, schema) {
+  const lowerName = (name || '').toLowerCase();
+
+  const matchesSchemaValue = (node, needle) => {
+    if (!node || typeof node !== 'object') return false;
+
+    if (Array.isArray(node.enum) && node.enum.some(value => String(value).toLowerCase() === needle)) {
+      return true;
+    }
+
+    if (typeof node.const === 'string' && node.const.toLowerCase() === needle) {
+      return true;
+    }
+
+    if (node.properties) {
+      return Object.values(node.properties).some(child => matchesSchemaValue(child, needle));
+    }
+
+    if (node.items) {
+      return matchesSchemaValue(node.items, needle);
+    }
+
+    return false;
+  };
+
+  if (lowerName.includes('communication') || matchesSchemaValue(schema, 'communication')) {
+    return 'communication';
+  }
+
+  if (lowerName.includes('validation') || matchesSchemaValue(schema, 'validation')) {
+    return 'validation';
+  }
+
+  return 'transformation';
 }
 
 async function svAnalyse() {
@@ -36,13 +64,15 @@ async function svAnalyse() {
   }
 
   const useName = name || new URL(url).hostname;
+  const inferredCategory = inferSchemaCategory(useName, data.schema);
+
   const entry = {
     name: useName,
     url,
     fmt: svFmt,
     schema: data.schema,
     status: data.status,
-    category: svCat,
+    category: inferredCategory,
     apiId: null,
     outputSchemaId: null,
     inputSchemaId: null,
@@ -53,7 +83,7 @@ async function svAnalyse() {
     const apiRes = await fetch(`${API_BASE_URL}/api/apis`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: useName, category: svCat, base_url: url }),
+      body: JSON.stringify({ name: useName, category: inferredCategory, base_url: url }),
     });
     if (apiRes.ok) {
       const api = await apiRes.json();
@@ -193,7 +223,6 @@ function renderSVList() {
   el.innerHTML = svSchemas.map((s, i) => `
     <div class="sv-item ${i === svActive ? 'on' : ''}" onclick="svPick(${i})">
       <span class="sv-item-name">${s.name}</span>
-      ${s.persisted ? `<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd);margin-right:6px">DB</span>` : ''}
       <span class="fmt-pill fp-${s.fmt}">${s.fmt.toUpperCase()}</span>
       <span onclick="event.stopPropagation();svDelete(${i})" style="margin-left:8px;color:var(--text3);cursor:pointer;font-size:14px;padding:0 4px">×</span>
     </div>
