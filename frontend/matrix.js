@@ -22,7 +22,7 @@ function matrixCellClass(code) {
 
 async function buildMatrix() {
   try {
-    const response = await fetch('http://localhost:5000/api/matrix', {
+    const response = await fetch(`${API_BASE_URL}/api/matrix`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ schemas: svSchemas.map(({ name, schema }) => ({ name, schema })) }),
@@ -101,7 +101,7 @@ function renderMatrixRows() {
     const cls = matrixCellClass(cell.compatibility);
     if (!activeFilters.has(cls)) return false;
     return true;
-  })
+  });
 
   count.textContent = `Showing ${filtered.length} result${filtered.length !== 1 ? 's' : ''}`;
 
@@ -123,28 +123,3 @@ function renderMatrixRows() {
     }).join('');
   }
 }
-
-// function drawMatrix(matrix) {
-//   const wrap = document.getElementById('matrix-table-wrap');
-//   const headers = matrix[0].map(cell => `<th>${cell.target}</th>`).join('');
-//   const rows = matrix.map(row => `
-//     <tr>
-//       <th>${row[0].source}</th>
-//       ${row.map(cell => `<td class="m-${matrixCellClass(cell.compatibility)}">${shortLabel(cell.compatibility)}</td>`).join('')}
-//     </tr>
-//   `).join('');
-//   wrap.innerHTML = `
-//     <div class="card">
-//       <div class="card-lbl">Compatibility matrix</div>
-//       <table class="matrix-table">
-//         <thead>
-//           <tr>
-//             <th>Source \ Target</th>
-//             ${headers}
-//           </tr>
-//         </thead>
-//         <tbody>${rows}</tbody>
-//       </table>
-//     </div>
-//   `;
-// }
