@@ -77,6 +77,8 @@
   .sv-grid, .summary-grid, .cmp-grid { grid-template-columns: 1fr; }
 }
 
+/* ------------------ Transformer ------------------ */
+
 .transformer-card {
   margin-top: 14px;
 }

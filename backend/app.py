@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 from compatibility_engine import compare_schemas
 from extract_JSON_schema import infer_schema
 from extract_XML_schema import extract_schema_from_xml
+from schema_transformer import build_transformer, transform_to_xml
 from mapping_engine import build_mapping
 from schema_transformer import build_transformer
 
