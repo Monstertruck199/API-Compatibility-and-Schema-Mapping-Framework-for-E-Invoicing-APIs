@@ -159,6 +159,7 @@ function renderTransformer() {
         </div>
         <div>
           <div class="ig-lbl">Output (target format)</div>
+          <div id="transformer-warning"></div>
           <pre id="transformer-output" class="ifield transformer-output" data-placeholder="Run transform to see output…"></pre>
         </div>
       </div>
@@ -216,15 +217,34 @@ async function runTransform() {
         format: transformFmt,
       }),
     });
+
     const json = await res.json();
     if (!res.ok) throw new Error(json.error || 'Transform failed');
 
-    if (transformFmt === 'xml') {
-      outputEl.textContent = json.result;
-    } else {
-      outputEl.textContent = JSON.stringify(json.result, null, 2);
+    const warningEl = document.getElementById('transformer-warning');
+    const status = json.mapping_status;
+    const warnings = json.warnings || [];
+
+    warningEl.innerHTML = '';
+
+    if (status && status !== 'ok' && status !== 'full') {
+      const warningLines = warnings.length
+        ? warnings.map(w => `<li>${w}</li>`).join('')
+        : '<li>Fields may be dropped, renamed, or left empty.</li>';
+
+      warningEl.innerHTML = `
+        <div class="transform-warning">
+          ⚠ Schemas are <strong>${status}</strong> — this is the closest possible mapping, but data loss or gaps may occur:
+          <ul>${warningLines}</ul>
+        </div>
+      `;
     }
-    statusEl.textContent = '✓ Done';
+
+    outputEl.textContent = transformFmt === 'xml'
+      ? json.result
+      : JSON.stringify(json.result, null, 2);
+
+    statusEl.textContent = status === 'ok' || 'full' ? '✓ Done' : `⚠ Done (${status})`;
   } catch (err) {
     outputEl.textContent = `Error: ${err.message}`;
     statusEl.textContent = '';

@@ -120,11 +120,24 @@ def transform():
         mapping = build_mapping(result)
         fn      = build_transformer(mapping)
 
+        mapping_status = mapping.status
+        warnings = getattr(mapping, 'warnings', [])
+
         if output_format == 'xml':
             xml = transform_to_xml(fn, source_data, root_tag='record')
-            return jsonify({ 'result': xml, 'format': 'xml' })
+            return jsonify({ 
+                'result': xml, 
+                'format': 'xml',
+                'mapping_status': mapping_status,
+                'warnings': warnings,
+            })
         else:
-            return jsonify({ 'result': fn(source_data), 'format': 'json' })
+            return jsonify({ 
+                'result': fn(source_data), 
+                'format': 'json',
+                'mapping_status': mapping_status,
+                'warnings': warnings,
+            })
 
     except Exception as e:
         return jsonify({ 'error': str(e) }), 400

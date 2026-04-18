@@ -110,6 +110,25 @@
   color: var(--text3);
 }
 
+.transform-warning {
+  font-size: 12px;
+  color: var(--text2);
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  background: var(--red-bg);
+  border-left: 2px solid var(--red-bd);
+  border-radius: 4px;
+}
+
+.transform-warning ul {
+  margin: 4px 0 0 0;
+  padding-left: 16px;
+}
+
+.transform-warning li {
+  margin-top: 2px;
+}
+
 .transformer-actions {
   display: flex;
   justify-content: flex-end;
