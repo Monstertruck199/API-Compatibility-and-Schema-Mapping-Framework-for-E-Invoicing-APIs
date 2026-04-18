@@ -5,7 +5,7 @@ import psycopg2.extras
 
 DB_CONFIG = {
     "host": os.environ.get("DB_HOST", "localhost"),
-    "port": int(os.environ.get("DB_PORT", 5432)),
+    "port": int(os.environ.get("DB_PORT", 5433)),
     "dbname": os.environ.get("DB_NAME", "api_compatibility"),
     "user": os.environ.get("DB_USER", "admin"),
     "password": os.environ.get("DB_PASSWORD", "password"),
@@ -110,11 +110,20 @@ def store_schema(api_id, direction, fmt, raw_schema, normalized_schema=None):
     finally:
         conn.close()
 
-def _store_fields(cur, schema_id, schema, path="$", parent_path=None, depth=0):
+def _store_fields(cur, schema_id, schema, path="$", depth=0):
     if not isinstance(schema, dict):
         return
 
     schema_type = schema.get("type", "unknown")
+
+    # Normalise oneOf / anyOf at this level — Bug #4 fix
+    for key in ("oneOf", "anyOf"):
+        if key in schema:
+            for variant in schema[key]:
+                _store_fields(cur, schema_id, variant, path, depth)
+            return
+
+    parent_for_children = path if path != "$" else None
 
     if schema_type == "object":
         props = schema.get("properties", {})
@@ -125,14 +134,14 @@ def _store_fields(cur, schema_id, schema, path="$", parent_path=None, depth=0):
             cur.execute(
                 """INSERT INTO schema_fields (schema_id, field_path, field_name, field_type, is_required, nesting_depth, parent_path)
                    VALUES (%s, %s, %s, %s, %s, %s, %s)""",
-                (schema_id, child_path, name, child_type, name in required, depth, parent_path),
+                (schema_id, child_path, name, child_type, name in required, depth, parent_for_children),
             )
             if isinstance(child, dict):
-                _store_fields(cur, schema_id, child, child_path, path, depth + 1)
+                _store_fields(cur, schema_id, child, child_path, depth + 1)
     elif schema_type == "array":
         items = schema.get("items", {})
         if isinstance(items, dict):
-            _store_fields(cur, schema_id, items, f"{path}[]", path, depth + 1)
+            _store_fields(cur, schema_id, items, f"{path}[]", depth + 1)
 
 def get_schema(schema_id):
     conn = get_connection()
