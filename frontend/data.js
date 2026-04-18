@@ -1,3 +1,5 @@
+const API_BASE_URL = 'http://localhost:5050';
+
 const essValidationSchema = {
   type: 'object',
   required: ['id', 'type', 'event', 'rule', 'data', 'value'],

@@ -25,8 +25,30 @@ function show(panel) {
 
 function preloadExamples() {
   if (svSchemas.length) return;
-  svSchemas.push({ name: 'ESS Validation', url: 'manual://ess-validation', fmt: 'json', schema: essValidationSchema, status: 200 });
-  svSchemas.push({ name: 'ESS Aggregation', url: 'manual://ess-aggregation', fmt: 'json', schema: essAggregationSchema, status: 200 });
+  svSchemas.push({
+    name: 'ESS Validation',
+    url: 'manual://ess-validation',
+    fmt: 'json',
+    schema: essValidationSchema,
+    status: 200,
+    category: 'validation',
+    apiId: null,
+    outputSchemaId: null,
+    inputSchemaId: null,
+    persisted: false,
+  });
+  svSchemas.push({
+    name: 'ESS Aggregation',
+    url: 'manual://ess-aggregation',
+    fmt: 'json',
+    schema: essAggregationSchema,
+    status: 200,
+    category: 'validation',
+    apiId: null,
+    outputSchemaId: null,
+    inputSchemaId: null,
+    persisted: false,
+  });
   svActive = 0;
   renderSVList();
   renderViewer(svActive);
@@ -34,17 +56,18 @@ function preloadExamples() {
 
 function toggleTheme() {
   const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-  const next = isLight ? 'dark' : 'light'; 
+  const next = isLight ? 'dark' : 'light';
   document.documentElement.setAttribute('data-theme', next);
   document.getElementById('theme-icon').textContent = next === 'light' ? '⏾' : '☀︎';
   localStorage.setItem('theme', next);
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   const saved = localStorage.getItem('theme') || 'dark';
   const icon = document.getElementById('theme-icon');
   if (icon) icon.textContent = saved === 'light' ? '⏾' : '☀︎';
 
-  preloadExamples();
+  const loaded = await loadFromDatabase();
+  if (!loaded) preloadExamples();
   show('schema-viewer');
 });
