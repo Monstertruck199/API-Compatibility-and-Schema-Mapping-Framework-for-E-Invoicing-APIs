@@ -312,5 +312,85 @@ class TestGetSchema(DBTestCase):
         self.assertIsNone(result)
 
 
+# ===========================================================================
+# get_fields_for_schema / _store_fields (via store_schema)
+# ===========================================================================
+
+class TestSchemaFields(DBTestCase):
+
+    def test_flat_object_fields_stored(self):
+        api = self.create_api("TestAPI_fields_flat")
+        schema = store_schema(api["id"], "input", "json", make_raw_schema({"id": "integer", "name": "string"}))
+        fields = get_fields_for_schema(schema["id"])
+        paths = {f["field_path"] for f in fields}
+        self.assertIn("id", paths)
+        self.assertIn("name", paths)
+
+    def test_field_type_stored_correctly(self):
+        api = self.create_api("TestAPI_fields_type")
+        schema = store_schema(api["id"], "input", "json", make_raw_schema({"count": "integer"}))
+        fields = get_fields_for_schema(schema["id"])
+        count_field = next(f for f in fields if f["field_name"] == "count")
+        self.assertEqual(count_field["field_type"], "integer")
+
+    def test_required_flag_set(self):
+        api = self.create_api("TestAPI_fields_required")
+        raw = {
+            "type": "object",
+            "properties": {"id": {"type": "integer"}, "tag": {"type": "string"}},
+            "required": ["id"],
+        }
+        schema = store_schema(api["id"], "input", "json", raw)
+        fields = {f["field_name"]: f for f in get_fields_for_schema(schema["id"])}
+        self.assertTrue(fields["id"]["is_required"])
+        self.assertFalse(fields["tag"]["is_required"])
+
+    def test_nested_object_fields_stored_with_path(self):
+        api = self.create_api("TestAPI_fields_nested")
+        raw = {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "object",
+                    "properties": {"id": {"type": "integer"}},
+                    "required": ["id"],
+                }
+            },
+            "required": ["user"],
+        }
+        schema = store_schema(api["id"], "input", "json", raw)
+        fields = get_fields_for_schema(schema["id"])
+        paths = {f["field_path"] for f in fields}
+        self.assertIn("user.id", paths)
+
+    def test_nesting_depth_increments(self):
+        api = self.create_api("TestAPI_fields_depth")
+        raw = {
+            "type": "object",
+            "properties": {
+                "outer": {
+                    "type": "object",
+                    "properties": {"inner": {"type": "string"}},
+                }
+            },
+        }
+        schema = store_schema(api["id"], "input", "json", raw)
+        fields = {f["field_path"]: f for f in get_fields_for_schema(schema["id"])}
+        self.assertEqual(fields["outer"]["nesting_depth"], 0)
+        self.assertEqual(fields["outer.inner"]["nesting_depth"], 1)
+
+    def test_fields_cascade_deleted_with_schema(self):
+        api, schema = self.create_api_with_schema("TestAPI_fields_cascade")
+        schema_id = schema["id"]
+        self._created_api_ids.remove(api["id"])
+        delete_api(api["id"])
+        fields = get_fields_for_schema(schema_id)
+        self.assertEqual(fields, [])
+
+    def test_no_fields_for_unknown_schema(self):
+        fields = get_fields_for_schema(999999999)
+        self.assertEqual(fields, [])
+
+
 if __name__ == "__main__":
     unittest.main()
