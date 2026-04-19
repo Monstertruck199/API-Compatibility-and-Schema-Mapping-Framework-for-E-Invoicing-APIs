@@ -71,6 +71,20 @@ def make_compat_result(compatibility="directly_compatible", issues=None):
     }
 
 
+def make_issue(code="missing_required_field", kind="blocking", severity="error",
+               message="A required field is missing.", source_path=None,
+               target_path=None, suggestion=None):
+    return {
+        "code": code,
+        "kind": kind,
+        "severity": severity,
+        "source_path": source_path,
+        "target_path": target_path,
+        "message": message,
+        "suggestion": suggestion,
+    }
+
+
 # ---------------------------------------------------------------------------
 # Base class: creates and tears down test data per test
 # ---------------------------------------------------------------------------
@@ -391,6 +405,123 @@ class TestSchemaFields(DBTestCase):
         fields = get_fields_for_schema(999999999)
         self.assertEqual(fields, [])
 
+
+# ===========================================================================
+# store_compatibility_result / get_compatibility_result / list_compatibility_results
+# ===========================================================================
+ 
+class TestCompatibilityResult(DBTestCase):
+ 
+    def _setup_two_apis_with_schemas(self, name_a="TestAPI_compat_A", name_b="TestAPI_compat_B"):
+        api_a, schema_a = self.create_api_with_schema(name_a)
+        api_b, schema_b = self.create_api_with_schema(name_b)
+        return api_a, schema_a, api_b, schema_b
+ 
+    def test_store_returns_dict_with_id(self):
+        api_a, schema_a, api_b, schema_b = self._setup_two_apis_with_schemas(
+            "TestAPI_compat_ret_A", "TestAPI_compat_ret_B"
+        )
+        result = store_compatibility_result(
+            api_a["id"], api_b["id"], schema_a["id"], schema_b["id"],
+            make_compat_result("directly_compatible"),
+        )
+        self.assertIn("id", result)
+        self.assertIsInstance(result["id"], int)
+ 
+    def test_compatibility_level_stored(self):
+        api_a, schema_a, api_b, schema_b = self._setup_two_apis_with_schemas(
+            "TestAPI_compat_lvl_A", "TestAPI_compat_lvl_B"
+        )
+        store_compatibility_result(
+            api_a["id"], api_b["id"], schema_a["id"], schema_b["id"],
+            make_compat_result("incompatible"),
+        )
+        fetched = get_compatibility_result(schema_a["id"], schema_b["id"])
+        self.assertEqual(fetched["compatibility_level"], "incompatible")
+ 
+    def test_issues_stored_and_retrieved(self):
+        api_a, schema_a, api_b, schema_b = self._setup_two_apis_with_schemas(
+            "TestAPI_compat_iss_A", "TestAPI_compat_iss_B"
+        )
+        issue = make_issue(code="missing_required_field", kind="blocking", severity="error",
+                           message="Field id missing.")
+        store_compatibility_result(
+            api_a["id"], api_b["id"], schema_a["id"], schema_b["id"],
+            make_compat_result("incompatible", issues=[issue]),
+        )
+        fetched = get_compatibility_result(schema_a["id"], schema_b["id"])
+        self.assertEqual(len(fetched["issues"]), 1)
+        self.assertEqual(fetched["issues"][0]["code"], "missing_required_field")
+ 
+    def test_upsert_replaces_previous_result(self):
+        api_a, schema_a, api_b, schema_b = self._setup_two_apis_with_schemas(
+            "TestAPI_compat_upsert_A", "TestAPI_compat_upsert_B"
+        )
+        store_compatibility_result(
+            api_a["id"], api_b["id"], schema_a["id"], schema_b["id"],
+            make_compat_result("directly_compatible"),
+        )
+        store_compatibility_result(
+            api_a["id"], api_b["id"], schema_a["id"], schema_b["id"],
+            make_compat_result("incompatible"),
+        )
+        fetched = get_compatibility_result(schema_a["id"], schema_b["id"])
+        self.assertEqual(fetched["compatibility_level"], "incompatible")
+ 
+    def test_upsert_replaces_old_issues(self):
+        api_a, schema_a, api_b, schema_b = self._setup_two_apis_with_schemas(
+            "TestAPI_compat_iss_upsert_A", "TestAPI_compat_iss_upsert_B"
+        )
+        store_compatibility_result(
+            api_a["id"], api_b["id"], schema_a["id"], schema_b["id"],
+            make_compat_result("incompatible", issues=[make_issue()]),
+        )
+        store_compatibility_result(
+            api_a["id"], api_b["id"], schema_a["id"], schema_b["id"],
+            make_compat_result("directly_compatible", issues=[]),
+        )
+        fetched = get_compatibility_result(schema_a["id"], schema_b["id"])
+        self.assertEqual(fetched["issues"], [])
+ 
+    def test_get_nonexistent_returns_none(self):
+        result = get_compatibility_result(999999998, 999999999)
+        self.assertIsNone(result)
+ 
+    def test_list_all_includes_stored_result(self):
+        api_a, schema_a, api_b, schema_b = self._setup_two_apis_with_schemas(
+            "TestAPI_compat_list_A", "TestAPI_compat_list_B"
+        )
+        store_compatibility_result(
+            api_a["id"], api_b["id"], schema_a["id"], schema_b["id"],
+            make_compat_result("compatible_with_mapping"),
+        )
+        results = list_compatibility_results()
+        levels = {r["compatibility_level"] for r in results}
+        self.assertIn("compatible_with_mapping", levels)
+ 
+    def test_list_filtered_by_api_id(self):
+        api_a, schema_a, api_b, schema_b = self._setup_two_apis_with_schemas(
+            "TestAPI_compat_filt_A", "TestAPI_compat_filt_B"
+        )
+        store_compatibility_result(
+            api_a["id"], api_b["id"], schema_a["id"], schema_b["id"],
+            make_compat_result("directly_compatible"),
+        )
+        results = list_compatibility_results(api_id=api_a["id"])
+        api_ids_seen = {r["source_api_id"] for r in results} | {r["target_api_id"] for r in results}
+        self.assertIn(api_a["id"], api_ids_seen)
+ 
+    def test_invalid_compatibility_level_raises(self):
+        api_a, schema_a, api_b, schema_b = self._setup_two_apis_with_schemas(
+            "TestAPI_compat_inv_A", "TestAPI_compat_inv_B"
+        )
+        bad_result = make_compat_result("directly_compatible")
+        bad_result["compatibility"] = "totally_fine"
+        with self.assertRaises(Exception):
+            store_compatibility_result(
+                api_a["id"], api_b["id"], schema_a["id"], schema_b["id"],
+                bad_result,
+            )
 
 if __name__ == "__main__":
     unittest.main()
