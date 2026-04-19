@@ -523,5 +523,137 @@ class TestCompatibilityResult(DBTestCase):
                 bad_result,
             )
 
+
+# ===========================================================================
+# store_mapping_rule / store_mapping_rules_bulk / get_mapping_rules / delete_mapping_rules
+# ===========================================================================
+ 
+class TestMappingRules(DBTestCase):
+ 
+    def test_store_single_rule_returns_dict(self):
+        api_a = self.create_api("TestAPI_map_single_A")
+        api_b = self.create_api("TestAPI_map_single_B")
+        rule = store_mapping_rule(api_a["id"], api_b["id"], "userId", "user_id")
+        self.assertIn("id", rule)
+        self.assertEqual(rule["source_field"], "userId")
+        self.assertEqual(rule["target_field"], "user_id")
+ 
+    def test_default_transform_type_is_rename(self):
+        api_a = self.create_api("TestAPI_map_default_A")
+        api_b = self.create_api("TestAPI_map_default_B")
+        rule = store_mapping_rule(api_a["id"], api_b["id"], "src", "tgt")
+        self.assertEqual(rule["transform_type"], "rename")
+ 
+    def test_default_confidence_is_high(self):
+        api_a = self.create_api("TestAPI_map_conf_A")
+        api_b = self.create_api("TestAPI_map_conf_B")
+        rule = store_mapping_rule(api_a["id"], api_b["id"], "src", "tgt")
+        self.assertEqual(rule["confidence"], "high")
+ 
+    def test_get_mapping_rules_returns_stored(self):
+        api_a = self.create_api("TestAPI_map_get_A")
+        api_b = self.create_api("TestAPI_map_get_B")
+        store_mapping_rule(api_a["id"], api_b["id"], "a", "b")
+        store_mapping_rule(api_a["id"], api_b["id"], "c", "d")
+        rules = get_mapping_rules(api_a["id"], api_b["id"])
+        self.assertEqual(len(rules), 2)
+ 
+    def test_get_mapping_rules_empty(self):
+        api_a = self.create_api("TestAPI_map_empty_A")
+        api_b = self.create_api("TestAPI_map_empty_B")
+        rules = get_mapping_rules(api_a["id"], api_b["id"])
+        self.assertEqual(rules, [])
+ 
+    def test_bulk_replaces_existing_rules(self):
+        api_a = self.create_api("TestAPI_map_bulk_A")
+        api_b = self.create_api("TestAPI_map_bulk_B")
+        store_mapping_rule(api_a["id"], api_b["id"], "old_src", "old_tgt")
+        new_rules = [{"source_field": "new_src", "target_field": "new_tgt"}]
+        store_mapping_rules_bulk(api_a["id"], api_b["id"], new_rules)
+        rules = get_mapping_rules(api_a["id"], api_b["id"])
+        self.assertEqual(len(rules), 1)
+        self.assertEqual(rules[0]["source_field"], "new_src")
+ 
+    def test_bulk_stores_all_rules(self):
+        api_a = self.create_api("TestAPI_map_bulkall_A")
+        api_b = self.create_api("TestAPI_map_bulkall_B")
+        new_rules = [
+            {"source_field": "a", "target_field": "x"},
+            {"source_field": "b", "target_field": "y"},
+            {"source_field": "c", "target_field": "z"},
+        ]
+        stored = store_mapping_rules_bulk(api_a["id"], api_b["id"], new_rules)
+        self.assertEqual(len(stored), 3)
+ 
+    def test_delete_mapping_rules_returns_count(self):
+        api_a = self.create_api("TestAPI_map_del_A")
+        api_b = self.create_api("TestAPI_map_del_B")
+        store_mapping_rule(api_a["id"], api_b["id"], "a", "b")
+        store_mapping_rule(api_a["id"], api_b["id"], "c", "d")
+        count = delete_mapping_rules(api_a["id"], api_b["id"])
+        self.assertEqual(count, 2)
+ 
+    def test_delete_mapping_rules_clears_rules(self):
+        api_a = self.create_api("TestAPI_map_delclr_A")
+        api_b = self.create_api("TestAPI_map_delclr_B")
+        store_mapping_rule(api_a["id"], api_b["id"], "a", "b")
+        delete_mapping_rules(api_a["id"], api_b["id"])
+        rules = get_mapping_rules(api_a["id"], api_b["id"])
+        self.assertEqual(rules, [])
+ 
+    def test_delete_mapping_rules_zero_when_none(self):
+        api_a = self.create_api("TestAPI_map_delnone_A")
+        api_b = self.create_api("TestAPI_map_delnone_B")
+        count = delete_mapping_rules(api_a["id"], api_b["id"])
+        self.assertEqual(count, 0)
+
+
+# ===========================================================================
+# get_compatibility_matrix
+# ===========================================================================
+ 
+class TestCompatibilityMatrix(DBTestCase):
+ 
+    def test_matrix_contains_created_apis(self):
+        api_a = self.create_api("TestAPI_matrix_A")
+        api_b = self.create_api("TestAPI_matrix_B")
+        result = get_compatibility_matrix(api_ids=[api_a["id"], api_b["id"]])
+        names = {a["name"] for a in result["apis"]}
+        self.assertIn("TestAPI_matrix_A", names)
+        self.assertIn("TestAPI_matrix_B", names)
+ 
+    def test_self_pair_is_same_schema(self):
+        api_a = self.create_api("TestAPI_matrix_self")
+        result = get_compatibility_matrix(api_ids=[api_a["id"]])
+        cell = result["matrix"][0][0]
+        self.assertEqual(cell["compatibility"], "same_schema")
+ 
+    def test_unassessed_pair_labelled_not_assessed(self):
+        api_a = self.create_api("TestAPI_matrix_unass_A")
+        api_b = self.create_api("TestAPI_matrix_unass_B")
+        result = get_compatibility_matrix(api_ids=[api_a["id"], api_b["id"]])
+        off_diag = [cell for row in result["matrix"] for cell in row
+                    if cell["source"] != cell["target"]]
+        self.assertTrue(all(c["compatibility"] == "not_assessed" for c in off_diag))
+ 
+    def test_assessed_pair_shows_in_matrix(self):
+        api_a, schema_a = self.create_api_with_schema("TestAPI_matrix_ass_A")
+        api_b, schema_b = self.create_api_with_schema("TestAPI_matrix_ass_B")
+        store_compatibility_result(
+            api_a["id"], api_b["id"], schema_a["id"], schema_b["id"],
+            make_compat_result("directly_compatible"),
+        )
+        result = get_compatibility_matrix(api_ids=[api_a["id"], api_b["id"]])
+        names_order = [a["name"] for a in result["apis"]]
+        a_idx = names_order.index("TestAPI_matrix_ass_A")
+        b_idx = names_order.index("TestAPI_matrix_ass_B")
+        cell = result["matrix"][a_idx][b_idx]
+        self.assertEqual(cell["compatibility"], "directly_compatible")
+ 
+    def test_matrix_structure_has_apis_and_matrix_keys(self):
+        result = get_compatibility_matrix(api_ids=[])
+        self.assertIn("apis", result)
+        self.assertIn("matrix", result)
+
 if __name__ == "__main__":
     unittest.main()
