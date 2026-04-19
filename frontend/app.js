@@ -1,4 +1,5 @@
 let lastComparison = null;
+const API_BASE_URL = 'http://localhost:5050';
 
 function show(panel) {
   document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
@@ -15,36 +16,32 @@ function show(panel) {
     'schema-comparison': 'Schema Comparison',
     'compat-result': 'Compatibility Result',
     'matrix': 'Compatibility Matrix',
+    'database': 'Database'
   };
   document.getElementById('ptitle').textContent = titles[panel] || 'API Compatibility Framework';
 
   if (panel === 'schema-comparison') renderComparisonSelectors();
   if (panel === 'compat-result') renderCompatibilityResult();
   if (panel === 'matrix') renderMatrixBuilder();
-}
-
-function preloadExamples() {
-  if (svSchemas.length) return;
-  svSchemas.push({ name: 'ESS Validation', url: 'manual://ess-validation', fmt: 'json', schema: essValidationSchema, status: 200 });
-  svSchemas.push({ name: 'ESS Aggregation', url: 'manual://ess-aggregation', fmt: 'json', schema: essAggregationSchema, status: 200 });
-  svActive = 0;
-  renderSVList();
-  renderViewer(svActive);
+  if (panel === 'database') renderDatabasePanel();
 }
 
 function toggleTheme() {
   const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-  const next = isLight ? 'dark' : 'light'; 
+  const next = isLight ? 'dark' : 'light';
   document.documentElement.setAttribute('data-theme', next);
   document.getElementById('theme-icon').textContent = next === 'light' ? '⏾' : '☀︎';
   localStorage.setItem('theme', next);
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   const saved = localStorage.getItem('theme') || 'dark';
   const icon = document.getElementById('theme-icon');
   if (icon) icon.textContent = saved === 'light' ? '⏾' : '☀︎';
 
-  preloadExamples();
+  if (typeof loadFromDatabase === 'function') {
+    await loadFromDatabase();
+  }
+
   show('schema-viewer');
 });

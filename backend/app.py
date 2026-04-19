@@ -1,24 +1,31 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import json
-import requests as http_requests
 import datetime
+import requests as http_requests
+import xml.etree.ElementTree as ET
 
 from compatibility_engine import compare_schemas
 from extract_JSON_schema import infer_schema
 from extract_XML_schema import extract_schema_from_xml
 from schema_transformer import build_transformer, transform_to_xml
 from mapping_engine import build_mapping
+from schema_transformer import build_transformer
 
 app = Flask(__name__)
 CORS(app)
 
-db_available = False
 try:
     import db
-    db_available = db.init_db()
 except Exception:
-    db_available = False
+    db = None
+
+def _db_is_available():
+    if db is None:
+        return False
+    try:
+        return db.init_db()
+    except Exception:
+        return False
 
 def _serialize(obj):
     if isinstance(obj, datetime.datetime):
@@ -32,9 +39,30 @@ def _clean(row):
         return None
     return {k: _serialize(v) for k, v in row.items()}
 
+def _dict_to_xml_string(data, root_tag="record"):
+    root = ET.Element(root_tag)
+
+    def add_node(parent, value):
+        if isinstance(value, dict):
+            for key, child in value.items():
+                child_el = ET.SubElement(parent, str(key))
+                add_node(child_el, child)
+        elif isinstance(value, list):
+            for item in value:
+                item_el = ET.SubElement(parent, "item")
+                add_node(item_el, item)
+        elif value is None:
+            parent.text = ""
+        else:
+            parent.text = str(value)
+
+    add_node(root, data)
+    ET.indent(root, space="  ")
+    return ET.tostring(root, encoding="unicode")
+
 @app.route("/api/health", methods=["GET"])
 def health():
-    return jsonify({"status": "ok", "database": db_available})
+    return jsonify({"status": "ok", "database": _db_is_available()})
 
 @app.route("/api/analyze", methods=["GET"])
 def analyze():
@@ -109,49 +137,111 @@ def matrix():
 
 @app.route('/api/transform', methods=['POST'])
 def transform():
-    data = request.get_json()
-    source_schema = data.get('source_schema')
-    target_schema = data.get('target_schema')
-    source_data   = data.get('data')
-    output_format = data.get('format', 'json') 
+    payload = request.get_json(silent=True) or {}
+    source_schema = payload.get('source_schema')
+    target_schema = payload.get('target_schema')
+    source_data = payload.get('data')
+    output_format = (payload.get('format') or 'json').lower()
+
+    if not source_schema or not target_schema:
+        return jsonify({'error': 'source_schema and target_schema are required'}), 400
+    if source_data is None:
+        return jsonify({'error': 'data is required'}), 400
+    if output_format not in ('json', 'xml'):
+        return jsonify({'error': 'format must be json or xml'}), 400
+
+    source_api_id = payload.get('source_api_id')
+    target_api_id = payload.get('target_api_id')
+    source_schema_id = payload.get('source_schema_id')
+    target_schema_id = payload.get('target_schema_id')
 
     try:
-        result  = compare_schemas(source_schema, target_schema, 'Source', 'Target')
+        result = compare_schemas(source_schema, target_schema, 'Source', 'Target')
         mapping = build_mapping(result)
-        fn      = build_transformer(mapping)
+        fn = build_transformer(mapping)
 
         mapping_status = mapping.status
         warnings = getattr(mapping, 'warnings', [])
+        transformed_json = fn(source_data)
+        rendered_output = _dict_to_xml_string(transformed_json, root_tag='record') if output_format == 'xml' else None
 
-        if output_format == 'xml':
-            xml = transform_to_xml(fn, source_data, root_tag='record')
-            return jsonify({ 
-                'result': xml, 
-                'format': 'xml',
-                'mapping_status': mapping_status,
-                'warnings': warnings,
-            })
-        else:
-            return jsonify({ 
-                'result': fn(source_data), 
-                'format': 'json',
-                'mapping_status': mapping_status,
-                'warnings': warnings,
-            })
+        response_payload = {
+            'result': rendered_output if output_format == 'xml' else transformed_json,
+            'format': output_format,
+            'mapping_status': mapping_status,
+            'warnings': warnings,
+        }
 
-    except Exception as e:
-        return jsonify({ 'error': str(e) }), 400
-        
+        if _db_is_available():
+            try:
+                stored = db.store_transform_run(
+                    source_api_id=source_api_id,
+                    target_api_id=target_api_id,
+                    source_schema_id=source_schema_id,
+                    target_schema_id=target_schema_id,
+                    input_data=source_data,
+                    output_data=transformed_json,
+                    output_text=rendered_output,
+                    output_format=output_format,
+                    mapping_status=mapping_status,
+                    warnings=warnings,
+                    success=True,
+                )
+                response_payload['stored_transform_id'] = stored['id']
+            except Exception as storage_error:
+                response_payload['storage_warning'] = str(storage_error)
+
+        return jsonify(response_payload)
+
+    except Exception as error:
+        if _db_is_available():
+            try:
+                stored = db.store_transform_run(
+                    source_api_id=source_api_id,
+                    target_api_id=target_api_id,
+                    source_schema_id=source_schema_id,
+                    target_schema_id=target_schema_id,
+                    input_data=source_data,
+                    output_data=None,
+                    output_text=None,
+                    output_format=output_format,
+                    mapping_status=None,
+                    warnings=[],
+                    success=False,
+                    error_message=str(error),
+                )
+                return jsonify({'error': str(error), 'stored_transform_id': stored['id']}), 400
+            except Exception:
+                pass
+        return jsonify({'error': str(error)}), 400
+
+@app.route("/api/transforms", methods=["GET"])
+def list_transform_runs():
+    if not _db_is_available():
+        return jsonify({"error": "Database not available"}), 503
+    limit = request.args.get("limit", default=50, type=int)
+    runs = db.list_transform_runs(limit=limit)
+    return jsonify([_clean(r) for r in runs])
+
+@app.route("/api/transforms/<int:run_id>", methods=["GET"])
+def get_transform_run(run_id):
+    if not _db_is_available():
+        return jsonify({"error": "Database not available"}), 503
+    run = db.get_transform_run(run_id)
+    if not run:
+        return jsonify({"error": "Transform run not found"}), 404
+    return jsonify(_clean(run))
+
 @app.route("/api/apis", methods=["GET"])
 def list_apis():
-    if not db_available:
+    if not _db_is_available():
         return jsonify({"error": "Database not available"}), 503
     apis = db.list_apis()
     return jsonify([_clean(a) for a in apis])
 
 @app.route("/api/apis", methods=["POST"])
 def create_api():
-    if not db_available:
+    if not _db_is_available():
         return jsonify({"error": "Database not available"}), 503
     payload = request.get_json(silent=True) or {}
     name = payload.get("name")
@@ -171,7 +261,7 @@ def create_api():
 
 @app.route("/api/apis/<int:api_id>", methods=["GET"])
 def get_api(api_id):
-    if not db_available:
+    if not _db_is_available():
         return jsonify({"error": "Database not available"}), 503
     api_row = db.get_api(api_id)
     if not api_row:
@@ -180,7 +270,7 @@ def get_api(api_id):
 
 @app.route("/api/apis/<int:api_id>", methods=["DELETE"])
 def delete_api(api_id):
-    if not db_available:
+    if not _db_is_available():
         return jsonify({"error": "Database not available"}), 503
     if db.delete_api(api_id):
         return jsonify({"deleted": True})
@@ -188,14 +278,14 @@ def delete_api(api_id):
 
 @app.route("/api/apis/<int:api_id>/schemas", methods=["GET"])
 def get_api_schemas(api_id):
-    if not db_available:
+    if not _db_is_available():
         return jsonify({"error": "Database not available"}), 503
     schemas = db.get_schemas_for_api(api_id)
     return jsonify([_clean(s) for s in schemas])
 
 @app.route("/api/apis/<int:api_id>/schemas", methods=["POST"])
 def add_api_schema(api_id):
-    if not db_available:
+    if not _db_is_available():
         return jsonify({"error": "Database not available"}), 503
     api_row = db.get_api(api_id)
     if not api_row:
@@ -219,7 +309,7 @@ def add_api_schema(api_id):
 
 @app.route("/api/schemas/<int:schema_id>", methods=["GET"])
 def get_schema(schema_id):
-    if not db_available:
+    if not _db_is_available():
         return jsonify({"error": "Database not available"}), 503
     schema_row = db.get_schema(schema_id)
     if not schema_row:
@@ -228,14 +318,14 @@ def get_schema(schema_id):
 
 @app.route("/api/schemas/<int:schema_id>/fields", methods=["GET"])
 def get_schema_fields(schema_id):
-    if not db_available:
+    if not _db_is_available():
         return jsonify({"error": "Database not available"}), 503
     fields = db.get_fields_for_schema(schema_id)
     return jsonify([_clean(f) for f in fields])
 
 @app.route("/api/compatibility/compare", methods=["POST"])
 def compare_and_store():
-    if not db_available:
+    if not _db_is_available():
         return jsonify({"error": "Database not available"}), 503
 
     payload = request.get_json(silent=True) or {}
@@ -295,7 +385,7 @@ def compare_and_store():
 
 @app.route("/api/compatibility/results", methods=["GET"])
 def list_compat_results():
-    if not db_available:
+    if not _db_is_available():
         return jsonify({"error": "Database not available"}), 503
     api_id = request.args.get("api_id", type=int)
     results = db.list_compatibility_results(api_id)
@@ -303,7 +393,7 @@ def list_compat_results():
 
 @app.route("/api/compatibility/results/<int:source_schema_id>/<int:target_schema_id>", methods=["GET"])
 def get_compat_result(source_schema_id, target_schema_id):
-    if not db_available:
+    if not _db_is_available():
         return jsonify({"error": "Database not available"}), 503
     result = db.get_compatibility_result(source_schema_id, target_schema_id)
     if not result:
@@ -312,7 +402,7 @@ def get_compat_result(source_schema_id, target_schema_id):
 
 @app.route("/api/compatibility/matrix", methods=["GET"])
 def db_matrix():
-    if not db_available:
+    if not _db_is_available():
         return jsonify({"error": "Database not available"}), 503
     api_ids_param = request.args.get("api_ids")
     api_ids = None
@@ -324,14 +414,14 @@ def db_matrix():
 
 @app.route("/api/mappings/<int:source_api_id>/<int:target_api_id>", methods=["GET"])
 def get_mappings(source_api_id, target_api_id):
-    if not db_available:
+    if not _db_is_available():
         return jsonify({"error": "Database not available"}), 503
     rules = db.get_mapping_rules(source_api_id, target_api_id)
     return jsonify([_clean(r) for r in rules])
 
 @app.route("/api/mappings/<int:source_api_id>/<int:target_api_id>", methods=["POST"])
 def set_mappings(source_api_id, target_api_id):
-    if not db_available:
+    if not _db_is_available():
         return jsonify({"error": "Database not available"}), 503
     payload = request.get_json(silent=True) or {}
     rules = payload.get("rules", [])
@@ -342,10 +432,10 @@ def set_mappings(source_api_id, target_api_id):
 
 @app.route("/api/mappings/<int:source_api_id>/<int:target_api_id>", methods=["DELETE"])
 def delete_mappings(source_api_id, target_api_id):
-    if not db_available:
+    if not _db_is_available():
         return jsonify({"error": "Database not available"}), 503
     count = db.delete_mapping_rules(source_api_id, target_api_id)
     return jsonify({"deleted": count})
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5050)

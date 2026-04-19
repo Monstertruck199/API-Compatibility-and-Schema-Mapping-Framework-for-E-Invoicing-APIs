@@ -1,4 +1,3 @@
-
 function schemaOptions(selectedName = '') {
   return svSchemas.map((schema, index) => `
     <option value="${index}" ${schema.name === selectedName ? 'selected' : ''}>${schema.name}</option>
@@ -26,13 +25,13 @@ function renderComparisonSelectors() {
       <p class="muted-copy">Missing fields, extra fields, nesting differences, type mismatches, enum conflicts, and places where a mapping layer can bridge the gap.</p>
     </div>
   `;
-    document.getElementById('cmp-source').addEventListener('change', runComparison)
-    document.getElementById('cmp-target').addEventListener('change', runComparison)
-    if (svSchemas.length >= 2) {
-        runComparison();
-    }
+  document.getElementById('cmp-source').addEventListener('change', runComparison);
+  document.getElementById('cmp-target').addEventListener('change', runComparison);
+  if (svSchemas.length >= 2) {
+    runComparison();
+  }
 
-    renderTransformer();
+  renderTransformer();
 }
 
 async function runComparison() {
@@ -41,98 +40,136 @@ async function runComparison() {
   const source = svSchemas[sourceIndex];
   const target = svSchemas[targetIndex];
 
-  try {
-    const response = await fetch('http://localhost:5000/api/compare', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        source_name: source.name,
-        target_name: target.name,
-        source_schema: source.schema,
-        target_schema: target.schema,
-      }),
-    });
-    lastComparison = await response.json();
-    if (!response.ok) {
-      alert(lastComparison.error || 'Comparison failed');
+  let result = null;
+
+  if (source.apiId && target.apiId) {
+    try {
+      const dbRes = await fetch(`${API_BASE_URL}/api/compatibility/compare`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source_api_id: source.apiId, target_api_id: target.apiId }),
+      });
+      if (dbRes.ok) {
+        result = await dbRes.json();
+      }
+    } catch (e) {}
+  }
+
+  if (!result) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/compare`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source_name: source.name,
+          target_name: target.name,
+          source_schema: source.schema,
+          target_schema: target.schema,
+        }),
+      });
+      result = await response.json();
+      if (!response.ok) {
+        alert(result.error || 'Comparison failed');
+        return;
+      }
+    } catch (error) {
+      alert(error);
       return;
     }
-    renderComparison(lastComparison)
-  } catch (error) {
-    alert(error);
   }
+
+  lastComparison = result;
+  renderComparison(lastComparison);
+}
+
+function getComparableNode(node) {
+  if (!node) return { properties: {}, required: [] };
+
+  if (node.type === 'array' && node.items) {
+    return node.items;
+  }
+
+  return node;
 }
 
 function renderComparison(comparison) {
-    const el = document.getElementById('comparison-output')
-    const source = comparison.normalized_source
-    const target = comparison.normalized_target
+  const el = document.getElementById('comparison-output');
 
-    const src = source?.properties || {};
-    const tgt = target?.properties || {};
+  const rawSource = comparison.normalized_source;
+  const rawTarget = comparison.normalized_target;
 
-    const allBalls = new Set([
+  const source = getComparableNode(rawSource);
+  const target = getComparableNode(rawTarget);
+
+  const src = source?.properties || {};
+  const tgt = target?.properties || {};
+
+  const allFields = new Set([
     ...Object.keys(src),
     ...Object.keys(tgt)
-    ]);
+  ]);
 
-    const allReqs = new Set([
-        ...(source?.required || []),
-        ...(target?.required || [])
-    ])
+  const allReqs = new Set([
+    ...(source?.required || []),
+    ...(target?.required || [])
+  ]);
 
-    const aligned = Object.fromEntries(
-    [...allBalls].map(key => [
-        key,
-        [
+  const aligned = Object.fromEntries(
+    [...allFields].map(key => [
+      key,
+      [
         key in src ? src[key] : null,
         key in tgt ? tgt[key] : null
-        ]
+      ]
     ])
-    );
+  );
 
-    const renderFields = (obj, tgt, reqs) => {
-        const idx = tgt === 'src' ? 0 : 1;
-        return Object.entries(obj || {})
-        .map(([key, [srcVal, tgtVal]]) => {
-            const val = idx === 0 ? srcVal : tgtVal;
-            let missing;
-            const req = allReqs.has(key) ? 'required' : 'optional';
+  const renderFields = (obj, side) => {
+    const idx = side === 'src' ? 0 : 1;
 
-            if ((idx === 0 && tgtVal == null) || (idx === 1 && srcVal == null)) {
-                missing = 'missing';
-            } else if (val == null) {
-                return `<div class="field-row null">
-                        <span class="field-name">--</span>
-                        <span class="field-type">not present</span>
+    const rows = Object.entries(obj || {}).map(([key, [srcVal, tgtVal]]) => {
+      const val = idx === 0 ? srcVal : tgtVal;
+      const req = allReqs.has(key) ? 'required' : 'optional';
+
+      let rowClass = 'direct';
+      if ((idx === 0 && tgtVal == null) || (idx === 1 && srcVal == null)) {
+        rowClass = 'missing';
+      }
+
+      if (!val) {
+        return `<div class="field-row null">
+                  <span class="field-name">--</span>
+                  <span class="field-type">not present</span>
+                </div>`;
+      }
+
+      const type = val.type || 'unknown';
+
+      return `<div class="field-row ${rowClass}">
+                <span class="field-name">${key}</span>
+                <span class="field-type">${type}•${req}</span>
+              </div>`;
+    }).join('');
+
+    return rows || `<div class="field-row null">
+                      <span class="field-name">--</span>
+                      <span class="field-type">no fields found</span>
                     </div>`;
-            } else {
-                missing = "direct"
-            }
+  };
 
-            const type = val.type || 'unknown';
-            return `<div class="field-row ${missing}">
-                        <span class="field-name">${key}</span>
-                        <span class="field-type">${type}•${req}</span>
-                    </div>`;
-        })
-        .join('') 
-    };
+  el.innerHTML = `
+    <div class="cmp-split">
+      <div class="cmp-col">
+        <div class="cmp-title">Field•type•required</div>
+        ${renderFields(aligned, 'src')}
+      </div>
 
-    el.innerHTML = `
-        <div class="card-lbl"></div>
-        <div class="cmp-split">
-            <div class="cmp-col">
-                <div class="cmp-title">Field•type•required</div>
-                ${renderFields(aligned, "src", allReqs)}
-            </div>
-
-            <div class="cmp-col">
-                <div class="cmp-title">Field•type•required</div>
-                ${renderFields(aligned, "tgt", allReqs)}
-            </div>
-        </div>
-    `
+      <div class="cmp-col">
+        <div class="cmp-title">Field•type•required</div>
+        ${renderFields(aligned, 'tgt')}
+      </div>
+    </div>
+  `;
 }
 
 function renderTransformer() {
@@ -167,7 +204,7 @@ function renderTransformer() {
         <span id="transformer-status" class="transformer-status"></span>
         <div class="fmt-row">
           <button class="fmt-btn on" id="tfmt-json" onclick="setTransformFmt('json')">JSON</button>
-          <button class="fmt-btn"    id="tfmt-xml"  onclick="setTransformFmt('xml')">XML</button>
+          <button class="fmt-btn" id="tfmt-xml" onclick="setTransformFmt('xml')">XML</button>
         </div>
         <button class="analyse-btn transformer-btn" onclick="runTransform()">Transform →</button>
       </div>
@@ -190,10 +227,13 @@ async function runTransform() {
   const target = svSchemas[targetIndex];
 
   const inputRaw = document.getElementById('transformer-input').value.trim();
-  const outputEl  = document.getElementById('transformer-output');
-  const statusEl  = document.getElementById('transformer-status');
+  const outputEl = document.getElementById('transformer-output');
+  const statusEl = document.getElementById('transformer-status');
 
-  if (!inputRaw) { outputEl.textContent = 'No input provided.'; return; }
+  if (!inputRaw) {
+    outputEl.textContent = 'No input provided.';
+    return;
+  }
 
   let inputData;
   try {
@@ -207,10 +247,14 @@ async function runTransform() {
   statusEl.textContent = '';
 
   try {
-    const res = await fetch('http://localhost:5000/api/transform', {
+    const res = await fetch(`${API_BASE_URL}/api/transform`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        source_api_id: source.apiId,
+        target_api_id: target.apiId,
+        source_schema_id: source.outputSchemaId,
+        target_schema_id: target.inputSchemaId,
         source_schema: source.schema,
         target_schema: target.schema,
         data: inputData,
@@ -244,7 +288,10 @@ async function runTransform() {
       ? json.result
       : JSON.stringify(json.result, null, 2);
 
-    statusEl.textContent = status === 'ok' || 'full' ? '✓ Done' : `⚠ Done (${status})`;
+    const baseStatus = (status === 'ok' || status === 'full') ? '✓ Done' : `⚠ Done (${status})`;
+    statusEl.textContent = json.stored_transform_id
+      ? `${baseStatus} · saved to DB (#${json.stored_transform_id})`
+      : baseStatus;
   } catch (err) {
     outputEl.textContent = `Error: ${err.message}`;
     statusEl.textContent = '';

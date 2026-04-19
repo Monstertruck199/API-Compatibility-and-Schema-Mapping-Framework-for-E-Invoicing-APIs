@@ -82,3 +82,24 @@ CREATE TABLE IF NOT EXISTS mapping_rules (
 
 CREATE INDEX IF NOT EXISTS idx_mapping_source ON mapping_rules(source_api_id);
 CREATE INDEX IF NOT EXISTS idx_mapping_target ON mapping_rules(target_api_id);
+
+CREATE TABLE IF NOT EXISTS transform_runs (
+    id SERIAL PRIMARY KEY,
+    source_api_id INTEGER REFERENCES apis(id) ON DELETE SET NULL,
+    target_api_id INTEGER REFERENCES apis(id) ON DELETE SET NULL,
+    source_schema_id INTEGER REFERENCES schemas(id) ON DELETE SET NULL,
+    target_schema_id INTEGER REFERENCES schemas(id) ON DELETE SET NULL,
+    input_data JSONB NOT NULL,
+    output_data JSONB,
+    output_text TEXT,
+    output_format VARCHAR(20) NOT NULL CHECK (output_format IN ('json', 'xml')),
+    mapping_status VARCHAR(50),
+    warnings JSONB DEFAULT '[]'::jsonb,
+    success BOOLEAN NOT NULL DEFAULT TRUE,
+    error_message TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_transform_runs_source_api ON transform_runs(source_api_id);
+CREATE INDEX IF NOT EXISTS idx_transform_runs_target_api ON transform_runs(target_api_id);
+CREATE INDEX IF NOT EXISTS idx_transform_runs_created_at ON transform_runs(created_at DESC);
