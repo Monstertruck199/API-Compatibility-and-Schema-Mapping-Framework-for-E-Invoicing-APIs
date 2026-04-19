@@ -7,9 +7,9 @@ import xml.etree.ElementTree as ET
 from compatibility_engine import compare_schemas
 from extract_JSON_schema import infer_schema
 from extract_XML_schema import extract_schema_from_xml
-from schema_transformer import build_transformer, transform_to_xml
+from schema_transformer import build_transformer, transform_to_xml, generate_transform_code
 from mapping_engine import build_mapping
-from schema_transformer import build_transformer
+from data_validator import validate_data
 
 app = Flask(__name__)
 CORS(app)
@@ -160,16 +160,22 @@ def transform():
         mapping = build_mapping(result)
         fn = build_transformer(mapping)
 
+        is_valid, validation_error = validate_data(source_data, source_schema)
+        if not is_valid:
+            return jsonify({'error': validation_error}), 400
+
         mapping_status = mapping.status
         warnings = getattr(mapping, 'warnings', [])
         transformed_json = fn(source_data)
         rendered_output = _dict_to_xml_string(transformed_json, root_tag='record') if output_format == 'xml' else None
+        transform_code = generate_transform_code(mapping)
 
         response_payload = {
             'result': rendered_output if output_format == 'xml' else transformed_json,
             'format': output_format,
             'mapping_status': mapping_status,
             'warnings': warnings,
+            'transform_code': transform_code,
         }
 
         if _db_is_available():
