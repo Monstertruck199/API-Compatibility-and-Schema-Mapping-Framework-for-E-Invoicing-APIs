@@ -16,12 +16,14 @@ function show(panel) {
     'schema-comparison': 'Schema Comparison',
     'compat-result': 'Compatibility Result',
     'matrix': 'Compatibility Matrix',
+    'database': 'Database'
   };
   document.getElementById('ptitle').textContent = titles[panel] || 'API Compatibility Framework';
 
   if (panel === 'schema-comparison') renderComparisonSelectors();
   if (panel === 'compat-result') renderCompatibilityResult();
   if (panel === 'matrix') renderMatrixBuilder();
+  if (panel === 'database') renderDatabasePanel();
 }
 
 function toggleTheme() {
