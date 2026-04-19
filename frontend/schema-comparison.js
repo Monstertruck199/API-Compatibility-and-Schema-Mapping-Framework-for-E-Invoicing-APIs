@@ -1,3 +1,5 @@
+let lastTransformCode = null;
+
 function schemaOptions(selectedName = '') {
   return svSchemas.map((schema, index) => `
     <option value="${index}" ${schema.name === selectedName ? 'selected' : ''}>${schema.name}</option>
@@ -41,6 +43,9 @@ async function runComparison() {
   const target = svSchemas[targetIndex];
 
   let result = null;
+  lastTransformCode = null;
+  document.getElementById('download-code-btn')?.style && 
+    (document.getElementById('download-code-btn').style.display = 'none');
 
   if (source.apiId && target.apiId) {
     try {
@@ -202,6 +207,7 @@ function renderTransformer() {
       </div>
       <div class="transformer-actions">
         <span id="transformer-status" class="transformer-status"></span>
+        <button class="fmt-btn download-btn" id="download-code-btn" style="display:none" onclick="downloadTransformCode()">Download Python Mapping Script</button>
         <div class="fmt-row">
           <button class="fmt-btn on" id="tfmt-json" onclick="setTransformFmt('json')">JSON</button>
           <button class="fmt-btn" id="tfmt-xml" onclick="setTransformFmt('xml')">XML</button>
@@ -292,8 +298,29 @@ async function runTransform() {
     statusEl.textContent = json.stored_transform_id
       ? `${baseStatus} · saved to DB (#${json.stored_transform_id})`
       : baseStatus;
+    
+    if (json.transform_code) {
+      lastTransformCode = json.transform_code;
+      document.getElementById('download-code-btn').style.display = '';
+    }
   } catch (err) {
     outputEl.textContent = `Error: ${err.message}`;
     statusEl.textContent = '';
   }
+}
+
+function downloadTransformCode() {
+  if (!lastTransformCode) return;
+
+  const src = svSchemas[Number(document.getElementById('cmp-source').value)]?.name || 'source';
+  const tgt = svSchemas[Number(document.getElementById('cmp-target').value)]?.name || 'target';
+  const filename = `transform_${src}_to_${tgt}.py`.replace(/\s+/g, '_').toLowerCase();
+  const blob = new Blob([lastTransformCode], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
 }

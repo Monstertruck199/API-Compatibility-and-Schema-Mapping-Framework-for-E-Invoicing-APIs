@@ -1,16 +1,17 @@
 from jsonschema import validate, ValidationError, SchemaError
  
 def validate_data(data: dict, schema: dict):
+    effective_schema = schema.get('items', schema) if schema.get('type') == 'array' else schema
     try:
-        validate(instance=data, schema=schema)
+        validate(instance=data, schema=effective_schema)
         print("Validation passed — data matches the schema.")
-        return True
+        return True, None
     except SchemaError as e:
         print(f"Invalid schema: {e.message}")
-        return False
+        return False, f"Invalid schema: {e.message}"
     except ValidationError as e:
         path = " -> ".join(str(p) for p in e.absolute_path) or "(root)"
         print(f"Validation failed")
         print(f"Location : {path}")
         print(f"Problem  : {e.message}")
-        return False
+        return False, f"Validation failed at {path}: {e.message}"
