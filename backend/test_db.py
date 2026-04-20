@@ -111,8 +111,6 @@ class DBTestCase(unittest.TestCase):
             self.conn.commit()
         self.conn.close()
 
-    # -- convenience factory so tests can track what they create --
-
     def create_api(self, name, category="transformation", **kwargs):
         api = create_api(name, category, **kwargs)
         self._created_api_ids.append(api["id"])
@@ -125,7 +123,7 @@ class DBTestCase(unittest.TestCase):
 
 
 # ===========================================================================
-# create_api / get_api / get_api_by_name
+# Tests for creating, fetching and ddeleting apis
 # ===========================================================================
 
 class TestCreateApi(DBTestCase):
@@ -215,13 +213,6 @@ class TestListApis(DBTestCase):
         names = [a["name"] for a in apis if a["name"] in ("ZZZ_TestAPI", "AAA_TestAPI")]
         self.assertEqual(names, sorted(names))
 
-
-# ===========================================================================
-# delete_api
-# ===========================================================================
-
-class TestDeleteApi(DBTestCase):
-
     def test_delete_existing_returns_true(self):
         api = self.create_api("TestAPI_del")
         # Remove from tracking so tearDown doesn't double-delete
@@ -247,7 +238,7 @@ class TestDeleteApi(DBTestCase):
 
 
 # ===========================================================================
-# store_schema / get_schema / get_schemas_for_api / get_latest_schema
+# Tests for storing and fetching schema
 # ===========================================================================
 
 class TestStoreSchema(DBTestCase):
@@ -327,7 +318,7 @@ class TestGetSchema(DBTestCase):
 
 
 # ===========================================================================
-# get_fields_for_schema / _store_fields (via store_schema)
+# Tests for schema fields
 # ===========================================================================
 
 class TestSchemaFields(DBTestCase):
@@ -407,7 +398,7 @@ class TestSchemaFields(DBTestCase):
 
 
 # ===========================================================================
-# store_compatibility_result / get_compatibility_result / list_compatibility_results
+# Tests for compatibility results
 # ===========================================================================
  
 class TestCompatibilityResult(DBTestCase):
@@ -525,7 +516,7 @@ class TestCompatibilityResult(DBTestCase):
 
 
 # ===========================================================================
-# store_mapping_rule / store_mapping_rules_bulk / get_mapping_rules / delete_mapping_rules
+# Tests for mappings
 # ===========================================================================
  
 class TestMappingRules(DBTestCase):
@@ -609,7 +600,7 @@ class TestMappingRules(DBTestCase):
 
 
 # ===========================================================================
-# get_compatibility_matrix
+# Tests for Comapatibility Matrix
 # ===========================================================================
  
 class TestCompatibilityMatrix(DBTestCase):
@@ -654,6 +645,111 @@ class TestCompatibilityMatrix(DBTestCase):
         result = get_compatibility_matrix(api_ids=[])
         self.assertIn("apis", result)
         self.assertIn("matrix", result)
+
+
+# ===========================================================================
+# Tests for transformations
+# ===========================================================================
+ 
+class TestTransformRuns(DBTestCase):
+ 
+    def test_store_returns_dict_with_id(self):
+        run = store_transform_run(input_data={"x": 1}, output_format="json")
+        self.assertIn("id", run)
+        self.assertIsInstance(run["id"], int)
+ 
+    def test_success_flag_defaults_true(self):
+        run = store_transform_run(input_data={}, output_format="json")
+        self.assertTrue(run["success"])
+ 
+    def test_failure_run_stores_error_message(self):
+        run = store_transform_run(
+            input_data={},
+            output_format="json",
+            success=False,
+            error_message="Something went wrong.",
+        )
+        fetched = get_transform_run(run["id"])
+        self.assertFalse(fetched["success"])
+        self.assertEqual(fetched["error_message"], "Something went wrong.")
+ 
+    def test_output_data_stored_and_retrieved(self):
+        run = store_transform_run(
+            input_data={"a": 1},
+            output_data={"b": 2},
+            output_format="json",
+        )
+        fetched = get_transform_run(run["id"])
+        self.assertEqual(fetched["output_data"]["b"], 2)
+ 
+    def test_output_text_stored_for_xml_format(self):
+        run = store_transform_run(
+            input_data={"a": 1},
+            output_text="<root><a>1</a></root>",
+            output_format="xml",
+        )
+        fetched = get_transform_run(run["id"])
+        self.assertIn("<root>", fetched["output_text"])
+ 
+    def test_warnings_stored_as_list(self):
+        run = store_transform_run(
+            input_data={},
+            output_format="json",
+            warnings=["warn1", "warn2"],
+        )
+        fetched = get_transform_run(run["id"])
+        self.assertEqual(fetched["warnings"], ["warn1", "warn2"])
+ 
+    def test_warnings_default_to_empty_list(self):
+        run = store_transform_run(input_data={}, output_format="json")
+        fetched = get_transform_run(run["id"])
+        self.assertEqual(fetched["warnings"], [])
+ 
+    def test_api_ids_stored_with_run(self):
+        api_a = self.create_api("TestAPI_run_src")
+        api_b = self.create_api("TestAPI_run_tgt")
+        run = store_transform_run(
+            source_api_id=api_a["id"],
+            target_api_id=api_b["id"],
+            input_data={},
+            output_format="json",
+        )
+        fetched = get_transform_run(run["id"])
+        self.assertEqual(fetched["source_api_id"], api_a["id"])
+        self.assertEqual(fetched["target_api_id"], api_b["id"])
+ 
+    def test_api_names_joined_in_run(self):
+        api_a = self.create_api("TestAPI_run_name_src")
+        api_b = self.create_api("TestAPI_run_name_tgt")
+        run = store_transform_run(
+            source_api_id=api_a["id"],
+            target_api_id=api_b["id"],
+            input_data={},
+            output_format="json",
+        )
+        fetched = get_transform_run(run["id"])
+        self.assertEqual(fetched["source_name"], "TestAPI_run_name_src")
+        self.assertEqual(fetched["target_name"], "TestAPI_run_name_tgt")
+ 
+    def test_get_nonexistent_run_returns_none(self):
+        result = get_transform_run(999999999)
+        self.assertIsNone(result)
+ 
+    def test_list_transform_runs_includes_stored(self):
+        run = store_transform_run(input_data={"list": True}, output_format="json")
+        runs = list_transform_runs()
+        ids = {r["id"] for r in runs}
+        self.assertIn(run["id"], ids)
+ 
+    def test_list_transform_runs_respects_limit(self):
+        for _ in range(5):
+            store_transform_run(input_data={}, output_format="json")
+        runs = list_transform_runs(limit=3)
+        self.assertLessEqual(len(runs), 3)
+ 
+    def test_invalid_output_format_raises(self):
+        with self.assertRaises(Exception):
+            store_transform_run(input_data={}, output_format="csv")
 
 if __name__ == "__main__":
     unittest.main()
