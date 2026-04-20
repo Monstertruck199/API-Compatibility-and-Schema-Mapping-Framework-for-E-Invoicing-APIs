@@ -115,6 +115,7 @@
   white-space: pre-wrap;
   overflow: auto;
   margin: 0;
+  user-select: all;
 }
 
 .transformer-output:empty::before {
