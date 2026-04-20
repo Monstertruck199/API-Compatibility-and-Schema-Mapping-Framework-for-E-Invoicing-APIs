@@ -103,3 +103,64 @@ CREATE TABLE IF NOT EXISTS transform_runs (
 CREATE INDEX IF NOT EXISTS idx_transform_runs_source_api ON transform_runs(source_api_id);
 CREATE INDEX IF NOT EXISTS idx_transform_runs_target_api ON transform_runs(target_api_id);
 CREATE INDEX IF NOT EXISTS idx_transform_runs_created_at ON transform_runs(created_at DESC);
+
+CREATE OR REPLACE FUNCTION sync_serial_sequence_after_delete()
+RETURNS TRIGGER AS $$
+DECLARE
+    seq_name TEXT;
+    max_id BIGINT;
+BEGIN
+    SELECT pg_get_serial_sequence(format('%I.%I', TG_TABLE_SCHEMA, TG_TABLE_NAME), 'id')
+    INTO seq_name;
+
+    IF seq_name IS NULL THEN
+        RETURN NULL;
+    END IF;
+
+    EXECUTE format('SELECT COALESCE(MAX(id), 0) FROM %I.%I', TG_TABLE_SCHEMA, TG_TABLE_NAME)
+    INTO max_id;
+
+    IF max_id = 0 THEN
+        PERFORM setval(seq_name::regclass, 1, false);
+    ELSE
+        PERFORM setval(seq_name::regclass, max_id, true);
+    END IF;
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS apis_reset_id_seq_after_delete ON apis;
+CREATE TRIGGER apis_reset_id_seq_after_delete
+AFTER DELETE ON apis
+FOR EACH STATEMENT EXECUTE FUNCTION sync_serial_sequence_after_delete();
+
+DROP TRIGGER IF EXISTS schemas_reset_id_seq_after_delete ON schemas;
+CREATE TRIGGER schemas_reset_id_seq_after_delete
+AFTER DELETE ON schemas
+FOR EACH STATEMENT EXECUTE FUNCTION sync_serial_sequence_after_delete();
+
+DROP TRIGGER IF EXISTS schema_fields_reset_id_seq_after_delete ON schema_fields;
+CREATE TRIGGER schema_fields_reset_id_seq_after_delete
+AFTER DELETE ON schema_fields
+FOR EACH STATEMENT EXECUTE FUNCTION sync_serial_sequence_after_delete();
+
+DROP TRIGGER IF EXISTS compatibility_results_reset_id_seq_after_delete ON compatibility_results;
+CREATE TRIGGER compatibility_results_reset_id_seq_after_delete
+AFTER DELETE ON compatibility_results
+FOR EACH STATEMENT EXECUTE FUNCTION sync_serial_sequence_after_delete();
+
+DROP TRIGGER IF EXISTS compatibility_issues_reset_id_seq_after_delete ON compatibility_issues;
+CREATE TRIGGER compatibility_issues_reset_id_seq_after_delete
+AFTER DELETE ON compatibility_issues
+FOR EACH STATEMENT EXECUTE FUNCTION sync_serial_sequence_after_delete();
+
+DROP TRIGGER IF EXISTS mapping_rules_reset_id_seq_after_delete ON mapping_rules;
+CREATE TRIGGER mapping_rules_reset_id_seq_after_delete
+AFTER DELETE ON mapping_rules
+FOR EACH STATEMENT EXECUTE FUNCTION sync_serial_sequence_after_delete();
+
+DROP TRIGGER IF EXISTS transform_runs_reset_id_seq_after_delete ON transform_runs;
+CREATE TRIGGER transform_runs_reset_id_seq_after_delete
+AFTER DELETE ON transform_runs
+FOR EACH STATEMENT EXECUTE FUNCTION sync_serial_sequence_after_delete();
