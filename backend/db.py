@@ -2,6 +2,7 @@ import os
 import json
 import psycopg2
 import psycopg2.extras
+from psycopg2 import sql
 
 DB_CONFIG = {
     "host": os.environ.get("DB_HOST", "localhost"),
@@ -15,6 +16,78 @@ DB_CONFIG = {
 def get_connection():
     return psycopg2.connect(**DB_CONFIG)
 
+def _ensure_sequence_reset_function(cur):
+    cur.execute(
+        """
+        CREATE OR REPLACE FUNCTION sync_serial_sequence_after_delete()
+        RETURNS TRIGGER AS $$
+        DECLARE
+            seq_name TEXT;
+            max_id BIGINT;
+        BEGIN
+            SELECT pg_get_serial_sequence(format('%I.%I', TG_TABLE_SCHEMA, TG_TABLE_NAME), 'id')
+            INTO seq_name;
+
+            IF seq_name IS NULL THEN
+                RETURN NULL;
+            END IF;
+
+            EXECUTE format('SELECT COALESCE(MAX(id), 0) FROM %I.%I', TG_TABLE_SCHEMA, TG_TABLE_NAME)
+            INTO max_id;
+
+            IF max_id = 0 THEN
+                PERFORM setval(seq_name::regclass, 1, false);
+            ELSE
+                PERFORM setval(seq_name::regclass, max_id, true);
+            END IF;
+
+            RETURN NULL;
+        END;
+        $$ LANGUAGE plpgsql
+        """
+    )
+
+
+def _table_exists(cur, table_name):
+    cur.execute("SELECT to_regclass(%s)", (f"public.{table_name}",))
+    return cur.fetchone()[0] is not None
+
+
+def _sync_id_sequence(cur, table_name):
+    cur.execute("SELECT pg_get_serial_sequence(%s, 'id')", (f"public.{table_name}",))
+    seq_name = cur.fetchone()[0]
+    if not seq_name:
+        return
+
+    cur.execute(
+        sql.SQL("SELECT COALESCE(MAX(id), 0) FROM {}").format(
+            sql.Identifier(table_name),
+        )
+    )
+    max_id = cur.fetchone()[0]
+
+    if max_id == 0:
+        cur.execute("SELECT setval(%s::regclass, 1, false)", (seq_name,))
+    else:
+        cur.execute("SELECT setval(%s::regclass, %s, true)", (seq_name, max_id))
+
+
+def _ensure_sequence_reset_trigger(cur, table_name):
+    trigger_name = f"{table_name}_reset_id_seq_after_delete"
+    cur.execute(
+        sql.SQL("DROP TRIGGER IF EXISTS {} ON {}").format(
+            sql.Identifier(trigger_name),
+            sql.Identifier(table_name),
+        )
+    )
+    cur.execute(
+        sql.SQL(
+            "CREATE TRIGGER {} AFTER DELETE ON {} FOR EACH STATEMENT EXECUTE FUNCTION sync_serial_sequence_after_delete()"
+        ).format(
+            sql.Identifier(trigger_name),
+            sql.Identifier(table_name),
+        )
+    )
 
 def ensure_runtime_tables(conn):
     with conn.cursor() as cur:
@@ -41,6 +114,20 @@ def ensure_runtime_tables(conn):
         cur.execute("CREATE INDEX IF NOT EXISTS idx_transform_runs_source_api ON transform_runs(source_api_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_transform_runs_target_api ON transform_runs(target_api_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_transform_runs_created_at ON transform_runs(created_at DESC)")
+
+        _ensure_sequence_reset_function(cur)
+        for table_name in (
+            "apis",
+            "schemas",
+            "schema_fields",
+            "compatibility_results",
+            "compatibility_issues",
+            "mapping_rules",
+            "transform_runs",
+        ):
+            if _table_exists(cur, table_name):
+                _ensure_sequence_reset_trigger(cur, table_name)
+                _sync_id_sequence(cur, table_name)
     conn.commit()
 
 
@@ -105,7 +192,7 @@ def list_apis():
     conn = get_connection()
     try:
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute("SELECT * FROM apis ORDER BY name")
+            cur.execute("SELECT * FROM apis ORDER BY id ASC")
             return [dict(r) for r in cur.fetchall()]
     finally:
         conn.close()
@@ -205,7 +292,7 @@ def get_schemas_for_api(api_id):
     conn = get_connection()
     try:
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute("SELECT * FROM schemas WHERE api_id = %s ORDER BY direction, version DESC", (api_id,))
+            cur.execute("SELECT * FROM schemas WHERE api_id = %s ORDER BY id ASC", (api_id,))
             return [dict(r) for r in cur.fetchall()]
     finally:
         conn.close()
@@ -229,7 +316,7 @@ def get_fields_for_schema(schema_id):
     conn = get_connection()
     try:
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute("SELECT * FROM schema_fields WHERE schema_id = %s ORDER BY field_path", (schema_id,))
+            cur.execute("SELECT * FROM schema_fields WHERE schema_id = %s ORDER BY id ASC", (schema_id,))
             return [dict(r) for r in cur.fetchall()]
     finally:
         conn.close()
@@ -316,7 +403,7 @@ def list_compatibility_results(api_id=None):
                        JOIN apis sa ON cr.source_api_id = sa.id
                        JOIN apis ta ON cr.target_api_id = ta.id
                        WHERE cr.source_api_id = %s OR cr.target_api_id = %s
-                       ORDER BY cr.created_at DESC""",
+                       ORDER BY cr.id ASC""",
                     (api_id, api_id),
                 )
             else:
@@ -325,7 +412,7 @@ def list_compatibility_results(api_id=None):
                        FROM compatibility_results cr
                        JOIN apis sa ON cr.source_api_id = sa.id
                        JOIN apis ta ON cr.target_api_id = ta.id
-                       ORDER BY cr.created_at DESC"""
+                       ORDER BY cr.id ASC"""
                 )
             return [dict(r) for r in cur.fetchall()]
     finally:
@@ -416,9 +503,9 @@ def get_compatibility_matrix(api_ids=None):
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
             if api_ids:
                 placeholders = ",".join(["%s"] * len(api_ids))
-                cur.execute(f"SELECT * FROM apis WHERE id IN ({placeholders}) ORDER BY name", tuple(api_ids))
+                cur.execute(f"SELECT * FROM apis WHERE id IN ({placeholders}) ORDER BY id ASC", tuple(api_ids))
             else:
-                cur.execute("SELECT * FROM apis ORDER BY name")
+                cur.execute("SELECT * FROM apis ORDER BY id ASC")
             apis = [dict(r) for r in cur.fetchall()]
 
             cur.execute(
@@ -520,7 +607,7 @@ def list_transform_runs(limit=50):
                    FROM transform_runs tr
                    LEFT JOIN apis sa ON tr.source_api_id = sa.id
                    LEFT JOIN apis ta ON tr.target_api_id = ta.id
-                   ORDER BY tr.created_at DESC, tr.id DESC
+                   ORDER BY tr.id ASC
                    LIMIT %s""",
                 (limit,),
             )
