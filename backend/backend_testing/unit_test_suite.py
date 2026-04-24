@@ -1,14 +1,17 @@
 """
-test_suite.py
+unit_test_suite.py
 -------------
 Unit tests for compatibility_engine, mapping_engine, schema_transformer,
 extract_JSON_schema, and extract_XML_schema.
 
 Run with:
-    pytest test_suite.py -v
+    pytest unit_test_suite.py -v
 """
 
 import unittest
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from compatibility_engine import (
     compare_schemas,
