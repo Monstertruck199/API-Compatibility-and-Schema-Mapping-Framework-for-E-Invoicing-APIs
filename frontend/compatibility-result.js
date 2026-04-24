@@ -40,7 +40,6 @@ async function downloadReport(format = 'pdf') {
     btn.textContent = '\u2913 Download report';
     btn.disabled = false;
   }
-
 }
 
 function badgeClass(label) {
@@ -85,26 +84,46 @@ async function runCompatibilityComparison() {
   const source = svSchemas[sourceIndex];
   const target = svSchemas[targetIndex];
 
-  try {
-    const response = await fetch('http://localhost:5000/api/compare', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        source_name: source.name,
-        target_name: target.name,
-        source_schema: source.schema,
-        target_schema: target.schema,
-      }),
-    });
-    lastComparison = await response.json();
-    if (!response.ok) {
-      alert(lastComparison.error || 'Comparison failed');
+  let result = null;
+
+  if (source.apiId && target.apiId) {
+    try {
+      const dbRes = await fetch(`${API_BASE_URL}/api/compatibility/compare`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source_api_id: source.apiId, target_api_id: target.apiId }),
+      });
+      if (dbRes.ok) {
+        result = await dbRes.json();
+      }
+    } catch (e) {}
+  }
+
+  if (!result) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/compare`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source_name: source.name,
+          target_name: target.name,
+          source_schema: source.schema,
+          target_schema: target.schema,
+        }),
+      });
+      result = await response.json();
+      if (!response.ok) {
+        alert(result.error || 'Comparison failed');
+        return;
+      }
+    } catch (error) {
+      alert(error);
       return;
     }
-    renderCompatibilityOutput();
-  } catch (error) {
-    alert(error);
   }
+
+  lastComparison = result;
+  renderCompatibilityOutput();
 }
 
 function renderCompatibilityOutput() {
@@ -122,7 +141,6 @@ function renderCompatibilityOutput() {
   }
 
   const summary = lastComparison.summary;
-  console.log(lastComparison)
   const issues = lastComparison.issues.map(issue => `
     <div class="issue issue-${issue.kind}">
       <div class="issue-message">${issue.message}</div>

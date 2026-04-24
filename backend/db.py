@@ -1,0 +1,647 @@
+import os
+import json
+import psycopg2
+import psycopg2.extras
+from psycopg2 import sql
+
+DB_CONFIG = {
+    "host": os.environ.get("DB_HOST", "localhost"),
+    "port": int(os.environ.get("DB_PORT", 5433)),
+    "dbname": os.environ.get("DB_NAME", "api_compatibility"),
+    "user": os.environ.get("DB_USER", "admin"),
+    "password": os.environ.get("DB_PASSWORD", "password"),
+}
+
+
+def get_connection():
+    return psycopg2.connect(**DB_CONFIG)
+
+def _ensure_sequence_reset_function(cur):
+    cur.execute(
+        """
+        CREATE OR REPLACE FUNCTION sync_serial_sequence_after_delete()
+        RETURNS TRIGGER AS $$
+        DECLARE
+            seq_name TEXT;
+            max_id BIGINT;
+        BEGIN
+            SELECT pg_get_serial_sequence(format('%I.%I', TG_TABLE_SCHEMA, TG_TABLE_NAME), 'id')
+            INTO seq_name;
+
+            IF seq_name IS NULL THEN
+                RETURN NULL;
+            END IF;
+
+            EXECUTE format('SELECT COALESCE(MAX(id), 0) FROM %I.%I', TG_TABLE_SCHEMA, TG_TABLE_NAME)
+            INTO max_id;
+
+            IF max_id = 0 THEN
+                PERFORM setval(seq_name::regclass, 1, false);
+            ELSE
+                PERFORM setval(seq_name::regclass, max_id, true);
+            END IF;
+
+            RETURN NULL;
+        END;
+        $$ LANGUAGE plpgsql
+        """
+    )
+
+
+def _table_exists(cur, table_name):
+    cur.execute("SELECT to_regclass(%s)", (f"public.{table_name}",))
+    return cur.fetchone()[0] is not None
+
+
+def _sync_id_sequence(cur, table_name):
+    cur.execute("SELECT pg_get_serial_sequence(%s, 'id')", (f"public.{table_name}",))
+    seq_name = cur.fetchone()[0]
+    if not seq_name:
+        return
+
+    cur.execute(
+        sql.SQL("SELECT COALESCE(MAX(id), 0) FROM {}").format(
+            sql.Identifier(table_name),
+        )
+    )
+    max_id = cur.fetchone()[0]
+
+    if max_id == 0:
+        cur.execute("SELECT setval(%s::regclass, 1, false)", (seq_name,))
+    else:
+        cur.execute("SELECT setval(%s::regclass, %s, true)", (seq_name, max_id))
+
+
+def _ensure_sequence_reset_trigger(cur, table_name):
+    trigger_name = f"{table_name}_reset_id_seq_after_delete"
+    cur.execute(
+        sql.SQL("DROP TRIGGER IF EXISTS {} ON {}").format(
+            sql.Identifier(trigger_name),
+            sql.Identifier(table_name),
+        )
+    )
+    cur.execute(
+        sql.SQL(
+            "CREATE TRIGGER {} AFTER DELETE ON {} FOR EACH STATEMENT EXECUTE FUNCTION sync_serial_sequence_after_delete()"
+        ).format(
+            sql.Identifier(trigger_name),
+            sql.Identifier(table_name),
+        )
+    )
+
+def ensure_runtime_tables(conn):
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            CREATE TABLE IF NOT EXISTS transform_runs (
+                id SERIAL PRIMARY KEY,
+                source_api_id INTEGER REFERENCES apis(id) ON DELETE SET NULL,
+                target_api_id INTEGER REFERENCES apis(id) ON DELETE SET NULL,
+                source_schema_id INTEGER REFERENCES schemas(id) ON DELETE SET NULL,
+                target_schema_id INTEGER REFERENCES schemas(id) ON DELETE SET NULL,
+                input_data JSONB NOT NULL,
+                output_data JSONB,
+                output_text TEXT,
+                output_format VARCHAR(20) NOT NULL CHECK (output_format IN ('json', 'xml')),
+                mapping_status VARCHAR(50),
+                warnings JSONB DEFAULT '[]'::jsonb,
+                success BOOLEAN NOT NULL DEFAULT TRUE,
+                error_message TEXT,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+            """
+        )
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_transform_runs_source_api ON transform_runs(source_api_id)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_transform_runs_target_api ON transform_runs(target_api_id)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_transform_runs_created_at ON transform_runs(created_at DESC)")
+
+        _ensure_sequence_reset_function(cur)
+        for table_name in (
+            "apis",
+            "schemas",
+            "schema_fields",
+            "compatibility_results",
+            "compatibility_issues",
+            "mapping_rules",
+            "transform_runs",
+        ):
+            if _table_exists(cur, table_name):
+                _ensure_sequence_reset_trigger(cur, table_name)
+                _sync_id_sequence(cur, table_name)
+    conn.commit()
+
+
+def init_db():
+    try:
+        conn = get_connection()
+        try:
+            ensure_runtime_tables(conn)
+        finally:
+            conn.close()
+        return True
+    except Exception:
+        return False
+
+
+def create_api(name, category, description=None, base_url=None, auth_method=None):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                """INSERT INTO apis (name, category, description, base_url, auth_method)
+                   VALUES (%s, %s, %s, %s, %s)
+                   ON CONFLICT (name) DO UPDATE
+                   SET category = EXCLUDED.category,
+                       description = EXCLUDED.description,
+                       base_url = EXCLUDED.base_url,
+                       auth_method = EXCLUDED.auth_method,
+                       updated_at = NOW()
+                   RETURNING *""",
+                (name, category, description, base_url, auth_method),
+            )
+            row = cur.fetchone()
+            conn.commit()
+            return dict(row)
+    finally:
+        conn.close()
+
+
+def get_api(api_id):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute("SELECT * FROM apis WHERE id = %s", (api_id,))
+            row = cur.fetchone()
+            return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def get_api_by_name(name):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute("SELECT * FROM apis WHERE name = %s", (name,))
+            row = cur.fetchone()
+            return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def list_apis():
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute("SELECT * FROM apis ORDER BY id ASC")
+            return [dict(r) for r in cur.fetchall()]
+    finally:
+        conn.close()
+
+
+def delete_api(api_id):
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM apis WHERE id = %s RETURNING id", (api_id,))
+            deleted = cur.fetchone()
+            conn.commit()
+            return deleted is not None
+    finally:
+        conn.close()
+
+
+def store_schema(api_id, direction, fmt, raw_schema, normalized_schema=None):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                "SELECT COALESCE(MAX(version), 0) + 1 AS next_ver FROM schemas WHERE api_id = %s AND direction = %s",
+                (api_id, direction),
+            )
+            next_ver = cur.fetchone()["next_ver"]
+
+            cur.execute(
+                """INSERT INTO schemas (api_id, direction, format, raw_schema, normalized_schema, version)
+                   VALUES (%s, %s, %s, %s, %s, %s)
+                   RETURNING *""",
+                (
+                    api_id,
+                    direction,
+                    fmt,
+                    json.dumps(raw_schema),
+                    json.dumps(normalized_schema) if normalized_schema else None,
+                    next_ver,
+                ),
+            )
+            row = cur.fetchone()
+            schema_id = row["id"]
+
+            _store_fields(cur, schema_id, raw_schema)
+
+            conn.commit()
+            return dict(row)
+    finally:
+        conn.close()
+
+
+def _store_fields(cur, schema_id, schema, path="$", depth=0):
+    if not isinstance(schema, dict):
+        return
+
+    schema_type = schema.get("type", "unknown")
+
+    for key in ("oneOf", "anyOf"):
+        if key in schema:
+            for variant in schema[key]:
+                _store_fields(cur, schema_id, variant, path, depth)
+            return
+
+    parent_for_children = path if path != "$" else None
+
+    if schema_type == "object":
+        props = schema.get("properties", {})
+        required = set(schema.get("required", []))
+        for name, child in props.items():
+            child_path = f"{path}.{name}" if path != "$" else name
+            child_type = child.get("type", "unknown") if isinstance(child, dict) else "unknown"
+            cur.execute(
+                """INSERT INTO schema_fields (schema_id, field_path, field_name, field_type, is_required, nesting_depth, parent_path)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s)""",
+                (schema_id, child_path, name, child_type, name in required, depth, parent_for_children),
+            )
+            if isinstance(child, dict):
+                _store_fields(cur, schema_id, child, child_path, depth + 1)
+    elif schema_type == "array":
+        items = schema.get("items", {})
+        if isinstance(items, dict):
+            _store_fields(cur, schema_id, items, f"{path}[]", depth + 1)
+
+
+def get_schema(schema_id):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute("SELECT * FROM schemas WHERE id = %s", (schema_id,))
+            row = cur.fetchone()
+            return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def get_schemas_for_api(api_id):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute("SELECT * FROM schemas WHERE api_id = %s ORDER BY id ASC", (api_id,))
+            return [dict(r) for r in cur.fetchall()]
+    finally:
+        conn.close()
+
+
+def get_latest_schema(api_id, direction):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                "SELECT * FROM schemas WHERE api_id = %s AND direction = %s ORDER BY version DESC LIMIT 1",
+                (api_id, direction),
+            )
+            row = cur.fetchone()
+            return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def get_fields_for_schema(schema_id):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute("SELECT * FROM schema_fields WHERE schema_id = %s ORDER BY id ASC", (schema_id,))
+            return [dict(r) for r in cur.fetchall()]
+    finally:
+        conn.close()
+
+
+def store_compatibility_result(source_api_id, target_api_id, source_schema_id, target_schema_id, result):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                """INSERT INTO compatibility_results
+                   (source_api_id, target_api_id, source_schema_id, target_schema_id, compatibility_level, summary, full_result)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s)
+                   ON CONFLICT (source_schema_id, target_schema_id) DO UPDATE
+                   SET compatibility_level = EXCLUDED.compatibility_level,
+                       summary = EXCLUDED.summary,
+                       full_result = EXCLUDED.full_result,
+                       created_at = NOW()
+                   RETURNING *""",
+                (
+                    source_api_id,
+                    target_api_id,
+                    source_schema_id,
+                    target_schema_id,
+                    result["compatibility"],
+                    json.dumps(result["summary"]),
+                    json.dumps(result),
+                ),
+            )
+            row = cur.fetchone()
+            result_id = row["id"]
+
+            cur.execute("DELETE FROM compatibility_issues WHERE result_id = %s", (result_id,))
+
+            for issue in result.get("issues", []):
+                cur.execute(
+                    """INSERT INTO compatibility_issues (result_id, code, kind, severity, source_path, target_path, message, suggestion)
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
+                    (
+                        result_id,
+                        issue["code"],
+                        issue["kind"],
+                        issue["severity"],
+                        issue.get("source_path"),
+                        issue.get("target_path"),
+                        issue["message"],
+                        issue.get("suggestion"),
+                    ),
+                )
+
+            conn.commit()
+            return dict(row)
+    finally:
+        conn.close()
+
+
+def get_compatibility_result(source_schema_id, target_schema_id):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                "SELECT * FROM compatibility_results WHERE source_schema_id = %s AND target_schema_id = %s",
+                (source_schema_id, target_schema_id),
+            )
+            row = cur.fetchone()
+            if not row:
+                return None
+            result = dict(row)
+            cur.execute("SELECT * FROM compatibility_issues WHERE result_id = %s ORDER BY id", (result["id"],))
+            result["issues"] = [dict(r) for r in cur.fetchall()]
+            return result
+    finally:
+        conn.close()
+
+
+def list_compatibility_results(api_id=None):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            if api_id:
+                cur.execute(
+                    """SELECT cr.*, sa.name as source_name, ta.name as target_name
+                       FROM compatibility_results cr
+                       JOIN apis sa ON cr.source_api_id = sa.id
+                       JOIN apis ta ON cr.target_api_id = ta.id
+                       WHERE cr.source_api_id = %s OR cr.target_api_id = %s
+                       ORDER BY cr.id ASC""",
+                    (api_id, api_id),
+                )
+            else:
+                cur.execute(
+                    """SELECT cr.*, sa.name as source_name, ta.name as target_name
+                       FROM compatibility_results cr
+                       JOIN apis sa ON cr.source_api_id = sa.id
+                       JOIN apis ta ON cr.target_api_id = ta.id
+                       ORDER BY cr.id ASC"""
+                )
+            return [dict(r) for r in cur.fetchall()]
+    finally:
+        conn.close()
+
+
+def store_mapping_rule(source_api_id, target_api_id, source_field, target_field, transform_type="rename", source_type=None, target_type=None, confidence="high", note=None):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                """INSERT INTO mapping_rules (source_api_id, target_api_id, source_field, target_field, transform_type, source_type, target_type, confidence, note)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                   RETURNING *""",
+                (source_api_id, target_api_id, source_field, target_field, transform_type, source_type, target_type, confidence, note),
+            )
+            row = cur.fetchone()
+            conn.commit()
+            return dict(row)
+    finally:
+        conn.close()
+
+
+def store_mapping_rules_bulk(source_api_id, target_api_id, rules):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                "DELETE FROM mapping_rules WHERE source_api_id = %s AND target_api_id = %s",
+                (source_api_id, target_api_id),
+            )
+            results = []
+            for rule in rules:
+                cur.execute(
+                    """INSERT INTO mapping_rules (source_api_id, target_api_id, source_field, target_field, transform_type, source_type, target_type, confidence, note)
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                       RETURNING *""",
+                    (
+                        source_api_id,
+                        target_api_id,
+                        rule["source_field"],
+                        rule["target_field"],
+                        rule.get("transform_type", "rename"),
+                        rule.get("source_type"),
+                        rule.get("target_type"),
+                        rule.get("confidence", "high"),
+                        rule.get("note"),
+                    ),
+                )
+                results.append(dict(cur.fetchone()))
+            conn.commit()
+            return results
+    finally:
+        conn.close()
+
+
+def get_mapping_rules(source_api_id, target_api_id):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                "SELECT * FROM mapping_rules WHERE source_api_id = %s AND target_api_id = %s ORDER BY id",
+                (source_api_id, target_api_id),
+            )
+            return [dict(r) for r in cur.fetchall()]
+    finally:
+        conn.close()
+
+
+def delete_mapping_rules(source_api_id, target_api_id):
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                "DELETE FROM mapping_rules WHERE source_api_id = %s AND target_api_id = %s",
+                (source_api_id, target_api_id),
+            )
+            count = cur.rowcount
+            conn.commit()
+            return count
+    finally:
+        conn.close()
+
+
+def get_compatibility_matrix(api_ids=None):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            if api_ids:
+                placeholders = ",".join(["%s"] * len(api_ids))
+                cur.execute(f"SELECT * FROM apis WHERE id IN ({placeholders}) ORDER BY id ASC", tuple(api_ids))
+            else:
+                cur.execute("SELECT * FROM apis ORDER BY id ASC")
+            apis = [dict(r) for r in cur.fetchall()]
+
+            cur.execute(
+                """SELECT cr.source_api_id, cr.target_api_id, cr.compatibility_level, cr.summary
+                   FROM compatibility_results cr"""
+            )
+            results = {}
+            for r in cur.fetchall():
+                r = dict(r)
+                results[(r["source_api_id"], r["target_api_id"])] = r
+
+            matrix = []
+            for source in apis:
+                row = []
+                for target in apis:
+                    if source["id"] == target["id"]:
+                        row.append({
+                            "source": source["name"],
+                            "target": target["name"],
+                            "compatibility": "same_schema",
+                            "summary": {"compatibility_label": "Same schema"},
+                        })
+                    else:
+                        cached = results.get((source["id"], target["id"]))
+                        if cached:
+                            row.append({
+                                "source": source["name"],
+                                "target": target["name"],
+                                "compatibility": cached["compatibility_level"],
+                                "summary": cached["summary"],
+                            })
+                        else:
+                            row.append({
+                                "source": source["name"],
+                                "target": target["name"],
+                                "compatibility": "not_assessed",
+                                "summary": {"compatibility_label": "Not assessed"},
+                            })
+                matrix.append(row)
+
+            return {"apis": [dict(a) for a in apis], "matrix": matrix}
+    finally:
+        conn.close()
+
+
+def store_transform_run(
+    source_api_id=None,
+    target_api_id=None,
+    source_schema_id=None,
+    target_schema_id=None,
+    input_data=None,
+    output_data=None,
+    output_text=None,
+    output_format="json",
+    mapping_status=None,
+    warnings=None,
+    success=True,
+    error_message=None,
+):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                """INSERT INTO transform_runs (
+                       source_api_id, target_api_id, source_schema_id, target_schema_id,
+                       input_data, output_data, output_text, output_format,
+                       mapping_status, warnings, success, error_message
+                   )
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                   RETURNING *""",
+                (
+                    source_api_id,
+                    target_api_id,
+                    source_schema_id,
+                    target_schema_id,
+                    psycopg2.extras.Json(input_data if input_data is not None else {}),
+                    psycopg2.extras.Json(output_data) if output_data is not None else None,
+                    output_text,
+                    output_format,
+                    mapping_status,
+                    psycopg2.extras.Json(warnings or []),
+                    success,
+                    error_message,
+                ),
+            )
+            row = cur.fetchone()
+            conn.commit()
+            return dict(row)
+    finally:
+        conn.close()
+
+
+def list_transform_runs(limit=50):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                """SELECT tr.*, sa.name AS source_name, ta.name AS target_name
+                   FROM transform_runs tr
+                   LEFT JOIN apis sa ON tr.source_api_id = sa.id
+                   LEFT JOIN apis ta ON tr.target_api_id = ta.id
+                   ORDER BY tr.id ASC
+                   LIMIT %s""",
+                (limit,),
+            )
+            return [dict(r) for r in cur.fetchall()]
+    finally:
+        conn.close()
+
+
+def get_transform_run(run_id):
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute(
+                """SELECT tr.*, sa.name AS source_name, ta.name AS target_name
+                   FROM transform_runs tr
+                   LEFT JOIN apis sa ON tr.source_api_id = sa.id
+                   LEFT JOIN apis ta ON tr.target_api_id = ta.id
+                   WHERE tr.id = %s""",
+                (run_id,),
+            )
+            row = cur.fetchone()
+            return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def _serialize_row(row):
+    if row is None:
+        return None
+    import datetime
+    result = {}
+    for key, value in row.items():
+        if isinstance(value, datetime.datetime):
+            result[key] = value.isoformat()
+        else:
+            result[key] = value
+    return result

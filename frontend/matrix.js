@@ -31,7 +31,7 @@ function matrixCellClass(code) {
 
 async function buildMatrix() {
   try {
-    const response = await fetch('http://localhost:5000/api/matrix', {
+    const response = await fetch(`${API_BASE_URL}/api/matrix`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ schemas: svSchemas.map(({ name, schema }) => ({ name, schema })) }),
@@ -124,7 +124,7 @@ function renderMatrixRows() {
     if (srcQ && !cell.source.toLowerCase().includes(srcQ)) return false;
     if (tgtQ && !cell.target.toLowerCase().includes(tgtQ)) return false;
     return true;
-  })
+  });
 
   count.textContent = `Showing ${filtered.length} result${filtered.length !== 1 ? 's' : ''}`;
 

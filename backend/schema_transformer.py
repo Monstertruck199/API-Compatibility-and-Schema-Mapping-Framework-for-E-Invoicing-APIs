@@ -147,7 +147,6 @@ def _render_field(fm) -> List[str]:
             '',
         ]
 
-    # Fallback
     getter = _getter(src) if src else "None"
     setter = _setter(tgt, getter)
     return [comment, setter, '']
@@ -259,7 +258,7 @@ def _make_caster(src_type: Optional[str], tgt_type: Optional[str]) -> Callable:
         ("integer",  "number"):  float,
         ("null",     None):      lambda v: None,
     }
-    return casters.get(key, lambda v: v)   # identity fallback
+    return casters.get(key, lambda v: v)
 
 def _cast_expression(getter: str, src_type: Optional[str], tgt_type: Optional[str]) -> str:
     """Return a Python expression string that applies the right cast."""
@@ -288,17 +287,18 @@ def _getter(path: str) -> str:
     return expr
 
 def _setter(path: str, value_expr: str) -> str:
-    """Render an assignment statement into a nested target dict."""
     if not path or path == "$":
         return f"    target = {value_expr}"
     parts = _split_path(path)
     if len(parts) == 1:
         return f"    target[{parts[0]!r}] = {value_expr}"
-    # Build intermediate dicts inline.
+
     lines = []
     for i in range(len(parts) - 1):
         chain = "target" + "".join(f"[{p!r}]" for p in parts[:i+1])
-        lines.append(f"    {chain} = {chain}.get({parts[i+1]!r}, {{}})")
+        lines.append(f"    {chain} = {chain} if isinstance({chain}, dict) else {{}}")
+        lines.append(f"    {chain}.setdefault({parts[i+1]!r}, {{}})")
+
     assignment = "target" + "".join(f"[{p!r}]" for p in parts)
     lines.append(f"    {assignment} = {value_expr}")
     return "\n".join(lines)
