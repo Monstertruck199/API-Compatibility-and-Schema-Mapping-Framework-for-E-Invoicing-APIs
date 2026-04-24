@@ -1,0 +1,31 @@
+{
+  "name": "capstone-project-26t1-3900-m18a-apple",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unsw-cse-comp99-3900/capstone-project-26t1-3900-m18a-apple.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/unsw-cse-comp99-3900/capstone-project-26t1-3900-m18a-apple/issues"
+  },
+  "homepage": "https://github.com/unsw-cse-comp99-3900/capstone-project-26t1-3900-m18a-apple#readme",
+  "devDependencies": {
+    "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.3.0"
+  }
+}

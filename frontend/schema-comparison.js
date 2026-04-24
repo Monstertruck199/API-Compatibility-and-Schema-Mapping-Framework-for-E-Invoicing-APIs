@@ -26,8 +26,8 @@ function renderComparisonSelectors() {
       <p class="muted-copy">Missing fields, extra fields, nesting differences, type mismatches, enum conflicts, and places where a mapping layer can bridge the gap.</p>
     </div>
   `;
-    document.getElementById('cmp-source').addEventListener('change', runComparison)
-    document.getElementById('cmp-target').addEventListener('change', runComparison)
+    document.getElementById('cmp-source').addEventListener('change', () => runComparison())
+    document.getElementById('cmp-target').addEventListener('change', () => runComparison())
     if (svSchemas.length >= 2) {
         runComparison();
     }
@@ -120,7 +120,7 @@ function renderComparison(comparison) {
 
     el.innerHTML = `
         <div class="card-lbl"></div>
-        <div class="cmp-split">
+        <div class="cmp-split"> 
             <div class="cmp-col">
                 <div class="cmp-title">Field•type•required</div>
                 ${renderFields(aligned, "src", allReqs)}
@@ -133,3 +133,10 @@ function renderComparison(comparison) {
         </div>
     `
 }
+
+module.exports = {
+  schemaOptions,
+  renderComparisonSelectors,
+  runComparison,
+  renderComparison
+};

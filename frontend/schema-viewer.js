@@ -141,3 +141,14 @@ function buildTree(container, node, key, depth, isRoot) {
 
   container.appendChild(div);
 }
+
+module.exports = {
+  setFmt,
+  svAnalyse,
+  highlightError,
+  renderSVList,
+  svPick,
+  cntFields,
+  renderViewer,
+  buildTree,
+};
