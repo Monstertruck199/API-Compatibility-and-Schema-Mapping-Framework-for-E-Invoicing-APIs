@@ -1,0 +1,129 @@
+{
+  "id": "inv_6595a27b5d35015c3ef0c402",
+  "entity_id": "ent_6595a27b5d35015c3ef0c3fd",
+  "number": "DOC-2025-001",
+  "date": "2025-03-15T00:00:00.000Z",
+  "currency_code": "USD",
+  "issuer": {
+    "name": "Starward Equipment Co.",
+    "address": "1 Launchpad Way",
+    "city": "Cape Canaveral",
+    "state": "FL",
+    "post_code": "32920",
+    "country": "USA",
+    "country_code": "US",
+    "tax_number": "59-8765432"
+  },
+  "customer_id": "cus_6595a27b5d35015c3ef0c403",
+  "customer": {
+    "name": "Horizon Launch Systems Inc.",
+    "address": "100 Rocket Row",
+    "city": "Houston",
+    "state": "TX",
+    "post_code": "77058",
+    "country": "USA",
+    "country_code": "US",
+    "tax_number": "74-1234567"
+  },
+  "items": [
+    {
+      "id": "inv_item_6595a27b5d35015c3ef0c402",
+      "invoice_id": "inv_6595a27b5d35015c3ef0c402",
+      "advance_invoice_id": null,
+      "item_id": null,
+      "name": "Ground Station Antenna Array",
+      "description": "Deep space tracking antenna with 12m dish",
+      "quantity": 2,
+      "price": 12500,
+      "gross_price": null,
+      "taxes": [
+        {
+          "rate": 22,
+          "tax_id": "tax_6595a27b5d35015c3ef0c402"
+        }
+      ],
+      "discounts": [],
+      "type": null,
+      "unit": null,
+      "total": 25000,
+      "total_with_tax": 30500,
+      "total_converted": null,
+      "total_with_tax_converted": null,
+      "metadata": {
+        "project_code": "MSN-2025-001",
+        "department": "Ground Operations"
+      },
+      "created_at": "2025-03-15T00:00:00.000Z",
+      "updated_at": "2025-03-15T00:00:00.000Z"
+    },
+    {
+      "id": "inv_item_6595a27b5d35015c3ef0c403",
+      "invoice_id": "inv_6595a27b5d35015c3ef0c402",
+      "advance_invoice_id": null,
+      "item_id": null,
+      "name": "Orbital Navigation License",
+      "description": "Annual software license for orbital trajectory planning",
+      "quantity": 1,
+      "price": 5000,
+      "gross_price": null,
+      "taxes": [
+        {
+          "rate": 22,
+          "tax_id": "tax_6595a27b5d35015c3ef0c402"
+        }
+      ],
+      "discounts": [],
+      "type": null,
+      "unit": null,
+      "total": 5000,
+      "total_with_tax": 6100,
+      "total_converted": null,
+      "total_with_tax_converted": null,
+      "metadata": {
+        "license_type": "enterprise",
+        "seats": "50"
+      },
+      "created_at": "2025-03-15T00:00:00.000Z",
+      "updated_at": "2025-03-15T00:00:00.000Z"
+    }
+  ],
+  "note": "Thank you for your order. Equipment ships within 5 business days.",
+  "reference": "PO-2025-001",
+  "total": 30000,
+  "total_with_tax": 36600,
+  "total_discount": 0,
+  "total_converted": null,
+  "total_with_tax_converted": null,
+  "shareable_id": null,
+  "taxes": [
+    {
+      "base": 30000,
+      "rate": 22,
+      "amount": 6600,
+      "reverse_charge": false,
+      "tax_id": null
+    }
+  ],
+  "date_year": 2025,
+  "metadata": {
+    "project_id": "MSN-2025-001",
+    "contract_id": "ORB-2024-789"
+  },
+  "created_at": "2025-03-15T00:00:00.000Z",
+  "updated_at": "2025-03-15T00:00:00.000Z",
+  "voided_at": null,
+  "deleted_at": null,
+  "exchange_rate": null,
+  "rounding_correction": null,
+  "transaction_type": "domestic",
+  "vies": null,
+  "tax_clause": null,
+  "signature": "{entity_name}",
+  "payment_terms": null,
+  "date_due": "2025-04-15T00:00:00.000Z",
+  "total_paid": 0,
+  "total_due": 36600,
+  "paid_in_full": false,
+  "furs": null,
+  "fina": null
+}
