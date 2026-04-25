@@ -9,14 +9,13 @@ const {
     renderComparison
 } = require('../frontend/schema-comparison');
 
-let moduleRef
-
 beforeEach(() => {
     document.body.innerHTML = `
     <div id="comparison-root"></div>
     `;
     global.fetch = jest.fn();
   global.alert = jest.fn();
+  global.API_BASE_URL = 'http://localhost:5000';
 
   global.runComparison = jest.fn();
 
@@ -62,8 +61,6 @@ test('schemaOptions marks selected option', () => {
     expect(html).toContain('Schema B');
 });
 
-// renderComparisonSelectors
-///////////////////////
 test('renderComparisonSelectors renders dropdowns', () => {
     renderComparisonSelectors();
 
@@ -100,7 +97,6 @@ test('renderComparisonSelectors auto-runs comparison when >= 2 schemas', async (
   expect(fetch).toHaveBeenCalled();
 });
 
-//////////////////////////////
 test('runComparison calls API and renders comparison', async () => {
   document.body.innerHTML = `
     <div id="comparison-root"></div>
@@ -177,7 +173,6 @@ test('runComparison handles fetch failure', async () => {
   expect(alert).toHaveBeenCalled();
 });
 
-/////////////////////////////////////
 test('renderComparison displays aligned fields', () => {
   document.body.innerHTML += `<div id="comparison-output"></div>`;
 

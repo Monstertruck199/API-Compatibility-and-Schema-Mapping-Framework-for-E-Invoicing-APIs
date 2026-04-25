@@ -323,4 +323,11 @@ module.exports = {
   cntFields,
   renderViewer,
   buildTree,
+
+  _internal: {
+    get svSchemas() { return svSchemas },
+    set svSchemas(v) { svSchemas = v },
+    get svActive() { return svActive },
+    set svActive(v) { svActive = v }
+  }
 };

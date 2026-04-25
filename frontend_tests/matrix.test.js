@@ -11,7 +11,7 @@ const {
   highlight,
   shortLabel,
   matrixCellClass
-} = require('../frontend/matrix'); // adjust path
+} = require('../frontend/matrix'); 
 
 beforeEach(() => {
   document.body.innerHTML = `
@@ -20,6 +20,7 @@ beforeEach(() => {
 
   global.fetch = jest.fn();
   global.alert = jest.fn();
+  global.API_BASE_URL = 'http://localhost:5000';
 
   global.svSchemas = [
     { name: 'API A', schema: {} },
@@ -31,10 +32,6 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-
-// ----------------------------------
-// highlight
-// ----------------------------------
 test('highlight wraps matching text', () => {
   const result = highlight('hello world', 'world');
   expect(result).toContain('<mark>world</mark>');
@@ -44,30 +41,18 @@ test('highlight returns original text if no query', () => {
   expect(highlight('hello', '')).toBe('hello');
 });
 
-
-// ----------------------------------
-// shortLabel
-// ----------------------------------
 test('shortLabel returns correct labels', () => {
   expect(shortLabel('directly_compatible')).toBe('Direct');
   expect(shortLabel('compatible_with_mapping')).toBe('Mapping Required');
   expect(shortLabel('incompatible')).toBe('Incompatible');
 });
 
-
-// ----------------------------------
-// matrixCellClass
-// ----------------------------------
 test('matrixCellClass returns correct classes', () => {
   expect(matrixCellClass('directly_compatible')).toBe('ok');
   expect(matrixCellClass('compatible_with_mapping')).toBe('warn');
   expect(matrixCellClass('incompatible')).toBe('bad');
 });
 
-
-// ----------------------------------
-// renderMatrixBuilder
-// ----------------------------------
 test('renderMatrixBuilder creates container and triggers build', async () => {
   fetch.mockResolvedValue({
     ok: true,
@@ -75,15 +60,12 @@ test('renderMatrixBuilder creates container and triggers build', async () => {
   });
 
   await renderMatrixBuilder();
+  await Promise.resolve();
 
   expect(document.getElementById('matrix-table-wrap')).not.toBeNull();
   expect(fetch).toHaveBeenCalled();
 });
 
-
-// ----------------------------------
-// buildMatrix
-// ----------------------------------
 test('buildMatrix calls API and renders matrix', async () => {
   fetch.mockResolvedValue({
     ok: true,
@@ -121,10 +103,6 @@ test('buildMatrix handles API error', async () => {
   expect(alert).toHaveBeenCalledWith('Failed');
 });
 
-
-// ----------------------------------
-// newDrawMatrix
-// ----------------------------------
 test('newDrawMatrix renders table structure', () => {
   document.body.innerHTML = `<div id="matrix-table-wrap"></div>`;
 
@@ -140,10 +118,6 @@ test('newDrawMatrix renders table structure', () => {
   expect(document.getElementById('search-source')).not.toBeNull();
 });
 
-
-// ----------------------------------
-// renderMatrixRows
-// ----------------------------------
 test('renderMatrixRows displays rows', () => {
   document.body.innerHTML = `
     <input id="search-source" />
@@ -220,29 +194,22 @@ test('renderMatrixRows shows empty state', () => {
 });
 
 
-// ----------------------------------
-// toggleMatrixFilter
-// ----------------------------------
 test('toggleMatrixFilter updates filter and rerenders', () => {
-    document.body.innerHTML = `
-    <button class="matrix-filter-btn active ok" data-filter="ok"></button>
+  document.body.innerHTML = `
+    <div id="matrix-table-wrap"></div>
+  `;
 
-    <input id="search-source" />
-    <input id="search-target" />
-    <div id="matrix-result-count"></div>
+  newDrawMatrix([
+    [
+      { source: 'API A', target: 'API B', compatibility: 'directly_compatible' }
+    ]
+  ]);
 
-    <table>
-        <tbody id="matrix-tbody"></tbody>
-    </table>
-    `;
+  const btn = document.querySelector('[data-filter="ok"]');
 
-  global.matrixRows = [
-    { source: 'API A', target: 'API B', compatibility: 'directly_compatible' }
-  ];
-
-  global.activeFilters = new Set(['ok', 'warn', 'bad']);
+  expect(btn.classList.contains('active')).toBe(true);
 
   toggleMatrixFilter('ok');
 
-  expect(global.activeFilters.has('ok')).toBe(false);
+  expect(btn.classList.contains('active')).toBe(false);
 });

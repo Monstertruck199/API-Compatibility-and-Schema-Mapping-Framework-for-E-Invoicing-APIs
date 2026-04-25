@@ -4,12 +4,11 @@
 
 const {
   schemaOptions,
-  downloadReport,
   badgeClass,
   renderCompatibilityResult,
   runCompatibilityComparison,
   renderCompatibilityOutput
-} = require('../frontend/compatibility-result'); // adjust filename if needed
+} = require('../frontend/compatibility-result'); 
 
 beforeEach(() => {
   document.body.innerHTML = `
@@ -18,6 +17,7 @@ beforeEach(() => {
 
   global.fetch = jest.fn();
   global.alert = jest.fn();
+  global.API_BASE_URL = 'http://localhost:5000';
 
   global.svSchemas = [
     {
@@ -37,10 +37,6 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-
-// ----------------------------------
-// schemaOptions
-// ----------------------------------
 test('schemaOptions renders schema options', () => {
   const html = schemaOptions();
 
@@ -55,20 +51,12 @@ test('schemaOptions marks selected schema', () => {
   expect(html).toContain('Target API');
 });
 
-
-// ----------------------------------
-// badgeClass
-// ----------------------------------
 test('badgeClass returns correct class', () => {
   expect(badgeClass('Directly compatible')).toBe('ok');
   expect(badgeClass('Compatible with mapping')).toBe('warn');
   expect(badgeClass('Anything else')).toBe('bad');
 });
 
-
-// ----------------------------------
-// renderCompatibilityResult
-// ----------------------------------
 test('renderCompatibilityResult renders selectors', () => {
   renderCompatibilityResult();
 
@@ -103,10 +91,6 @@ test('renderCompatibilityResult auto-runs comparison when >= 2 schemas', async (
   expect(fetch).toHaveBeenCalled();
 });
 
-
-// ----------------------------------
-// runCompatibilityComparison
-// ----------------------------------
 test('runCompatibilityComparison calls API and updates UI', async () => {
   renderCompatibilityResult();
 
@@ -170,10 +154,6 @@ test('runCompatibilityComparison handles network error', async () => {
   expect(alert).toHaveBeenCalled();
 });
 
-
-// ----------------------------------
-// renderCompatibilityOutput
-// ----------------------------------
 test('renderCompatibilityOutput shows empty state', () => {
   renderCompatibilityResult();
 

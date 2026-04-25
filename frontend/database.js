@@ -305,3 +305,22 @@ async function dbRefreshStats() {
     <div class="db-stat"><span class="db-stat-val">${compat}</span><span class="db-stat-lbl">Compat results</span></div>
   `;
 }
+
+
+module.exports = {
+  renderDatabasePanel,
+  dbFetch,
+  dbRefreshActive,
+  dbRefreshAll,
+  dbSetTable,
+  dbSearch,
+  dbRenderTable,
+  dbToggleRow,
+  dbFormatCell,
+  dbRefreshStats,
+
+  _internal: {
+    get dbState() { return dbState },
+    set dbState(v) { dbState = v }
+  }
+}
