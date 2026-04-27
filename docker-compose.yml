@@ -1,22 +1,53 @@
 services:
   db:
-    image: postgres:16
+    image: postgres:16-alpine
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
       POSTGRES_DB: api_compatibility
       PGPORT: 5433
-    command: -p 5433
+    command: ["postgres", "-p", "5433"]
     ports:
       - "5433:5433"
     volumes:
-      - ./database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U admin -d api_compatibility -p 5433"]
       interval: 5s
       timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      DB_HOST: db
+      DB_PORT: 5433
+      DB_NAME: api_compatibility
+      DB_USER: admin
+      DB_PASSWORD: password
+      CORS_ORIGINS: "http://localhost:3000,http://127.0.0.1:3000"
+    ports:
+      - "5050:5050"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:5050/api/health', timeout=2)\""]
+      interval: 10s
+      timeout: 3s
+      start_period: 20s
       retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
 
 volumes:
   postgres_data:
