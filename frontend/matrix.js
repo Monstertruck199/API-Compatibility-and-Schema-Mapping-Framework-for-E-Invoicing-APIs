@@ -7,6 +7,15 @@ async function renderMatrixBuilder() {
   buildMatrix();
 }
 
+function escapeRe(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function highlight(text, query) {
+  if (!query) return text
+  return text.replace(new RegExp('(' + escapeRe(query) + ')', 'gi'), '<mark>$1</mark>');
+}
+
 function shortLabel(label) {
   if (label === 'directly_compatible') return 'Direct';
   if (label === 'compatible_with_mapping') return 'Mapping Required';
@@ -53,7 +62,17 @@ function newDrawMatrix(matrix) {
 
   const wrap = document.getElementById('matrix-table-wrap');
   wrap.innerHTML = `
-    <div class="card">
+    <div class="search-row">
+      <div class="search-group">
+        <div class="search-label">Source API</div>
+        <input class="search-input" id="search-source" placeholder="Filter Source..." oninput="renderMatrixRows()" />
+      </div>
+      <div class="search-group">
+        <div class="search-label">Target API</div>
+        <input class="search-input" id="search-target" placeholder="Filter target..." oninput="renderMatrixRows()" />
+      </div>
+    </div>
+    <div class="card"> 
       <div class="matrix header">
         <div class="card-lbl">Compatibility matrix</div>
         <div class="matrix-filter-row">
@@ -92,14 +111,18 @@ function toggleMatrixFilter(filter) {
   document.querySelector(`.matrix-filter-btn[data-filter="${filter}"]`).classList.toggle('active');
   renderMatrixRows();
 }
-
+  
 function renderMatrixRows() {
+  const srcQ = (document.getElementById('search-source')?.value || '').trim().toLowerCase()
+  const tgtQ = (document.getElementById('search-target')?.value || '').trim().toLowerCase()
   const tbody = document.getElementById('matrix-tbody');
   const count = document.getElementById('matrix-result-count');
 
   const filtered = matrixRows.filter(cell => {
     const cls = matrixCellClass(cell.compatibility);
     if (!activeFilters.has(cls)) return false;
+    if (srcQ && !cell.source.toLowerCase().includes(srcQ)) return false;
+    if (tgtQ && !cell.target.toLowerCase().includes(tgtQ)) return false;
     return true;
   });
 
@@ -122,4 +145,15 @@ function renderMatrixRows() {
       `;
     }).join('');
   }
+}
+
+module.exports = {
+  renderMatrixBuilder,
+  buildMatrix,
+  newDrawMatrix,
+  renderMatrixRows,
+  toggleMatrixFilter,
+  highlight,
+  shortLabel,
+  matrixCellClass
 }

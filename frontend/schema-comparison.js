@@ -324,3 +324,10 @@ function downloadTransformCode() {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+module.exports = {
+  schemaOptions,
+  renderComparisonSelectors,
+  runComparison,
+  renderComparison
+}

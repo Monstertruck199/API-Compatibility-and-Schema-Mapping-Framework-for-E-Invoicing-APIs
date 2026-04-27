@@ -172,3 +172,12 @@ function renderCompatibilityOutput() {
     ${issues || '<div class="stat-box align">Schemas align - no mapping required</div>'}
   `;
 }
+
+module.exports = {
+  schemaOptions,
+  downloadReport,
+  badgeClass,
+  renderCompatibilityResult,
+  runCompatibilityComparison,
+  renderCompatibilityOutput
+};
