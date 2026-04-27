@@ -3,6 +3,7 @@ from flask_cors import CORS
 import datetime
 import requests as http_requests
 import xml.etree.ElementTree as ET
+import os
 
 from compatibility_engine import compare_schemas
 from extract_JSON_schema import infer_schema
@@ -12,7 +13,12 @@ from mapping_engine import build_mapping
 from data_validator import validate_data
 
 app = Flask(__name__)
-CORS(app)
+
+_cors_origins = os.environ.get("CORS_ORIGINS", "*")
+if _cors_origins == "*":
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
+else:
+    CORS(app, resources={r"/api/*": {"origins": [origin.strip() for origin in _cors_origins.split(",") if origin.strip()]}})
 
 try:
     import db
@@ -444,4 +450,8 @@ def delete_mappings(source_api_id, target_api_id):
     return jsonify({"deleted": count})
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5050)
+    app.run(
+        host=os.environ.get("HOST", "127.0.0.1"),
+        port=int(os.environ.get("PORT", 5050)),
+        debug=os.environ.get("FLASK_DEBUG", "false").lower() == "true",
+    )
