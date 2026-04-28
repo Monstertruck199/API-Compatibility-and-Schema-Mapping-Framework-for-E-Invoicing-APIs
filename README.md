@@ -116,6 +116,7 @@ The frontend includes a database page where users can view stored APIs, compatib
 │   ├── mapping_engine.py
 │   ├── schema_transformer.py
 │   ├── test_db.py
+│   ├── test_app.py
 │   ├── requirements.txt
 │   └── Dockerfile
 │
