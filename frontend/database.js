@@ -306,21 +306,22 @@ async function dbRefreshStats() {
   `;
 }
 
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    renderDatabasePanel,
+    dbFetch,
+    dbRefreshActive,
+    dbRefreshAll,
+    dbSetTable,
+    dbSearch,
+    dbRenderTable,
+    dbToggleRow,
+    dbFormatCell,
+    dbRefreshStats,
 
-module.exports = {
-  renderDatabasePanel,
-  dbFetch,
-  dbRefreshActive,
-  dbRefreshAll,
-  dbSetTable,
-  dbSearch,
-  dbRenderTable,
-  dbToggleRow,
-  dbFormatCell,
-  dbRefreshStats,
-
-  _internal: {
-    get dbState() { return dbState },
-    set dbState(v) { dbState = v }
-  }
+    _internal: {
+      get dbState() { return dbState; },
+      set dbState(v) { dbState = v; }
+    }
+  };
 }

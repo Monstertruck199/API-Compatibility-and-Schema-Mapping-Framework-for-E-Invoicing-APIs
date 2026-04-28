@@ -147,13 +147,15 @@ function renderMatrixRows() {
   }
 }
 
-module.exports = {
-  renderMatrixBuilder,
-  buildMatrix,
-  newDrawMatrix,
-  renderMatrixRows,
-  toggleMatrixFilter,
-  highlight,
-  shortLabel,
-  matrixCellClass
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    renderMatrixBuilder,
+    buildMatrix,
+    newDrawMatrix,
+    renderMatrixRows,
+    toggleMatrixFilter,
+    highlight,
+    shortLabel,
+    matrixCellClass
+  };
 }

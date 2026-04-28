@@ -173,11 +173,13 @@ function renderCompatibilityOutput() {
   `;
 }
 
-module.exports = {
-  schemaOptions,
-  downloadReport,
-  badgeClass,
-  renderCompatibilityResult,
-  runCompatibilityComparison,
-  renderCompatibilityOutput
-};
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    schemaOptions,
+    downloadReport,
+    badgeClass,
+    renderCompatibilityResult,
+    runCompatibilityComparison,
+    renderCompatibilityOutput
+  };
+}

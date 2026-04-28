@@ -206,12 +206,15 @@ class TestListApis(DBTestCase):
         self.assertIsInstance(apis, list)
         self.assertIsInstance(apis[0], dict)
 
-    def test_list_ordered_by_name(self):
-        self.create_api("ZZZ_TestAPI")
-        self.create_api("AAA_TestAPI")
+    def test_list_ordered_by_id(self):
+        api1 = self.create_api("ZZZ_TestAPI")
+        api2 = self.create_api("AAA_TestAPI")
+
         apis = list_apis()
-        names = [a["name"] for a in apis if a["name"] in ("ZZZ_TestAPI", "AAA_TestAPI")]
-        self.assertEqual(names, sorted(names))
+        test_apis = [a for a in apis if a["id"] in (api1["id"], api2["id"])]
+        ids = [a["id"] for a in test_apis]
+
+        self.assertEqual(ids, sorted(ids))
 
     def test_delete_existing_returns_true(self):
         api = self.create_api("TestAPI_del")

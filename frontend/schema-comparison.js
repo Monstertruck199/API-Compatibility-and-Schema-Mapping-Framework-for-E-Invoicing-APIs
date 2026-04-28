@@ -325,9 +325,11 @@ function downloadTransformCode() {
   URL.revokeObjectURL(url);
 }
 
-module.exports = {
-  schemaOptions,
-  renderComparisonSelectors,
-  runComparison,
-  renderComparison
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    schemaOptions,
+    renderComparisonSelectors,
+    runComparison,
+    renderComparison
+  };
 }
