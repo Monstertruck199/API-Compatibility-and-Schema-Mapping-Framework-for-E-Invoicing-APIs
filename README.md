@@ -289,7 +289,7 @@ The backend database tests cover:
 If all tests pass, the output should end with something similar to:
 
 ```txt
-Ran 73 tests
+Ran 89 tests
 
 OK
 ```
