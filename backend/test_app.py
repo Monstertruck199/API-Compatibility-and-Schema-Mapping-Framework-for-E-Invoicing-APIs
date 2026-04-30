@@ -3,7 +3,6 @@ from unittest.mock import Mock, patch
 
 import app as app_module
 
-
 SOURCE_SCHEMA = {
     "type": "object",
     "properties": {

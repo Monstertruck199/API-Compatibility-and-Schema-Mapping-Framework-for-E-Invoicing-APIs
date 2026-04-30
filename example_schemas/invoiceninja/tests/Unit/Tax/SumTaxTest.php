@@ -37,41 +37,41 @@ class SumTaxTest extends TestCase
     public Response $response;
 
     public array $resp = [
-            "geoPostalCode" => "92582",
-            "geoCity" => "SAN JACINTO",
-            "geoCounty" => "RIVERSIDE",
-            "geoState" => "CA",
-            "taxSales" => 0.0875,
-            "taxUse" => 0.0875, // tax amount where destination does not charge sales tax, but origin does
-            "txbService" => "N", // whether services are taxed in this locale
-            "txbFreight" => "N", // whether freight is taxes in this locale
-            "stateSalesTax" => 0.06,
-            "stateUseTax" => 0.06,
-            "citySalesTax" => 0.01,
-            "cityUseTax" => 0.01,
-            "cityTaxCode" => "874",
-            "countySalesTax" => 0.0025,
-            "countyUseTax" => 0.0025,
-            "countyTaxCode" => "",
-            "districtSalesTax" => 0.015,
-            "districtUseTax" => 0.015,
-            "district1Code" => "26",
-            "district1SalesTax" => 0,
-            "district1UseTax" => 0,
-            "district2Code" => "26",
-            "district2SalesTax" => 0.005,
-            "district2UseTax" => 0.005,
-            "district3Code" => "",
-            "district3SalesTax" => 0,
-            "district3UseTax" => 0,
-            "district4Code" => "33",
-            "district4SalesTax" => 0.01,
-            "district4UseTax" => 0.01,
-            "district5Code" => "",
-            "district5SalesTax" => 0,
-            "district5UseTax" => 0, //district1-5 portion of the district tax
-            "originDestination" => "D", //location where this is taxed origin/destination/null
-        ];
+        "geoPostalCode" => "92582",
+        "geoCity" => "SAN JACINTO",
+        "geoCounty" => "RIVERSIDE",
+        "geoState" => "CA",
+        "taxSales" => 0.0875,
+        "taxUse" => 0.0875, // tax amount where destination does not charge sales tax, but origin does
+        "txbService" => "N", // whether services are taxed in this locale
+        "txbFreight" => "N", // whether freight is taxes in this locale
+        "stateSalesTax" => 0.06,
+        "stateUseTax" => 0.06,
+        "citySalesTax" => 0.01,
+        "cityUseTax" => 0.01,
+        "cityTaxCode" => "874",
+        "countySalesTax" => 0.0025,
+        "countyUseTax" => 0.0025,
+        "countyTaxCode" => "",
+        "districtSalesTax" => 0.015,
+        "districtUseTax" => 0.015,
+        "district1Code" => "26",
+        "district1SalesTax" => 0,
+        "district1UseTax" => 0,
+        "district2Code" => "26",
+        "district2SalesTax" => 0.005,
+        "district2UseTax" => 0.005,
+        "district3Code" => "",
+        "district3SalesTax" => 0,
+        "district3UseTax" => 0,
+        "district4Code" => "33",
+        "district4SalesTax" => 0.01,
+        "district4UseTax" => 0.01,
+        "district5Code" => "",
+        "district5SalesTax" => 0,
+        "district5UseTax" => 0, //district1-5 portion of the district tax
+        "originDestination" => "D", //location where this is taxed origin/destination/null
+    ];
 
 
     protected function setUp(): void
@@ -79,7 +79,7 @@ class SumTaxTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->withoutExceptionHandling();

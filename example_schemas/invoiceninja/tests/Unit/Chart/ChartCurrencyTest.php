@@ -106,7 +106,7 @@ class ChartCurrencyTest extends TestCase
                     'product_key' => 'product_1',
                     'quantity' => 1,
                     'cost' => 100,
-                ]
+                ],
             ],
             'tax_rate1' => 0,
             'tax_rate2' => 0,
@@ -129,7 +129,7 @@ class ChartCurrencyTest extends TestCase
                     'product_key' => 'product_1',
                     'quantity' => 1,
                     'cost' => 100,
-                ]
+                ],
             ],
             'tax_rate1' => 0,
             'tax_rate2' => 0,
@@ -224,7 +224,7 @@ class ChartCurrencyTest extends TestCase
             'paid_to_date' => 0,
             'status_id' => 2,
             'date' => now(),
-            'due_date' => now()
+            'due_date' => now(),
         ]);
 
 
@@ -237,7 +237,7 @@ class ChartCurrencyTest extends TestCase
             'paid_to_date' => 0,
             'status_id' => 2,
             'date' => now(),
-            'due_date' => now()->subDays(10)
+            'due_date' => now()->subDays(10),
         ]);
 
 
@@ -250,21 +250,21 @@ class ChartCurrencyTest extends TestCase
             'paid_to_date' => 0,
             'status_id' => 2,
             'date' => now(),
-            'due_date' => now()
+            'due_date' => now(),
         ]);
 
 
         $i2_overdue = Invoice::factory()->create([
-           'client_id' => $gbp->id,
-           'user_id' => $this->user->id,
-           'company_id' => $company->id,
-           'amount' => 100,
-           'balance' => 100,
-           'paid_to_date' => 0,
-           'status_id' => 2,
-           'date' => now(),
-           'due_date' => now()->subDays(10)
-       ]);
+            'client_id' => $gbp->id,
+            'user_id' => $this->user->id,
+            'company_id' => $company->id,
+            'amount' => 100,
+            'balance' => 100,
+            'paid_to_date' => 0,
+            'status_id' => 2,
+            'date' => now(),
+            'due_date' => now()->subDays(10),
+        ]);
 
         $i1->service()->markPaid()->save();
         $i2->service()->markPaid()->save();

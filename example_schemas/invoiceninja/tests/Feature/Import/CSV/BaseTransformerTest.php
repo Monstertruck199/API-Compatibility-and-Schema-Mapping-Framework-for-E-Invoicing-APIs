@@ -38,7 +38,7 @@ class BaseTransformerTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
         config(['database.default' => config('ninja.db.default')]);
 

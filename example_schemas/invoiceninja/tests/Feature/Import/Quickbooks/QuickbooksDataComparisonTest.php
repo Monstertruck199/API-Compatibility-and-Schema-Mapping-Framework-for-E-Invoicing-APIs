@@ -13,7 +13,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
  * Test suite to compare data imported from QuickBooks to Invoice Ninja.
- * 
+ *
  * These tests compare all imported fields between QuickBooks and Invoice Ninja models.
  * Model-only comparisons - no calculations are performed.
  */
@@ -49,7 +49,7 @@ class QuickbooksDataComparisonTest extends TestCase
         // Check if token is expired
         if ($company->quickbooks->accessTokenExpiresAt < time()) {
             // Token is expired - check if refresh token is also expired
-            if ($company->quickbooks->refreshTokenExpiresAt > 0 && 
+            if ($company->quickbooks->refreshTokenExpiresAt > 0 &&
                 $company->quickbooks->refreshTokenExpiresAt < time()) {
                 return true; // Both access and refresh tokens are expired
             }
@@ -71,7 +71,7 @@ class QuickbooksDataComparisonTest extends TestCase
             // The SDK is already configured with the correct RealmID via QBORealmID in the config
             // If we can successfully fetch company info, we're connected to the correct realm
             $company_info = $qb_service->sdk()->company();
-            
+
             if ($company_info) {
                 $expected_realm_id = $company->quickbooks->realmID;
                 // nlog("Company {$company->id}: Connected to Realm ID {$expected_realm_id}");
@@ -79,16 +79,16 @@ class QuickbooksDataComparisonTest extends TestCase
             }
         } catch (\Exception $e) {
             $error_message = $e->getMessage();
-            
+
             // Check if it's an authentication error
-            if (str_contains($error_message, '401') || 
+            if (str_contains($error_message, '401') ||
                 str_contains($error_message, 'AuthenticationFailed') ||
                 str_contains($error_message, 'Token expired')) {
                 // nlog("Company {$company->id}: Authentication failed - token expired or invalid");
             } else {
                 // nlog("Company {$company->id}: Failed to connect to QuickBooks - " . $error_message);
             }
-            
+
             return false;
         }
 
@@ -105,17 +105,16 @@ class QuickbooksDataComparisonTest extends TestCase
         // Check if token is expired before attempting to create service
         if (!$company) {
             $this->markTestSkipped("Company with automatic taxes is not found");
-        }
-        elseif ($this->isTokenExpired($company)) {
+        } elseif ($this->isTokenExpired($company)) {
             $this->markTestSkipped("QuickBooks token is expired and cannot be refreshed for company {$company->id}");
         }
-        
+
 
         $this->assertNotNull($company);
 
-        
+
         $qb_service = new QuickbooksService($company);
-           
+
         $this->assertNotNull($company, 'Company with automatic taxes is not found');
 
         $client = Client::where('client_hash', "INeedAStableClientThatIsInTheExactRegionToTestTaxes")->first();
@@ -150,7 +149,7 @@ class QuickbooksDataComparisonTest extends TestCase
                 'last_name' => 'Doe',
             ]);
 
-            $qb_service->client->syncToForeign([$client]);            
+            $qb_service->client->syncToForeign([$client]);
         }
 
         $this->assertNotNull($client);
@@ -232,7 +231,7 @@ class QuickbooksDataComparisonTest extends TestCase
         ]);
 
         $invoice = $invoice->calc()->getInvoice()->service()->markSent()->save();
-    
+
 
         // Check if token is expired before attempting to create service
         if ($this->isTokenExpired($company)) {
@@ -247,56 +246,62 @@ class QuickbooksDataComparisonTest extends TestCase
 
         // Create the invoice in QuickBooks
         $qb_service->invoice->syncToForeign([$invoice]);
-        
+
         // Refresh the invoice to get the updated qb_id
         $invoice->refresh();
         $qb_id = $invoice->sync->qb_id ?? null;
-        
+
         if (empty($qb_id)) {
             $this->fail("Failed to create invoice in QuickBooks - no qb_id was returned");
         }
-        
+
         nlog("Invoice {$invoice_number} created in QuickBooks with QB ID: {$qb_id}");
-        
+
         // Fetch the created invoice from QuickBooks
         $qb_invoice = $qb_service->invoice->find($qb_id);
         $this->assertNotNull($qb_invoice, 'Failed to fetch newly created invoice from QuickBooks');
-        
+
         // Verify tax-exempt line item has TaxCodeRef = 'NON' in QuickBooks
         $qb_lines = data_get($qb_invoice, 'Line', []);
         if (!is_array($qb_lines)) {
             $qb_lines = [$qb_lines];
         }
-        
+
         // Verify tax calculations: only the taxable line item ($100) should be taxed
         // The tax-exempt line item ($150) should not be included in tax calculations
         $qb_total_tax = (float) data_get($qb_invoice, 'TxnTaxDetail.TotalTax', 0);
         $qb_subtotal = (float) data_get($qb_invoice, 'SubTotalLine.TotalAmt', 0);
-        
+
         // If SubTotalLine is not available, calculate from TotalAmt - TotalTax
         if ($qb_subtotal == 0) {
             $qb_total_amt = (float) data_get($qb_invoice, 'TotalAmt', 0);
             $qb_subtotal = $qb_total_amt - $qb_total_tax;
         }
-        
+
         // The subtotal should be $250 (100 + 150)
         $expected_subtotal = 250.00;
         $this->assertEqualsWithDelta(
             $expected_subtotal,
             $qb_subtotal,
             0.01,
-            "Invoice subtotal should be {$expected_subtotal} (taxable: 100 + tax-exempt: 150), but got {$qb_subtotal}"
+            "Invoice subtotal should be {$expected_subtotal} (taxable: 100 + tax-exempt: 150), but got {$qb_subtotal}",
         );
-        
-        $this->assertGreaterThan(0, $qb_total_tax, 
-            "Tax should be greater than 0 since we have a taxable line item, but got {$qb_total_tax}");
-        
-        $max_expected_tax_on_taxable_only = 100 * 0.10; 
-        $this->assertLessThanOrEqual($max_expected_tax_on_taxable_only, $qb_total_tax,
-            "Tax should only be calculated on the taxable line item (\$100), not on the full amount. Tax: {$qb_total_tax}");
-        
+
+        $this->assertGreaterThan(
+            0,
+            $qb_total_tax,
+            "Tax should be greater than 0 since we have a taxable line item, but got {$qb_total_tax}",
+        );
+
+        $max_expected_tax_on_taxable_only = 100 * 0.10;
+        $this->assertLessThanOrEqual(
+            $max_expected_tax_on_taxable_only,
+            $qb_total_tax,
+            "Tax should only be calculated on the taxable line item (\$100), not on the full amount. Tax: {$qb_total_tax}",
+        );
+
         nlog("Tax verification: QB TotalTax={$qb_total_tax}, Subtotal={$qb_subtotal}, Expected Subtotal={$expected_subtotal}");
-        
+
         // Perform the full comparison
         $this->compareInvoiceForCompany($invoice, $company, $qb_service);
     }
@@ -313,10 +318,10 @@ class QuickbooksDataComparisonTest extends TestCase
         elseif ($this->isTokenExpired($company)) {
             $this->markTestSkipped("QuickBooks token is expired and cannot be refreshed for company {$company->id}");
         }
-        
+
 
         $qb_service = new QuickbooksService($company);
-           
+
         $this->assertNotNull($company, 'Company with automatic taxes is not found');
 
         $client = Client::where('client_hash', "INeedAStableClientThatIsInTheExactRegionToTestTaxes")->first();
@@ -351,7 +356,7 @@ class QuickbooksDataComparisonTest extends TestCase
                 'last_name' => 'Doe',
             ]);
 
-            $qb_service->client->syncToForeign([$client]);            
+            $qb_service->client->syncToForeign([$client]);
         }
 
         $this->assertNotNull($client);
@@ -419,7 +424,7 @@ class QuickbooksDataComparisonTest extends TestCase
         ]);
 
         $invoice = $invoice->calc()->getInvoice()->service()->markSent()->save();
-    
+
 
         // Check if token is expired before attempting to create service
         if ($this->isTokenExpired($company)) {
@@ -434,21 +439,21 @@ class QuickbooksDataComparisonTest extends TestCase
 
         // Create the invoice in QuickBooks
         $qb_service->invoice->syncToForeign([$invoice]);
-        
+
         // Refresh the invoice to get the updated qb_id
         $invoice->refresh();
         $qb_id = $invoice->sync->qb_id ?? null;
-        
+
         if (empty($qb_id)) {
             $this->fail("Failed to create invoice in QuickBooks - no qb_id was returned");
         }
-        
+
         nlog("Invoice {$invoice_number} created in QuickBooks with QB ID: {$qb_id}");
-        
+
         // Fetch the created invoice from QuickBooks
         $qb_invoice = $qb_service->invoice->find($qb_id);
         $this->assertNotNull($qb_invoice, 'Failed to fetch newly created invoice from QuickBooks');
-        
+
         // Perform the comparison
         $this->compareInvoiceForCompany($invoice, $company, $qb_service);
     }
@@ -466,20 +471,20 @@ class QuickbooksDataComparisonTest extends TestCase
         $invoice = Invoice::where('number', $invoice_number)->first();
 
         if (!$invoice) {
-            
+
             $client = Client::whereNotNull('sync->qb_id')->first();
-            
+
             if (!$client) {
                 $this->markTestSkipped("Company not found");
             }
             $company = $client->company;
 
-            
-                    // Check if token is expired before attempting to create service
+
+            // Check if token is expired before attempting to create service
             if ($this->isTokenExpired($company)) {
                 $this->markTestSkipped("QuickBooks token is expired and cannot be refreshed for company {$company->id}");
             }
-            
+
             $tax_rate_map = $company->quickbooks->settings->tax_rate_map ?? [];
 
             $name = $tax_rate_map[0]['name'] ?? '';
@@ -566,25 +571,25 @@ class QuickbooksDataComparisonTest extends TestCase
         if (empty($qb_id)) {
             // Invoice doesn't have a qb_id, create it in QuickBooks
             nlog("Invoice {$invoice_number} (ID: {$invoice->id}) does not have a qb_id. Creating in QuickBooks...");
-            
+
             try {
                 // Create the invoice in QuickBooks
                 $qb_service->invoice->syncToForeign([$invoice]);
-                
+
                 // Refresh the invoice to get the updated qb_id
                 $invoice->refresh();
                 $qb_id = $invoice->sync->qb_id ?? null;
-                
+
                 if (empty($qb_id)) {
                     $this->fail("Failed to create invoice in QuickBooks - no qb_id was returned");
                 }
-                
+
                 nlog("Invoice {$invoice_number} created in QuickBooks with QB ID: {$qb_id}");
-                
+
                 // Fetch the created invoice from QuickBooks
                 $qb_invoice = $qb_service->invoice->find($qb_id);
                 $this->assertNotNull($qb_invoice, 'Failed to fetch newly created invoice from QuickBooks');
-                
+
             } catch (\Exception $e) {
                 $qb_company_name = $company->quickbooks->companyName ?? 'NOT AVAILABLE';
                 nlog("ERROR creating invoice {$invoice_number} in QuickBooks (Company {$company->id}): " . $e->getMessage());
@@ -595,7 +600,7 @@ class QuickbooksDataComparisonTest extends TestCase
         } else {
             // Invoice already has a qb_id, just fetch it from QuickBooks
             nlog("Invoice {$invoice_number} (ID: {$invoice->id}) already has qb_id: {$qb_id}. Fetching from QuickBooks...");
-            
+
             try {
                 $qb_invoice = $qb_service->invoice->find($qb_id);
                 $this->assertNotNull($qb_invoice, 'Failed to fetch invoice from QuickBooks. This may indicate the qb_id belongs to a different realm.');
@@ -622,9 +627,9 @@ class QuickbooksDataComparisonTest extends TestCase
     //     $invoice = Invoice::where('number', $invoice_number)->first();
 
     //     if (!$invoice) {
-            
+
     //         $client = Client::whereNotNull('sync->qb_id')->first();
-            
+
     //         $company = $client->company;
     //         $tax_rate_map = $company->quickbooks->settings->tax_rate_map ?? [];
 
@@ -712,25 +717,25 @@ class QuickbooksDataComparisonTest extends TestCase
     //     if (empty($qb_id)) {
     //         // Invoice doesn't have a qb_id, create it in QuickBooks
     //         nlog("Invoice {$invoice_number} (ID: {$invoice->id}) does not have a qb_id. Creating in QuickBooks...");
-            
+
     //         try {
     //             // Create the invoice in QuickBooks
     //             $qb_service->invoice->syncToForeign([$invoice]);
-                
+
     //             // Refresh the invoice to get the updated qb_id
     //             $invoice->refresh();
     //             $qb_id = $invoice->sync->qb_id ?? null;
-                
+
     //             if (empty($qb_id)) {
     //                 $this->fail("Failed to create invoice in QuickBooks - no qb_id was returned");
     //             }
-                
+
     //             nlog("Invoice {$invoice_number} created in QuickBooks with QB ID: {$qb_id}");
-                
+
     //             // Fetch the created invoice from QuickBooks
     //             $qb_invoice = $qb_service->invoice->find($qb_id);
     //             $this->assertNotNull($qb_invoice, 'Failed to fetch newly created invoice from QuickBooks');
-                
+
     //         } catch (\Exception $e) {
     //             $qb_company_name = $company->quickbooks->companyName ?? 'NOT AVAILABLE';
     //             nlog("ERROR creating invoice {$invoice_number} in QuickBooks (Company {$company->id}): " . $e->getMessage());
@@ -741,7 +746,7 @@ class QuickbooksDataComparisonTest extends TestCase
     //     } else {
     //         // Invoice already has a qb_id, just fetch it from QuickBooks
     //         nlog("Invoice {$invoice_number} (ID: {$invoice->id}) already has qb_id: {$qb_id}. Fetching from QuickBooks...");
-            
+
     //         try {
     //             $qb_invoice = $qb_service->invoice->find($qb_id);
     //             $this->assertNotNull($qb_invoice, 'Failed to fetch invoice from QuickBooks. This may indicate the qb_id belongs to a different realm.');
@@ -820,9 +825,9 @@ class QuickbooksDataComparisonTest extends TestCase
                 // nlog("=== Completed Company {$company->id} ===");
             } catch (\Exception $e) {
                 $error_message = $e->getMessage();
-                
+
                 // Check if it's an authentication/token error
-                if (str_contains($error_message, 'token expired') || 
+                if (str_contains($error_message, 'token expired') ||
                     str_contains($error_message, 'invalid_grant') ||
                     str_contains($error_message, 'AuthenticationFailed') ||
                     str_contains($error_message, '401') ||
@@ -831,13 +836,13 @@ class QuickbooksDataComparisonTest extends TestCase
                 } else {
                     // Get QuickBooks company name (from cached value if available)
                     $qb_company_name = $company->quickbooks->companyName ?? 'NOT AVAILABLE';
-                    
+
                     // nlog("ERROR processing company {$company->id} (Invoices): " . $error_message);
                     // nlog("Invoice Ninja Company Name: {$company->name}");
                     // nlog("QuickBooks Company Name: {$qb_company_name}");
                     // nlog("Realm ID: {$company->quickbooks->realmID}");
                 }
-                
+
                 $skipped_companies++;
                 continue;
             }
@@ -868,7 +873,7 @@ class QuickbooksDataComparisonTest extends TestCase
         // Verify client reference matches to ensure we're comparing records from the same realm
         $qb_customer_ref = data_get($qb_invoice, 'CustomerRef.value') ?? data_get($qb_invoice, 'CustomerRef');
         $ninja_client_qb_id = $invoice->client->sync->qb_id ?? null;
-        
+
         // nlog("=== QuickBooks Invoice Comparison ===");
         // nlog("Invoice Ninja ID: {$invoice->id}");
         // nlog("QuickBooks ID: {$qb_id}");
@@ -880,7 +885,7 @@ class QuickbooksDataComparisonTest extends TestCase
         // nlog("  QB CustomerRef: " . ($qb_customer_ref ?? 'NOT FOUND'));
         // nlog("  Ninja Client QB ID: " . ($ninja_client_qb_id ?? 'NOT FOUND'));
         // nlog("  Client Match: " . ($qb_customer_ref === $ninja_client_qb_id ? 'YES' : 'NO'));
-        
+
         // Verify client reference matches
         if (empty($qb_customer_ref)) {
             nlog("  WARNING: QuickBooks invoice has no CustomerRef - cannot verify client match");
@@ -892,12 +897,12 @@ class QuickbooksDataComparisonTest extends TestCase
             nlog("  ERROR: Client reference mismatch!");
             nlog("  This may indicate the invoice belongs to a different QuickBooks realm.");
             nlog("  Invoice Ninja Client ID: {$invoice->client->id}, Name: {$client_name}");
-            
+
             // Try to find if there's a client in this company with the QB customer ref
             $matching_client = \App\Models\Client::where('company_id', $company->id)
                 ->where('sync->qb_id', $qb_customer_ref)
                 ->first();
-            
+
             if ($matching_client) {
                 nlog("  Found client in this company with QB ID {$qb_customer_ref}: Client ID {$matching_client->id}, Name: {$matching_client->name}");
                 nlog("  This suggests the invoice's client reference is incorrect or the invoice belongs to a different client.");
@@ -905,10 +910,10 @@ class QuickbooksDataComparisonTest extends TestCase
                 nlog("  No client found in this company with QB ID {$qb_customer_ref}");
                 nlog("  This strongly suggests the invoice belongs to a different QuickBooks realm.");
             }
-            
+
             $this->fail("Client reference mismatch for invoice ID {$invoice->id}. QB CustomerRef: [{$qb_customer_ref}], Ninja Client QB ID: [{$ninja_client_qb_id}]. This may indicate the invoice belongs to a different QuickBooks realm.");
         }
-        
+
         // Additional verification: ensure the client belongs to the same company
         if ($invoice->client->company_id !== $company->id) {
             $this->fail("Invoice client belongs to different company. Invoice client company_id: {$invoice->client->company_id}, Expected: {$company->id}");
@@ -916,7 +921,7 @@ class QuickbooksDataComparisonTest extends TestCase
 
         // Compare basic invoice fields
         $this->compareInvoiceBasicFields($invoice, $qb_invoice, $company);
-        
+
         // Compare line items
         // $this->compareInvoiceLineItems($invoice, $qb_invoice, $company);
 
@@ -941,7 +946,7 @@ class QuickbooksDataComparisonTest extends TestCase
             $this->assertEquals(
                 $qb_doc_number,
                 $invoice->number,
-                "Invoice number mismatch for invoice ID {$invoice->id}"
+                "Invoice number mismatch for invoice ID {$invoice->id}",
             );
         }
 
@@ -956,7 +961,7 @@ class QuickbooksDataComparisonTest extends TestCase
             $this->assertEquals(
                 $qb_date,
                 $invoice->date,
-                "Invoice date mismatch for invoice ID {$invoice->id}"
+                "Invoice date mismatch for invoice ID {$invoice->id}",
             );
         }
 
@@ -966,17 +971,17 @@ class QuickbooksDataComparisonTest extends TestCase
             $this->assertEquals(
                 $qb_due_date,
                 $invoice->due_date,
-                "Invoice due date mismatch for invoice ID {$invoice->id}"
+                "Invoice due date mismatch for invoice ID {$invoice->id}",
             );
         }
 
         // Compare notes
         $qb_private_note = data_get($qb_invoice, 'PrivateNote', '');
-        
+
         $this->assertEquals(
             $qb_private_note,
             $invoice->private_notes,
-            "Invoice private notes mismatch for invoice ID {$invoice->id}"
+            "Invoice private notes mismatch for invoice ID {$invoice->id}",
         );
 
         $qb_public_note = data_get($qb_invoice, 'CustomerMemo', false);
@@ -985,7 +990,7 @@ class QuickbooksDataComparisonTest extends TestCase
             $this->assertStringContainsString(
                 strip_tags(str_replace("\n", "", $qb_public_note)),
                 strip_tags(str_replace("\n", "", $invoice->public_notes)),
-                "Invoice public notes mismatch for invoice ID {$invoice->id}"
+                "Invoice public notes mismatch for invoice ID {$invoice->id}",
             );
         }
 
@@ -1000,7 +1005,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_po_number,
             $ninja_po_number,
-            "Invoice PO number mismatch for invoice ID {$invoice->id}"
+            "Invoice PO number mismatch for invoice ID {$invoice->id}",
         );
 
         // Compare partial/deposit
@@ -1016,7 +1021,7 @@ class QuickbooksDataComparisonTest extends TestCase
             (float) $qb_deposit,
             (float) $ninja_partial,
             0.01,
-            "Invoice partial/deposit mismatch for invoice ID {$invoice->id}"
+            "Invoice partial/deposit mismatch for invoice ID {$invoice->id}",
         );
 
         // Compare total amount (model field, not calculated)
@@ -1026,7 +1031,7 @@ class QuickbooksDataComparisonTest extends TestCase
         // $match = abs((float) $qb_total_amt - (float) $ninja_amount) < 0.001;
         $difference = abs((float) $qb_total_amt - (float) $ninja_amount);
         $ratio = $ninja_amount > 0 ? (float) $qb_total_amt / (float) $ninja_amount : 0;
-        
+
         // nlog("Amount: QB TotalAmt={$qb_total_amt}, Ninja amount={$ninja_amount}, Match=" . ($match ? 'YES' : 'NO') . ", Difference={$difference}, Ratio={$ratio}");
         $qb_tax = (string) data_get($qb_invoice, 'TxnTaxDetail.TotalTax', 0);
         $ninja_tax = (string) ($invoice->total_taxes ?? 0);
@@ -1046,7 +1051,7 @@ class QuickbooksDataComparisonTest extends TestCase
             $qb_lines_normalized = empty($qb_lines_raw) ? [] : (is_array($qb_lines_raw) ? $qb_lines_raw : [$qb_lines_raw]);
             $qb_line_count = count(array_filter($qb_lines_normalized, fn($line) => data_get($line, 'DetailType') === 'SalesItemLineDetail'));
             $ninja_line_count = count($invoice->line_items ?? []);
-            
+
             nlog("MISMATCH DIAGNOSTICS for Invoice ID {$invoice->id}:");
             nlog("  QB Subtotal: {$qb_subtotal}, Ninja Subtotal: {$ninja_subtotal}");
             nlog("  QB Tax: {$qb_tax}, Ninja Tax: {$ninja_tax}");
@@ -1054,12 +1059,12 @@ class QuickbooksDataComparisonTest extends TestCase
             nlog("  QB Balance: " . data_get($qb_invoice, 'Balance', 'N/A') . ", Ninja Balance: {$invoice->balance}");
             nlog("  QB Paid: " . data_get($qb_invoice, 'Balance', 0) . " (calculated from TotalAmt - Balance), Ninja Paid: {$invoice->paid_to_date}");
         }
-        
+
         $this->assertEqualsWithDelta(
             (float) $qb_total_amt,
             (float) $ninja_amount,
             0.01,
-            "Invoice amount mismatch for invoice ID {$invoice->id}. QB TotalAmt: {$qb_total_amt}, Ninja amount: {$ninja_amount}, Difference: {$difference}, Ratio: {$ratio}"
+            "Invoice amount mismatch for invoice ID {$invoice->id}. QB TotalAmt: {$qb_total_amt}, Ninja amount: {$ninja_amount}, Difference: {$difference}, Ratio: {$ratio}",
         );
 
         // Compare balance (model field, not calculated)
@@ -1075,7 +1080,7 @@ class QuickbooksDataComparisonTest extends TestCase
             (float) $qb_balance,
             (float) $ninja_balance,
             0.01,
-            "Invoice balance mismatch for invoice ID {$invoice->id}. QB Balance: {$qb_balance}, Ninja balance: {$ninja_balance}"
+            "Invoice balance mismatch for invoice ID {$invoice->id}. QB Balance: {$qb_balance}, Ninja balance: {$ninja_balance}",
         );
 
         // Compare total taxes (model field, not calculated)
@@ -1091,7 +1096,7 @@ class QuickbooksDataComparisonTest extends TestCase
             (float) $qb_total_tax,
             (float) $ninja_total_taxes,
             0.01,
-            "Invoice total taxes mismatch for invoice ID {$invoice->id}. QB TxnTaxDetail.TotalTax: {$qb_total_tax}, Ninja total_taxes: {$ninja_total_taxes}"
+            "Invoice total taxes mismatch for invoice ID {$invoice->id}. QB TxnTaxDetail.TotalTax: {$qb_total_tax}, Ninja total_taxes: {$ninja_total_taxes}",
         );
     }
 
@@ -1122,27 +1127,27 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertCount(
             $ninja_line_count,
             $qb_sales_lines,
-            "Line item count mismatch for invoice ID {$invoice->id}"
+            "Line item count mismatch for invoice ID {$invoice->id}",
         );
 
         // Build a map of QB lines by product key for matching
         // Key: product_key (from ItemRef -> Product lookup), Value: QB line item
         $qb_lines_by_product_key = [];
         $qb_lines_by_item_ref = [];
-        
+
         foreach ($qb_sales_lines as $qb_line) {
             $qb_detail = data_get($qb_line, 'SalesItemLineDetail', []);
             $qb_item_ref = data_get($qb_detail, 'ItemRef.value');
-            
+
             if ($qb_item_ref) {
                 // Store by ItemRef
                 $qb_lines_by_item_ref[$qb_item_ref] = $qb_line;
-                
+
                 // Also try to find product and store by product_key
                 $product = Product::where('company_id', $company->id)
                     ->where('sync->qb_id', $qb_item_ref)
                     ->first();
-                
+
                 if ($product && $product->product_key) {
                     // If multiple lines have same product_key, store as array
                     if (!isset($qb_lines_by_product_key[$product->product_key])) {
@@ -1181,10 +1186,10 @@ class QuickbooksDataComparisonTest extends TestCase
                     ->where('product_key', $ninja_product_key)
                     ->whereNotNull('sync->qb_id')
                     ->first();
-                
+
                 if ($ninja_product && $ninja_product->sync->qb_id) {
                     $ninja_product_qb_id = $ninja_product->sync->qb_id;
-                    if (isset($qb_lines_by_item_ref[$ninja_product_qb_id]) && 
+                    if (isset($qb_lines_by_item_ref[$ninja_product_qb_id]) &&
                         !in_array($ninja_product_qb_id, $matched_qb_lines)) {
                         $qb_line = $qb_lines_by_item_ref[$ninja_product_qb_id];
                         $match_method = 'qb_id';
@@ -1209,25 +1214,25 @@ class QuickbooksDataComparisonTest extends TestCase
                 $product = Product::where('company_id', $company->id)
                     ->where('sync->qb_id', $qb_item_ref)
                     ->first();
-                
+
                 if ($product) {
                     $match = $product->product_key === $ninja_product_key;
                     // nlog("    Product Key: QB ItemRef={$qb_item_ref}, Product={$product->product_key}, Ninja={$ninja_product_key}, Match=" . ($match ? 'YES' : 'NO'));
                     if (!$match) {
                         nlog("    MISMATCH: Line item {$index} product key - QB ItemRef: [{$qb_item_ref}], Product: [{$product->product_key}], Ninja: [{$ninja_product_key}]");
                     }
-                    
+
                     $this->assertEquals(
                         $product->product_key,
                         $ninja_product_key,
-                        "Line item {$index} product_key mismatch for invoice ID {$invoice->id}"
+                        "Line item {$index} product_key mismatch for invoice ID {$invoice->id}",
                     );
-                    
+
                     // Verify the product's qb_id matches the QuickBooks ItemRef
                     $this->assertEquals(
                         $qb_item_ref,
                         $product->sync->qb_id,
-                        "Line item {$index} product qb_id mismatch - QB ItemRef: {$qb_item_ref}, Product sync qb_id: {$product->sync->qb_id}"
+                        "Line item {$index} product qb_id mismatch - QB ItemRef: {$qb_item_ref}, Product sync qb_id: {$product->sync->qb_id}",
                     );
                 } else {
                     nlog("    WARNING: QB ItemRef [{$qb_item_ref}] not found in company products - cannot verify product key match");
@@ -1247,7 +1252,7 @@ class QuickbooksDataComparisonTest extends TestCase
                 (float) $qb_qty,
                 (float) $ninja_qty,
                 0.01,
-                "Line item {$index} quantity mismatch for invoice ID {$invoice->id}"
+                "Line item {$index} quantity mismatch for invoice ID {$invoice->id}",
             );
 
             // Compare unit price
@@ -1263,7 +1268,7 @@ class QuickbooksDataComparisonTest extends TestCase
                 (float) $qb_unit_price,
                 (float) $ninja_cost,
                 0.01,
-                "Line item {$index} unit price mismatch for invoice ID {$invoice->id}"
+                "Line item {$index} unit price mismatch for invoice ID {$invoice->id}",
             );
 
             // Compare line amount
@@ -1279,7 +1284,7 @@ class QuickbooksDataComparisonTest extends TestCase
                 (float) $qb_line_amount,
                 (float) $ninja_line_total,
                 0.01,
-                "Line item {$index} amount mismatch for invoice ID {$invoice->id}. QB: [{$qb_line_amount}], Ninja: [{$ninja_line_total}], Difference: " . abs((float) $qb_line_amount - (float) $ninja_line_total)
+                "Line item {$index} amount mismatch for invoice ID {$invoice->id}. QB: [{$qb_line_amount}], Ninja: [{$ninja_line_total}], Difference: " . abs((float) $qb_line_amount - (float) $ninja_line_total),
             );
 
             // Compare description/notes
@@ -1293,7 +1298,7 @@ class QuickbooksDataComparisonTest extends TestCase
             $this->assertEquals(
                 $qb_description,
                 $ninja_notes,
-                "Line item {$index} description mismatch for invoice ID {$invoice->id}. QB: [{$qb_description}], Ninja: [{$ninja_notes}]"
+                "Line item {$index} description mismatch for invoice ID {$invoice->id}. QB: [{$qb_description}], Ninja: [{$ninja_notes}]",
             );
 
             // Compare tax state (TaxCodeRef)
@@ -1302,7 +1307,7 @@ class QuickbooksDataComparisonTest extends TestCase
                             ?? data_get($qb_line, 'TaxCodeRef.value')
                             ?? data_get($qb_line, 'TaxCodeRef')
                             ?? '';
-            
+
             // Determine expected tax state in Invoice Ninja
             // QuickBooks: 'NON' = non-taxable, 'TAX' = taxable, or other tax codes
             // Invoice Ninja: tax_id = '5' (exempt) or '8' (zero rate) for non-taxable, otherwise taxable
@@ -1312,20 +1317,20 @@ class QuickbooksDataComparisonTest extends TestCase
                 (isset($ninja_item->tax_rate2) && $ninja_item->tax_rate2 > 0) ||
                 (isset($ninja_item->tax_rate3) && $ninja_item->tax_rate3 > 0)
             );
-            
+
             // Determine if Ninja line item is taxable
             $ninja_is_taxable = !in_array($ninja_tax_id, ['5', '8']) && $ninja_has_tax_rates;
             $expected_qb_tax_code = $ninja_is_taxable ? 'TAX' : 'NON';
-            
+
             // For comparison, we'll check if QB tax code matches expected state
             // Note: QuickBooks may use other tax codes besides 'TAX'/'NON', so we check if it's non-taxable
             $qb_is_taxable = !empty($qb_tax_code_ref) && $qb_tax_code_ref !== 'NON';
             $match = $qb_is_taxable === $ninja_is_taxable;
-            
+
             $ninja_tax_rate1 = (string) ($ninja_item->tax_rate1 ?? 0);
             $ninja_tax_rate2 = (string) ($ninja_item->tax_rate2 ?? 0);
             $ninja_tax_rate3 = (string) ($ninja_item->tax_rate3 ?? 0);
-            
+
             // nlog("    Tax State: QB TaxCodeRef={$qb_tax_code_ref}, Ninja tax_id={$ninja_tax_id}, Ninja has_tax_rates=" . ($ninja_has_tax_rates ? 'YES' : 'NO') . ", QB taxable=" . ($qb_is_taxable ? 'YES' : 'NO') . ", Ninja taxable=" . ($ninja_is_taxable ? 'YES' : 'NO') . ", Match=" . ($match ? 'YES' : 'NO'));
             if (!$match) {
                 nlog("    MISMATCH: Line item {$index} tax state - QB TaxCodeRef: [{$qb_tax_code_ref}], Ninja tax_id: [{$ninja_tax_id}], Ninja tax_rate1: [{$ninja_tax_rate1}], tax_rate2: [{$ninja_tax_rate2}], tax_rate3: [{$ninja_tax_rate3}]");
@@ -1333,7 +1338,7 @@ class QuickbooksDataComparisonTest extends TestCase
             $this->assertEquals(
                 $qb_is_taxable,
                 $ninja_is_taxable,
-                "Line item {$index} tax state mismatch for invoice ID {$invoice->id}. QB TaxCodeRef: [{$qb_tax_code_ref}], Ninja tax_id: [{$ninja_tax_id}], Ninja has tax rates: " . ($ninja_has_tax_rates ? 'YES' : 'NO')
+                "Line item {$index} tax state mismatch for invoice ID {$invoice->id}. QB TaxCodeRef: [{$qb_tax_code_ref}], Ninja tax_id: [{$ninja_tax_id}], Ninja has tax rates: " . ($ninja_has_tax_rates ? 'YES' : 'NO'),
             );
 
             // Compare income account ID
@@ -1341,7 +1346,7 @@ class QuickbooksDataComparisonTest extends TestCase
                                   ?? data_get($qb_detail, 'IncomeAccountRef')
                                   ?? '';
             $ninja_income_account_id = (string) ($ninja_item->income_account_id ?? '');
-            
+
             // If QuickBooks has an income account but Ninja doesn't, or vice versa, log it
             // Note: IncomeAccountRef may not always be present in QB line items (it can be inherited from the item)
             if (!empty($qb_income_account_ref) || !empty($ninja_income_account_id)) {
@@ -1355,7 +1360,7 @@ class QuickbooksDataComparisonTest extends TestCase
                     $this->assertEquals(
                         $qb_income_account_ref,
                         $ninja_income_account_id,
-                        "Line item {$index} income account ID mismatch for invoice ID {$invoice->id}. QB IncomeAccountRef: [{$qb_income_account_ref}], Ninja income_account_id: [{$ninja_income_account_id}]"
+                        "Line item {$index} income account ID mismatch for invoice ID {$invoice->id}. QB IncomeAccountRef: [{$qb_income_account_ref}], Ninja income_account_id: [{$ninja_income_account_id}]",
                     );
                 } elseif (!empty($qb_income_account_ref) && empty($ninja_income_account_id)) {
                     nlog("    WARNING: QuickBooks has IncomeAccountRef [{$qb_income_account_ref}] but Invoice Ninja line item has no income_account_id");
@@ -1430,9 +1435,9 @@ class QuickbooksDataComparisonTest extends TestCase
                 // nlog("=== Completed Company {$company->id} ===");
             } catch (\Exception $e) {
                 $error_message = $e->getMessage();
-                
+
                 // Check if it's an authentication/token error
-                if (str_contains($error_message, 'token expired') || 
+                if (str_contains($error_message, 'token expired') ||
                     str_contains($error_message, 'invalid_grant') ||
                     str_contains($error_message, 'AuthenticationFailed') ||
                     str_contains($error_message, '401') ||
@@ -1441,13 +1446,13 @@ class QuickbooksDataComparisonTest extends TestCase
                 } else {
                     // Get QuickBooks company name (from cached value if available)
                     $qb_company_name = $company->quickbooks->companyName ?? 'NOT AVAILABLE';
-                    
+
                     // nlog("ERROR processing company {$company->id} (Clients): " . $error_message);
                     // nlog("Invoice Ninja Company Name: {$company->name}");
                     // nlog("QuickBooks Company Name: {$qb_company_name}");
                     // nlog("Realm ID: {$company->quickbooks->realmID}");
                 }
-                
+
                 $skipped_companies++;
                 continue;
             }
@@ -1486,7 +1491,7 @@ class QuickbooksDataComparisonTest extends TestCase
 
         // Compare basic client fields
         $this->compareClientBasicFields($client, $qb_client);
-        
+
         // Compare contact information
         $this->compareClientContactFields($client, $qb_client);
 
@@ -1512,12 +1517,12 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_company_name,
             $ninja_name,
-            "Client name mismatch for client ID {$client->id}. QB: [{$qb_company_name}], Ninja: [{$ninja_name}]"
+            "Client name mismatch for client ID {$client->id}. QB: [{$qb_company_name}], Ninja: [{$ninja_name}]",
         );
 
         // Compare billing address
         $qb_bill_addr = data_get($qb_client, 'BillAddr', []);
-        
+
         $qb_address1 = data_get($qb_bill_addr, 'Line1', '');
         $ninja_address1 = $client->address1 ?? '';
         $match = $qb_address1 === $ninja_address1;
@@ -1528,7 +1533,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_address1,
             $ninja_address1,
-            "Client address1 mismatch for client ID {$client->id}. QB: [{$qb_address1}], Ninja: [{$ninja_address1}]"
+            "Client address1 mismatch for client ID {$client->id}. QB: [{$qb_address1}], Ninja: [{$ninja_address1}]",
         );
 
         $qb_address2 = data_get($qb_bill_addr, 'Line2', '');
@@ -1541,7 +1546,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_address2,
             $ninja_address2,
-            "Client address2 mismatch for client ID {$client->id}. QB: [{$qb_address2}], Ninja: [{$ninja_address2}]"
+            "Client address2 mismatch for client ID {$client->id}. QB: [{$qb_address2}], Ninja: [{$ninja_address2}]",
         );
 
         $qb_city = data_get($qb_bill_addr, 'City', '');
@@ -1554,7 +1559,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_city,
             $ninja_city,
-            "Client city mismatch for client ID {$client->id}. QB: [{$qb_city}], Ninja: [{$ninja_city}]"
+            "Client city mismatch for client ID {$client->id}. QB: [{$qb_city}], Ninja: [{$ninja_city}]",
         );
 
         $qb_state = data_get($qb_bill_addr, 'CountrySubDivisionCode', '');
@@ -1567,7 +1572,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_state,
             $ninja_state,
-            "Client state mismatch for client ID {$client->id}. QB: [{$qb_state}], Ninja: [{$ninja_state}]"
+            "Client state mismatch for client ID {$client->id}. QB: [{$qb_state}], Ninja: [{$ninja_state}]",
         );
 
         $qb_postal_code = data_get($qb_bill_addr, 'PostalCode', '');
@@ -1580,12 +1585,12 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_postal_code,
             $ninja_postal_code,
-            "Client postal_code mismatch for client ID {$client->id}. QB: [{$qb_postal_code}], Ninja: [{$ninja_postal_code}]"
+            "Client postal_code mismatch for client ID {$client->id}. QB: [{$qb_postal_code}], Ninja: [{$ninja_postal_code}]",
         );
 
         // Compare shipping address
         $qb_ship_addr = data_get($qb_client, 'ShipAddr', []);
-        
+
         $qb_ship_address1 = data_get($qb_ship_addr, 'Line1', '');
         $ninja_ship_address1 = $client->shipping_address1 ?? '';
         $match = $qb_ship_address1 === $ninja_ship_address1;
@@ -1596,7 +1601,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_ship_address1,
             $ninja_ship_address1,
-            "Client shipping_address1 mismatch for client ID {$client->id}. QB: [{$qb_ship_address1}], Ninja: [{$ninja_ship_address1}]"
+            "Client shipping_address1 mismatch for client ID {$client->id}. QB: [{$qb_ship_address1}], Ninja: [{$ninja_ship_address1}]",
         );
 
         $qb_ship_address2 = data_get($qb_ship_addr, 'Line2', '');
@@ -1609,7 +1614,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_ship_address2,
             $ninja_ship_address2,
-            "Client shipping_address2 mismatch for client ID {$client->id}. QB: [{$qb_ship_address2}], Ninja: [{$ninja_ship_address2}]"
+            "Client shipping_address2 mismatch for client ID {$client->id}. QB: [{$qb_ship_address2}], Ninja: [{$ninja_ship_address2}]",
         );
 
         $qb_ship_city = data_get($qb_ship_addr, 'City', '');
@@ -1622,7 +1627,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_ship_city,
             $ninja_ship_city,
-            "Client shipping_city mismatch for client ID {$client->id}. QB: [{$qb_ship_city}], Ninja: [{$ninja_ship_city}]"
+            "Client shipping_city mismatch for client ID {$client->id}. QB: [{$qb_ship_city}], Ninja: [{$ninja_ship_city}]",
         );
 
         $qb_ship_state = data_get($qb_ship_addr, 'CountrySubDivisionCode', '');
@@ -1635,7 +1640,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_ship_state,
             $ninja_ship_state,
-            "Client shipping_state mismatch for client ID {$client->id}. QB: [{$qb_ship_state}], Ninja: [{$ninja_ship_state}]"
+            "Client shipping_state mismatch for client ID {$client->id}. QB: [{$qb_ship_state}], Ninja: [{$ninja_ship_state}]",
         );
 
         $qb_ship_postal_code = data_get($qb_ship_addr, 'PostalCode', '');
@@ -1648,7 +1653,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_ship_postal_code,
             $ninja_ship_postal_code,
-            "Client shipping_postal_code mismatch for client ID {$client->id}. QB: [{$qb_ship_postal_code}], Ninja: [{$ninja_ship_postal_code}]"
+            "Client shipping_postal_code mismatch for client ID {$client->id}. QB: [{$qb_ship_postal_code}], Ninja: [{$ninja_ship_postal_code}]",
         );
 
         // Compare business number
@@ -1662,7 +1667,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_business_number,
             $ninja_id_number,
-            "Client id_number mismatch for client ID {$client->id}. QB: [{$qb_business_number}], Ninja: [{$ninja_id_number}]"
+            "Client id_number mismatch for client ID {$client->id}. QB: [{$qb_business_number}], Ninja: [{$ninja_id_number}]",
         );
 
         // Compare VAT number
@@ -1676,7 +1681,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_vat,
             $ninja_vat,
-            "Client vat_number mismatch for client ID {$client->id}. QB: [{$qb_vat}], Ninja: [{$ninja_vat}]"
+            "Client vat_number mismatch for client ID {$client->id}. QB: [{$qb_vat}], Ninja: [{$ninja_vat}]",
         );
 
         // Compare notes
@@ -1690,7 +1695,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_notes,
             $ninja_notes,
-            "Client private_notes mismatch for client ID {$client->id}. QB: [{$qb_notes}], Ninja: [{$ninja_notes}]"
+            "Client private_notes mismatch for client ID {$client->id}. QB: [{$qb_notes}], Ninja: [{$ninja_notes}]",
         );
 
         // Compare website
@@ -1704,7 +1709,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_website,
             $ninja_website,
-            "Client website mismatch for client ID {$client->id}. QB: [{$qb_website}], Ninja: [{$ninja_website}]"
+            "Client website mismatch for client ID {$client->id}. QB: [{$qb_website}], Ninja: [{$ninja_website}]",
         );
     }
 
@@ -1733,7 +1738,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_given_name,
             $ninja_first_name,
-            "Client contact first_name mismatch for client ID {$client->id}. QB: [{$qb_given_name}], Ninja: [{$ninja_first_name}]"
+            "Client contact first_name mismatch for client ID {$client->id}. QB: [{$qb_given_name}], Ninja: [{$ninja_first_name}]",
         );
 
         $qb_family_name = data_get($qb_client, 'FamilyName', '');
@@ -1746,7 +1751,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_family_name,
             $ninja_last_name,
-            "Client contact last_name mismatch for client ID {$client->id}. QB: [{$qb_family_name}], Ninja: [{$ninja_last_name}]"
+            "Client contact last_name mismatch for client ID {$client->id}. QB: [{$qb_family_name}], Ninja: [{$ninja_last_name}]",
         );
 
         // Compare email
@@ -1760,7 +1765,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_email,
             $ninja_email,
-            "Client contact email mismatch for client ID {$client->id}. QB: [{$qb_email}], Ninja: [{$ninja_email}]"
+            "Client contact email mismatch for client ID {$client->id}. QB: [{$qb_email}], Ninja: [{$ninja_email}]",
         );
 
         // Compare phone
@@ -1774,7 +1779,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_phone,
             $ninja_phone,
-            "Client contact phone mismatch for client ID {$client->id}. QB: [{$qb_phone}], Ninja: [{$ninja_phone}]"
+            "Client contact phone mismatch for client ID {$client->id}. QB: [{$qb_phone}], Ninja: [{$ninja_phone}]",
         );
     }
 
@@ -1840,9 +1845,9 @@ class QuickbooksDataComparisonTest extends TestCase
                 // nlog("=== Completed Company {$company->id} ===");
             } catch (\Exception $e) {
                 $error_message = $e->getMessage();
-                
+
                 // Check if it's an authentication/token error
-                if (str_contains($error_message, 'token expired') || 
+                if (str_contains($error_message, 'token expired') ||
                     str_contains($error_message, 'invalid_grant') ||
                     str_contains($error_message, 'AuthenticationFailed') ||
                     str_contains($error_message, '401') ||
@@ -1851,13 +1856,13 @@ class QuickbooksDataComparisonTest extends TestCase
                 } else {
                     // Get QuickBooks company name (from cached value if available)
                     $qb_company_name = $company->quickbooks->companyName ?? 'NOT AVAILABLE';
-                    
+
                     // nlog("ERROR processing company {$company->id} (Products): " . $error_message);
                     // nlog("Invoice Ninja Company Name: {$company->name}");
                     // nlog("QuickBooks Company Name: {$qb_company_name}");
                     // nlog("Realm ID: {$company->quickbooks->realmID}");
                 }
-                
+
                 $skipped_companies++;
                 continue;
             }
@@ -1922,7 +1927,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_name,
             $ninja_product_key,
-            "Product product_key mismatch for product ID {$product->id}. QB: [{$qb_name}], Ninja: [{$ninja_product_key}]"
+            "Product product_key mismatch for product ID {$product->id}. QB: [{$qb_name}], Ninja: [{$ninja_product_key}]",
         );
 
         // Compare description/notes
@@ -1936,7 +1941,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $qb_description,
             $ninja_notes,
-            "Product notes mismatch for product ID {$product->id}. QB: [{$qb_description}], Ninja: [{$ninja_notes}]"
+            "Product notes mismatch for product ID {$product->id}. QB: [{$qb_description}], Ninja: [{$ninja_notes}]",
         );
 
         // Compare cost (PurchaseCost in QB)
@@ -1952,7 +1957,7 @@ class QuickbooksDataComparisonTest extends TestCase
             (float) $qb_purchase_cost,
             (float) $ninja_cost,
             0.01,
-            "Product cost mismatch for product ID {$product->id}. QB PurchaseCost: [{$qb_purchase_cost}], Ninja cost: [{$ninja_cost}], Difference: " . abs((float) $qb_purchase_cost - (float) $ninja_cost)
+            "Product cost mismatch for product ID {$product->id}. QB PurchaseCost: [{$qb_purchase_cost}], Ninja cost: [{$ninja_cost}], Difference: " . abs((float) $qb_purchase_cost - (float) $ninja_cost),
         );
 
         // Compare price (UnitPrice in QB)
@@ -1968,7 +1973,7 @@ class QuickbooksDataComparisonTest extends TestCase
             (float) $qb_unit_price,
             (float) $ninja_price,
             0.01,
-            "Product price mismatch for product ID {$product->id}. QB UnitPrice: [{$qb_unit_price}], Ninja price: [{$ninja_price}], Difference: " . abs((float) $qb_unit_price - (float) $ninja_price)
+            "Product price mismatch for product ID {$product->id}. QB UnitPrice: [{$qb_unit_price}], Ninja price: [{$ninja_price}], Difference: " . abs((float) $qb_unit_price - (float) $ninja_price),
         );
 
         // Compare quantity on hand
@@ -1984,7 +1989,7 @@ class QuickbooksDataComparisonTest extends TestCase
             (float) $qb_qty_on_hand,
             (float) $ninja_qty,
             0.01,
-            "Product in_stock_quantity mismatch for product ID {$product->id}. QB QtyOnHand: [{$qb_qty_on_hand}], Ninja in_stock_quantity: [{$ninja_qty}], Difference: " . abs((float) $qb_qty_on_hand - (float) $ninja_qty)
+            "Product in_stock_quantity mismatch for product ID {$product->id}. QB QtyOnHand: [{$qb_qty_on_hand}], Ninja in_stock_quantity: [{$ninja_qty}], Difference: " . abs((float) $qb_qty_on_hand - (float) $ninja_qty),
         );
 
         // Compare type (Service vs NonInventory)
@@ -2016,7 +2021,7 @@ class QuickbooksDataComparisonTest extends TestCase
         $this->assertEquals(
             $expected_tax_id,
             $actual_tax_id,
-            "Product tax_id mismatch for product ID {$product->id}. QB Taxable: [{$qb_taxable_str}], Expected tax_id: [{$expected_tax_id}], Actual tax_id: [{$actual_tax_id}]"
+            "Product tax_id mismatch for product ID {$product->id}. QB Taxable: [{$qb_taxable_str}], Expected tax_id: [{$expected_tax_id}], Actual tax_id: [{$actual_tax_id}]",
         );
     }
 

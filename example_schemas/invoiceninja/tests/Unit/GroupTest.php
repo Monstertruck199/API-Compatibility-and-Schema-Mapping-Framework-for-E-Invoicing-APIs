@@ -22,7 +22,7 @@ use Tests\TestCase;
 class GroupTest extends TestCase
 {
     public $settings;
-    
+
     protected function setUp(): void
     {
         parent::setUp();

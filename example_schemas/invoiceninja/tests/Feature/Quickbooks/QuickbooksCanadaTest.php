@@ -610,7 +610,7 @@ class QuickbooksCanadaTest extends TestCase
             $this->assertEquals(
                 $expected_code,
                 $tax_code_ref,
-                "Tax rate '{$name}' at {$rate}% should resolve to tax_code_id '{$expected_code}'"
+                "Tax rate '{$name}' at {$rate}% should resolve to tax_code_id '{$expected_code}'",
             );
         }
     }
@@ -1050,7 +1050,7 @@ class QuickbooksCanadaTest extends TestCase
             $this->assertEquals(
                 $expected_tax_codes[$i],
                 $line['SalesItemLineDetail']['TaxCodeRef']['value'],
-                "Line {$i} ({$line['Description']}) has wrong TaxCodeRef"
+                "Line {$i} ({$line['Description']}) has wrong TaxCodeRef",
             );
         }
 
@@ -1258,7 +1258,7 @@ class QuickbooksCanadaTest extends TestCase
         $this->assertEquals(50.00, floatval(data_get($qb_item, 'PurchaseCost')), 'Cost should match');
         $this->assertEquals('Service', data_get($qb_item, 'Type'), 'Type should be Service');
         $this->assertEquals('true', data_get($qb_item, 'Active'), 'Product should be active');
-        
+
         // Verify income account ID matches what was set
         $income_account_ref = data_get($qb_item, 'IncomeAccountRef');
         $actual_account_id = is_object($income_account_ref) ? data_get($income_account_ref, 'value') : $income_account_ref;
@@ -1302,7 +1302,7 @@ class QuickbooksCanadaTest extends TestCase
         $income_account_ref = data_get($qb_item, 'IncomeAccountRef');
         $actual_account_id = is_object($income_account_ref) ? data_get($income_account_ref, 'value') : $income_account_ref;
         $this->assertEquals($default_income_account_id, $actual_account_id, 'Should use default income account when product has none set');
-        
+
         // Verify other fields
         $this->assertEquals($unique, data_get($qb_item, 'Name'));
         $this->assertEquals('NonInventory', data_get($qb_item, 'Type'), 'Physical product should be NonInventory');
@@ -1337,12 +1337,12 @@ class QuickbooksCanadaTest extends TestCase
 
         // Verify service type
         $this->assertEquals('Service', data_get($qb_item, 'Type'));
-        
+
         // Verify income account
         $income_account_ref = data_get($qb_item, 'IncomeAccountRef');
         $actual_account_id = is_object($income_account_ref) ? data_get($income_account_ref, 'value') : $income_account_ref;
         $this->assertEquals($expected_income_account_id, $actual_account_id);
-        
+
         // Verify all fields
         $this->assertEquals($unique, data_get($qb_item, 'Name'));
         $this->assertEquals('Service product with income account', data_get($qb_item, 'Description'));
@@ -1378,12 +1378,12 @@ class QuickbooksCanadaTest extends TestCase
 
         // Verify physical product type
         $this->assertEquals('NonInventory', data_get($qb_item, 'Type'));
-        
+
         // Verify income account
         $income_account_ref = data_get($qb_item, 'IncomeAccountRef');
         $actual_account_id = is_object($income_account_ref) ? data_get($income_account_ref, 'value') : $income_account_ref;
         $this->assertEquals($expected_income_account_id, $actual_account_id);
-        
+
         // Verify all fields
         $this->assertEquals($unique, data_get($qb_item, 'Name'));
         $this->assertEquals('Physical product with income account', data_get($qb_item, 'Description'));
@@ -1469,16 +1469,16 @@ class QuickbooksCanadaTest extends TestCase
         $this->assertEquals($original_values['notes'], data_get($qb_item, 'Description'), 'notes → Description');
         $this->assertEquals($original_values['price'], floatval(data_get($qb_item, 'UnitPrice')), 'price → UnitPrice');
         $this->assertEquals($original_values['cost'], floatval(data_get($qb_item, 'PurchaseCost')), 'cost → PurchaseCost');
-        
+
         // Verify type mapping
         $expected_type = $original_values['tax_id'] == Product::PRODUCT_TYPE_SERVICE ? 'Service' : 'NonInventory';
         $this->assertEquals($expected_type, data_get($qb_item, 'Type'), 'tax_id → Type');
-        
+
         // Verify income account
         $income_account_ref = data_get($qb_item, 'IncomeAccountRef');
         $actual_account_id = is_object($income_account_ref) ? data_get($income_account_ref, 'value') : $income_account_ref;
         $this->assertEquals($original_values['income_account_id'], $actual_account_id, 'income_account_id → IncomeAccountRef.value');
-        
+
         // Verify product is active
         $this->assertEquals('true', data_get($qb_item, 'Active'), 'Product should be active');
     }
@@ -1516,7 +1516,7 @@ class QuickbooksCanadaTest extends TestCase
         $product1 = $product1->fresh();
         $this->assertNotNull($product1->sync->qb_id);
         $this->qb_cleanup[] = ['type' => 'Item', 'id' => $product1->sync->qb_id];
-        
+
         $qb_item1 = $this->qb->sdk->FindById('Item', $product1->sync->qb_id);
         $income_account_ref1 = data_get($qb_item1, 'IncomeAccountRef');
         $account_id1 = is_object($income_account_ref1) ? data_get($income_account_ref1, 'value') : $income_account_ref1;
@@ -1526,7 +1526,7 @@ class QuickbooksCanadaTest extends TestCase
         $product2 = $product2->fresh();
         $this->assertNotNull($product2->sync->qb_id);
         $this->qb_cleanup[] = ['type' => 'Item', 'id' => $product2->sync->qb_id];
-        
+
         $qb_item2 = $this->qb->sdk->FindById('Item', $product2->sync->qb_id);
         $income_account_ref2 = data_get($qb_item2, 'IncomeAccountRef');
         $account_id2 = is_object($income_account_ref2) ? data_get($income_account_ref2, 'value') : $income_account_ref2;
@@ -2085,13 +2085,13 @@ class QuickbooksCanadaTest extends TestCase
         $contact->saveQuietly();
 
         $client = $client->fresh();
-        
+
         // Push client to QuickBooks to get the actual QB ID
         $actual_qb_id = $this->qb->client->createQbClient($client);
         $this->assertNotEmpty($actual_qb_id, "Failed to push client '{$client->name}' to QuickBooks");
         $this->qb_cleanup[] = ['type' => 'Customer', 'id' => $actual_qb_id];
 
-        
+
         $sync = new ClientSync();
         $sync->qb_id = $actual_qb_id;
         $client->sync = $sync;
@@ -2324,7 +2324,7 @@ class QuickbooksCanadaTest extends TestCase
 
         // Verify partial payment mapping
         $this->assertEquals($partial_amount, floatval(data_get($qb_payment, 'TotalAmt')), 'TotalAmt should match partial payment amount');
-        
+
         // Verify payment line item
         $lines = data_get($qb_payment, 'Line', []) ?? [];
         // QB can return a single object or an array; normalize to array
@@ -2440,14 +2440,14 @@ class QuickbooksCanadaTest extends TestCase
 
         // Refresh payment - QB ID is cleared after successful void
         $payment = $payment->fresh();
-        
+
         // Verify void was successful by checking that sync->qb_id was cleared (happens after successful void)
         $this->assertEmpty($payment->sync->qb_id ?? '', 'Payment QB ID should be cleared after successful void');
-        
+
         // Verify payment is voided in QuickBooks (using stored QB ID since sync->qb_id is cleared)
         $qb_payment = $this->qb->sdk->FindById('Payment', $payment_qb_id);
         $this->assertNotNull($qb_payment, 'Payment should still exist in QuickBooks (voided)');
-        
+
         // QuickBooks SDK may return TxnStatus as object property or nested field
         // Note: Some QuickBooks API versions may not return TxnStatus directly, but the void operation
         // is successful if the payment's sync->qb_id was cleared (which we verified above)
@@ -2561,14 +2561,14 @@ class QuickbooksCanadaTest extends TestCase
 
         // Refresh payment - QB ID is cleared after successful void
         $payment = $payment->fresh();
-        
+
         // Verify void was successful by checking that sync->qb_id was cleared
         $this->assertEmpty($payment->sync->qb_id ?? '', 'Payment QB ID should be cleared after successful void');
-        
+
         // Verify payment is voided in QuickBooks (using stored QB ID since sync->qb_id is cleared)
         $qb_payment = $this->qb->sdk->FindById('Payment', $payment_qb_id);
         $this->assertNotNull($qb_payment, 'Payment should still exist in QuickBooks (voided)');
-        
+
         // QuickBooks SDK may not always return TxnStatus, but void is verified by sync clearing
         $txn_status = data_get($qb_payment, 'TxnStatus') ?? data_get($qb_payment, 'TxnStatus.value') ?? null;
         if ($txn_status !== null) {
@@ -2810,23 +2810,23 @@ class QuickbooksCanadaTest extends TestCase
         // Void the first payment
         $payment1->status_id = Payment::STATUS_CANCELLED;
         $payment1->saveQuietly();
-        
+
         // Store QB ID before voiding (it gets cleared after successful void)
         $payment1_qb_id = $payment1->sync->qb_id;
         $this->assertNotEmpty($payment1_qb_id, 'First payment should have QB ID before voiding');
-        
+
         $this->qb->payment->syncToForeign([$payment1]);
-        
+
         // Refresh payment - QB ID is cleared after successful void
         $payment1 = $payment1->fresh();
-        
+
         // Verify void was successful by checking that sync->qb_id was cleared
         $this->assertEmpty($payment1->sync->qb_id ?? '', 'First payment QB ID should be cleared after successful void');
 
         // Verify first payment is voided in QuickBooks (using stored QB ID)
         $qb_payment1 = $this->qb->sdk->FindById('Payment', $payment1_qb_id);
         $this->assertNotNull($qb_payment1, 'First payment should still exist in QuickBooks (voided)');
-        
+
         // QuickBooks SDK may not always return TxnStatus
         $txn_status1 = data_get($qb_payment1, 'TxnStatus') ?? data_get($qb_payment1, 'TxnStatus.value') ?? null;
         if ($txn_status1 !== null) {

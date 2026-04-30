@@ -56,7 +56,7 @@ class UploadLogoTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/companies/'.$this->encodePrimaryKey($this->company->id), $data);
+        ])->put('/api/v1/companies/' . $this->encodePrimaryKey($this->company->id), $data);
 
         $response->assertStatus(200);
 
@@ -81,7 +81,7 @@ class UploadLogoTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/companies/'.$this->encodePrimaryKey($this->company->id), $data);
+        ])->put('/api/v1/companies/' . $this->encodePrimaryKey($this->company->id), $data);
 
         //$acc = $response->json();
 
@@ -99,7 +99,7 @@ class UploadLogoTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/companies/'.$this->encodePrimaryKey($this->company->id), $data);
+        ])->put('/api/v1/companies/' . $this->encodePrimaryKey($this->company->id), $data);
 
         $response->assertStatus(200);
     }

@@ -1,5 +1,6 @@
-from jsonschema import validate, ValidationError, SchemaError
- 
+from jsonschema import SchemaError, ValidationError, validate
+
+
 def validate_data(data: dict, schema: dict):
     effective_schema = schema.get('items', schema) if schema.get('type') == 'array' else schema
     try:
@@ -11,7 +12,7 @@ def validate_data(data: dict, schema: dict):
         return False, f"Invalid schema: {e.message}"
     except ValidationError as e:
         path = " -> ".join(str(p) for p in e.absolute_path) or "(root)"
-        print(f"Validation failed")
+        print("Validation failed")
         print(f"Location : {path}")
         print(f"Problem  : {e.message}")
         return False, f"Validation failed at {path}: {e.message}"

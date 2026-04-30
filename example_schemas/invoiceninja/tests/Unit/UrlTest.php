@@ -49,7 +49,7 @@ class UrlTest extends TestCase
     {
         $url = str_replace('http://', '', $url);
 
-        $url = parse_url($url, PHP_URL_SCHEME) === null ? $scheme.$url : $url;
+        $url = parse_url($url, PHP_URL_SCHEME) === null ? $scheme . $url : $url;
 
         return rtrim($url, '/');
     }

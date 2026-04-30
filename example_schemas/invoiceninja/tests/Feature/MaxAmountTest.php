@@ -40,7 +40,7 @@ class MaxAmountTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
     }
@@ -55,7 +55,7 @@ class MaxAmountTest extends TestCase
             'user_id' => $this->user->id,
             'client_id' => $this->client->id,
             'company_id' => $this->company->id,
-            'line_items' => [$item]
+            'line_items' => [$item],
         ];
 
         $response = $this->withHeaders([
@@ -86,7 +86,7 @@ class MaxAmountTest extends TestCase
             'user_id' => $this->user->id,
             'client_id' => $this->client->id,
             'company_id' => $this->company->id,
-            'line_items' => [$item]
+            'line_items' => [$item],
         ];
 
         $response = $this->withHeaders([
@@ -117,7 +117,7 @@ class MaxAmountTest extends TestCase
             'user_id' => $this->user->id,
             'client_id' => $this->client->id,
             'company_id' => $this->company->id,
-            'line_items' => [$item]
+            'line_items' => [$item],
         ];
 
         $response = $this->withHeaders([
@@ -147,7 +147,7 @@ class MaxAmountTest extends TestCase
             'user_id' => $this->user->id,
             'vendor_id' => $this->vendor->id,
             'company_id' => $this->company->id,
-            'line_items' => [$item]
+            'line_items' => [$item],
         ];
 
         $response = $this->withHeaders([
@@ -178,7 +178,7 @@ class MaxAmountTest extends TestCase
             'client_id' => $this->client->id,
             'company_id' => $this->company->id,
             'line_items' => [$item],
-            'frequency_id' => 5
+            'frequency_id' => 5,
         ];
 
         $response = $this->withHeaders([

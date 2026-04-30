@@ -33,7 +33,7 @@ class StorecoveRouterTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->faker = \Faker\Factory::create();
@@ -51,7 +51,7 @@ class StorecoveRouterTest extends TestCase
         $user = User::factory()->create([
             'account_id' => $account->id,
             'confirmation_code' => 'xyz123',
-            'email' => \Illuminate\Support\Str::random(32)."@example.com",
+            'email' => \Illuminate\Support\Str::random(32) . "@example.com",
             'password' => \Illuminate\Support\Facades\Hash::make('ALongAndBriliantPassword'),
         ]);
 
@@ -63,7 +63,7 @@ class StorecoveRouterTest extends TestCase
         $invoice = Invoice::factory()->create([
             'user_id' => $user->id,
             'company_id' => $company->id,
-            'client_id' => $client->id
+            'client_id' => $client->id,
         ]);
 
         $invoice->service()->markSent()->save();

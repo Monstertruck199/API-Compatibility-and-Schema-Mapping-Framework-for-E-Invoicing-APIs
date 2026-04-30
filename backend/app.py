@@ -1,16 +1,19 @@
-from flask import Flask, jsonify, request
-from flask_cors import CORS
 import datetime
-import requests as http_requests
-import xml.etree.ElementTree as ET
 import os
+import xml.etree.ElementTree as ET
 
+import requests as http_requests
 from compatibility_engine import compare_schemas
+from data_validator import validate_data
 from extract_JSON_schema import infer_schema
 from extract_XML_schema import extract_schema_from_xml
-from schema_transformer import build_transformer, transform_to_xml, generate_transform_code
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 from mapping_engine import build_mapping
-from data_validator import validate_data
+from schema_transformer import (
+    build_transformer,
+    generate_transform_code,
+)
 
 app = Flask(__name__)
 

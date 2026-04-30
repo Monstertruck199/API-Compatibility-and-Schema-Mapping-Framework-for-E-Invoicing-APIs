@@ -45,7 +45,7 @@ class UserTest extends TestCase
         parent::setUp();
         $this->withoutMiddleware(
             ThrottleRequests::class,
-            PasswordProtection::class
+            PasswordProtection::class,
         );
 
         // $this->makeTestData();
@@ -68,7 +68,7 @@ class UserTest extends TestCase
         $user = User::factory()->create([
             'account_id' => $account->id,
             'confirmation_code' => 'xyz123',
-            'email' => \Illuminate\Support\Str::random(32)."@example.com",
+            'email' => \Illuminate\Support\Str::random(32) . "@example.com",
         ]);
 
         $user->password = \Illuminate\Support\Facades\Hash::make('ALongAndBriliantPassword');
@@ -146,7 +146,7 @@ class UserTest extends TestCase
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $company_token->token,
             'X-API-PASSWORD' => 'ALongAndBriliantPassword',
-        ])->putJson('/api/v1/users/'.$user->hashed_id.'?include=company_user', $data);
+        ])->putJson('/api/v1/users/' . $user->hashed_id . '?include=company_user', $data);
 
         $response->assertStatus(200);
 
@@ -172,7 +172,7 @@ class UserTest extends TestCase
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $company_token->token,
             'X-API-PASSWORD' => 'ALongAndBriliantPassword',
-        ])->putJson('/api/v1/users/'.$user->hashed_id.'?include=company_user', $data);
+        ])->putJson('/api/v1/users/' . $user->hashed_id . '?include=company_user', $data);
 
         $response->assertStatus(200);
 
@@ -183,20 +183,20 @@ class UserTest extends TestCase
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $company_token->token,
             'X-API-PASSWORD' => 'ALongAndBriliantPassword',
-        ])->putJson('/api/v1/users/'.$user->hashed_id.'?include=company_user', $data);
+        ])->putJson('/api/v1/users/' . $user->hashed_id . '?include=company_user', $data);
 
         $response->assertStatus(200);
 
         $data = $user->toArray();
 
-        $data['email'] = \Illuminate\Support\Str::random(32)."@example.com";
+        $data['email'] = \Illuminate\Support\Str::random(32) . "@example.com";
         unset($data['password']);
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $company_token->token,
             'X-API-PASSWORD' => 'ALongAndBriliantPassword',
-        ])->putJson('/api/v1/users/'.$user->hashed_id.'?include=company_user', $data);
+        ])->putJson('/api/v1/users/' . $user->hashed_id . '?include=company_user', $data);
 
         $response->assertStatus(200);
 
@@ -239,16 +239,16 @@ class UserTest extends TestCase
         }
 
         $data = [
-                'first_name' => 'hey',
-                'last_name' => 'you',
-                'email' => 'normal_user@gmail.com',
-                'company_user' => [
-                    'is_admin' => true,
-                    'is_owner' => false,
-                    'permissions' => 'create_client,create_invoice',
-                ],
-                'phone' => null,
-            ];
+            'first_name' => 'hey',
+            'last_name' => 'you',
+            'email' => 'normal_user@gmail.com',
+            'company_user' => [
+                'is_admin' => true,
+                'is_owner' => false,
+                'permissions' => 'create_client,create_invoice',
+            ],
+            'phone' => null,
+        ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
@@ -342,7 +342,7 @@ class UserTest extends TestCase
         $user = User::factory()->create([
             'account_id' => $account->id,
             'confirmation_code' => 'xyz123',
-            'email' => \Illuminate\Support\Str::random(32)."@example.com",
+            'email' => \Illuminate\Support\Str::random(32) . "@example.com",
             'password' => \Illuminate\Support\Facades\Hash::make('ALongAndBriliantPassword'),
         ]);
 
@@ -427,7 +427,7 @@ class UserTest extends TestCase
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $company_token->token,
             'X-API-PASSWORD' => 'ALongAndBriliantPassword',
-        ])->get('/api/v1/users?with='.$company_token->user->hashed_id);
+        ])->get('/api/v1/users?with=' . $company_token->user->hashed_id);
 
         $response->assertStatus(200);
     }
@@ -533,7 +533,7 @@ class UserTest extends TestCase
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $company_token->token,
             'X-API-PASSWORD' => 'ALongAndBriliantPassword',
-        ])->putJson('/api/v1/users/'.$user->hashed_id.'?include=company_user', $data);
+        ])->putJson('/api/v1/users/' . $user->hashed_id . '?include=company_user', $data);
     }
 
     public function testUserStore()
@@ -593,10 +593,10 @@ class UserTest extends TestCase
         $response = false;
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $company_token->token,
-                'X-API-PASSWORD' => 'ALongAndBriliantPassword',
-            ])->postJson('/api/v1/users?include=company_user', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $company_token->token,
+            'X-API-PASSWORD' => 'ALongAndBriliantPassword',
+        ])->postJson('/api/v1/users?include=company_user', $data);
 
         $response->assertStatus(200);
 
@@ -606,7 +606,7 @@ class UserTest extends TestCase
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $company_token->token,
             'X-API-PASSWORD' => 'ALongAndBriliantPassword',
-        ])->delete('/api/v1/users/'.$arr['data']['id'].'/detach_from_company?include=company_user');
+        ])->delete('/api/v1/users/' . $arr['data']['id'] . '/detach_from_company?include=company_user');
 
         $response->assertStatus(200);
 
@@ -657,14 +657,14 @@ class UserTest extends TestCase
 
         /*Manually link this user to the company*/
         auth()->user()->companies()->attach($company2->id, [
-             'account_id' => $company_token->account_id,
-             'is_owner' => 1,
-             'is_admin' => 1,
-             'is_locked' => 0,
-             'permissions' => '',
-             'notifications' => \App\DataMapper\CompanySettings::notificationAdminDefaults(),
-             'settings' => null,
-         ]);
+            'account_id' => $company_token->account_id,
+            'is_owner' => 1,
+            'is_admin' => 1,
+            'is_locked' => 0,
+            'permissions' => '',
+            'notifications' => \App\DataMapper\CompanySettings::notificationAdminDefaults(),
+            'settings' => null,
+        ]);
 
         /*Create New Blank User and Attach to Company 2*/
         $data = [
@@ -733,7 +733,7 @@ class UserTest extends TestCase
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $company_token->token,
             'X-API-PASSWORD' => 'ALongAndBriliantPassword',
-        ])->putJson('/api/v1/users/'.$this->encodePrimaryKey($user->id).'?include=company_user', $data);
+        ])->putJson('/api/v1/users/' . $this->encodePrimaryKey($user->id) . '?include=company_user', $data);
 
         $response->assertStatus(200);
 
@@ -758,7 +758,7 @@ class UserTest extends TestCase
 
         $owner_user = User::factory()->create([
             'account_id' => $account->id,
-            'email' => \Illuminate\Support\Str::random(32)."@example.com",
+            'email' => \Illuminate\Support\Str::random(32) . "@example.com",
         ]);
 
         $settings = CompanySettings::defaults();
@@ -781,7 +781,7 @@ class UserTest extends TestCase
         // Create secondary user to be purged
         $secondary_user = User::factory()->create([
             'account_id' => $account->id,
-            'email' => \Illuminate\Support\Str::random(32)."@example.com",
+            'email' => \Illuminate\Support\Str::random(32) . "@example.com",
         ]);
 
         $secondary_user->companies()->attach($company->id, [

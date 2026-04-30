@@ -155,7 +155,7 @@ class TaskRoundingTest extends TestCase
         $data = [
             'client_id' => $c->hashed_id,
             'description' => 'Test Task',
-            'time_log' => '[[1681165417,1681165432,"sumtin",true],['.$var.',0]]',
+            'time_log' => '[[1681165417,1681165432,"sumtin",true],[' . $var . ',0]]',
             'assigned_user' => [],
             'project' => [],
             'user' => [],
@@ -173,7 +173,7 @@ class TaskRoundingTest extends TestCase
 
         $data = [
             'ids' => [$i],
-            'action' => 'stop'
+            'action' => 'stop',
         ];
 
         $response = $this->withHeaders([
@@ -224,14 +224,14 @@ class TaskRoundingTest extends TestCase
         $interval = $end_time - $start_time;
 
         if ($this->task_round_up) {
-            return $start_time + (int)ceil($interval / $this->task_round_to_nearest) * $this->task_round_to_nearest;
+            return $start_time + (int) ceil($interval / $this->task_round_to_nearest) * $this->task_round_to_nearest;
         }
 
         if ($interval <= $this->task_round_to_nearest) {
             return $start_time;
         }
 
-        return $start_time + (int)floor($interval / $this->task_round_to_nearest) * $this->task_round_to_nearest;
+        return $start_time + (int) floor($interval / $this->task_round_to_nearest) * $this->task_round_to_nearest;
 
     }
 

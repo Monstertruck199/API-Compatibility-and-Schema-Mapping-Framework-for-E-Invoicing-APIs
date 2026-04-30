@@ -12,34 +12,31 @@ Run with:
 """
 
 import unittest
-import psycopg2
-import psycopg2.extras
 
 from db import (
-    get_connection,
     create_api,
+    delete_api,
+    delete_mapping_rules,
     get_api,
     get_api_by_name,
-    list_apis,
-    delete_api,
-    store_schema,
+    get_compatibility_matrix,
+    get_compatibility_result,
+    get_connection,
+    get_fields_for_schema,
+    get_latest_schema,
+    get_mapping_rules,
     get_schema,
     get_schemas_for_api,
-    get_latest_schema,
-    get_fields_for_schema,
-    store_compatibility_result,
-    get_compatibility_result,
+    get_transform_run,
+    list_apis,
     list_compatibility_results,
+    list_transform_runs,
+    store_compatibility_result,
     store_mapping_rule,
     store_mapping_rules_bulk,
-    get_mapping_rules,
-    delete_mapping_rules,
-    get_compatibility_matrix,
+    store_schema,
     store_transform_run,
-    list_transform_runs,
-    get_transform_run,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers

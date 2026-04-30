@@ -83,7 +83,7 @@ class ZugferdTest extends TestCase
         }
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
 
@@ -168,7 +168,7 @@ class ZugferdTest extends TestCase
             'user_id' => $client->user_id,
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
-            'email' => $this->faker->safeEmail()
+            'email' => $this->faker->safeEmail(),
         ]);
 
         $invoice = \App\Models\Invoice::factory()->create([

@@ -108,7 +108,7 @@ class PermissionsTest extends TestCase
             'company_id' => $this->company->id,
             'client_id' => $c->id,
             'user_id' => $u->id,
-            'status_id' => 2
+            'status_id' => 2,
         ]);
 
         $low_cu = CompanyUser::where(['company_id' => $this->company->id, 'user_id' => $this->user->id])->first();
@@ -292,44 +292,44 @@ class PermissionsTest extends TestCase
 
     public function testPermissionResolution()
     {
-        $class = 'view'.lcfirst(class_basename(\Illuminate\Support\Str::snake(Invoice::class)));
+        $class = 'view' . lcfirst(class_basename(\Illuminate\Support\Str::snake(Invoice::class)));
 
         $this->assertEquals('view_invoice', $class);
 
-        $class = 'view'.lcfirst(class_basename(\Illuminate\Support\Str::snake(Client::class)));
+        $class = 'view' . lcfirst(class_basename(\Illuminate\Support\Str::snake(Client::class)));
         $this->assertEquals('view_client', $class);
 
-        $class = 'view'.lcfirst(class_basename(\Illuminate\Support\Str::snake(RecurringInvoice::class)));
+        $class = 'view' . lcfirst(class_basename(\Illuminate\Support\Str::snake(RecurringInvoice::class)));
         $this->assertEquals('view_recurring_invoice', $class);
 
-        $class = 'view'.lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Product::class)));
+        $class = 'view' . lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Product::class)));
         $this->assertEquals('view_product', $class);
 
-        $class = 'view'.lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Payment::class)));
+        $class = 'view' . lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Payment::class)));
         $this->assertEquals('view_payment', $class);
 
-        $class = 'view'.lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Quote::class)));
+        $class = 'view' . lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Quote::class)));
         $this->assertEquals('view_quote', $class);
 
-        $class = 'view'.lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Credit::class)));
+        $class = 'view' . lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Credit::class)));
         $this->assertEquals('view_credit', $class);
 
-        $class = 'view'.lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Project::class)));
+        $class = 'view' . lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Project::class)));
         $this->assertEquals('view_project', $class);
 
-        $class = 'view'.lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Task::class)));
+        $class = 'view' . lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Task::class)));
         $this->assertEquals('view_task', $class);
 
-        $class = 'view'.lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Vendor::class)));
+        $class = 'view' . lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Vendor::class)));
         $this->assertEquals('view_vendor', $class);
 
-        $class = 'view'.lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\PurchaseOrder::class)));
+        $class = 'view' . lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\PurchaseOrder::class)));
         $this->assertEquals('view_purchase_order', $class);
 
-        $class = 'view'.lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Expense::class)));
+        $class = 'view' . lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\Expense::class)));
         $this->assertEquals('view_expense', $class);
 
-        $class = 'view'.lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\BankTransaction::class)));
+        $class = 'view' . lcfirst(class_basename(\Illuminate\Support\Str::snake(App\Models\BankTransaction::class)));
         $this->assertEquals('view_bank_transaction', $class);
 
         $this->assertEquals('invoice', \Illuminate\Support\Str::snake(class_basename(Invoice::class)));

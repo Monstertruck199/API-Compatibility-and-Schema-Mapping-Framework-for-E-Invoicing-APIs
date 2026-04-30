@@ -45,7 +45,7 @@ class ReminderTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
         Model::reguard();
 
@@ -82,7 +82,7 @@ class ReminderTest extends TestCase
         $this->user = User::factory()->create([
             'account_id' => $this->account->id,
             'confirmation_code' => 'xyz123',
-            'email' => \Illuminate\Support\Str::random(32)."@example.com",
+            'email' => \Illuminate\Support\Str::random(32) . "@example.com",
         ]);
 
         if (!$settings) {
@@ -128,15 +128,15 @@ class ReminderTest extends TestCase
         ]);
 
         ClientContact::factory()->create([
-                'user_id' => $this->user->id,
-                'client_id' => $this->client->id,
-                'company_id' => $this->company->id,
-                'is_primary' => 1,
-                'first_name' => 'john',
-                'last_name' => 'doe',
-                'email' => 'john@doe.com',
-                'send_email' => true,
-            ]);
+            'user_id' => $this->user->id,
+            'client_id' => $this->client->id,
+            'company_id' => $this->company->id,
+            'is_primary' => 1,
+            'first_name' => 'john',
+            'last_name' => 'doe',
+            'email' => 'john@doe.com',
+            'send_email' => true,
+        ]);
 
         $this->invoice = Invoice::factory()->create([
             'user_id' => $this->user->id,
@@ -206,7 +206,7 @@ class ReminderTest extends TestCase
             (new ReminderJob())->handle();
             $invoice = $invoice->fresh();
 
-            $x = (bool)$invoice->reminder1_sent;
+            $x = (bool) $invoice->reminder1_sent;
         } while ($x === false);
 
         $this->assertNotNull($invoice->reminder_last_sent);
@@ -226,7 +226,7 @@ class ReminderTest extends TestCase
             (new ReminderJob())->handle();
             $invoice = $invoice->fresh();
 
-            $x = (bool)$invoice->reminder2_sent;
+            $x = (bool) $invoice->reminder2_sent;
 
         } while ($x === false);
 
@@ -246,7 +246,7 @@ class ReminderTest extends TestCase
             (new ReminderJob())->handle();
             $invoice = $invoice->fresh();
 
-            $x = (bool)$invoice->reminder3_sent;
+            $x = (bool) $invoice->reminder3_sent;
 
         } while ($x === false);
 
@@ -290,7 +290,7 @@ class ReminderTest extends TestCase
         $user = User::factory()->create([
             'account_id' => $this->account->id,
             'confirmation_code' => 'xyz123',
-            'email' => \Illuminate\Support\Str::random(32)."@example.com",
+            'email' => \Illuminate\Support\Str::random(32) . "@example.com",
         ]);
 
         $settings = CompanySettings::defaults();
@@ -405,7 +405,7 @@ class ReminderTest extends TestCase
             (new ReminderJob())->handle();
             $invoice = $invoice->fresh();
 
-            $x = (bool)$invoice->reminder1_sent;
+            $x = (bool) $invoice->reminder1_sent;
         } while ($x === false);
 
         $this->assertNotNull($invoice->reminder_last_sent);
@@ -495,7 +495,7 @@ class ReminderTest extends TestCase
             (new ReminderJob())->handle();
             $invoice = $invoice->fresh();
 
-            $x = (bool)$invoice->reminder1_sent;
+            $x = (bool) $invoice->reminder1_sent;
         } while ($x === false);
 
         $this->assertNotNull($invoice->reminder_last_sent);
@@ -513,7 +513,7 @@ class ReminderTest extends TestCase
             (new ReminderJob())->handle();
             $invoice = $invoice->fresh();
 
-            $x = (bool)$invoice->reminder2_sent;
+            $x = (bool) $invoice->reminder2_sent;
         } while ($x === false);
 
         $this->assertGreaterThan(0, $invoice->balance);
@@ -536,7 +536,7 @@ class ReminderTest extends TestCase
             (new ReminderJob())->handle();
             $invoice = $invoice->fresh();
 
-            $x = (bool)$invoice->reminder3_sent;
+            $x = (bool) $invoice->reminder3_sent;
         } while ($x === false);
 
         $this->assertGreaterThan(0, $invoice->balance);
@@ -558,7 +558,7 @@ class ReminderTest extends TestCase
             (new ReminderJob())->handle();
             $invoice = $invoice->fresh();
 
-            $x = (bool)Carbon::parse($invoice->next_send_date)->gt(now()->addDays(2));
+            $x = (bool) Carbon::parse($invoice->next_send_date)->gt(now()->addDays(2));
 
         } while ($x === false);
 
@@ -692,7 +692,7 @@ class ReminderTest extends TestCase
         $fee = collect($this->invoice->line_items)->where('type_id', 5)->first();
 
         $this->assertEquals(101, $fee->cost);
-        $this->assertEquals('Fee added '.now()->format('d/M/Y'), $fee->notes);
+        $this->assertEquals('Fee added ' . now()->format('d/M/Y'), $fee->notes);
 
         $this->travelTo(now()->addDay()->startOfDay()->addHour());
 
@@ -704,7 +704,7 @@ class ReminderTest extends TestCase
         $fee = collect($this->invoice->line_items)->where('cost', 102)->first();
 
         $this->assertEquals(102, $fee->cost);
-        $this->assertEquals('Fee added '.now()->format('d/M/Y'), $fee->notes);
+        $this->assertEquals('Fee added ' . now()->format('d/M/Y'), $fee->notes);
 
         $this->travelTo(now()->addDay()->startOfDay()->addHour());
 
@@ -716,7 +716,7 @@ class ReminderTest extends TestCase
         $fee = collect($this->invoice->line_items)->where('cost', 103)->first();
 
         $this->assertEquals(103, $fee->cost);
-        $this->assertEquals('Fee added '.now()->format('d/M/Y'), $fee->notes);
+        $this->assertEquals('Fee added ' . now()->format('d/M/Y'), $fee->notes);
 
         $this->travelBack();
 

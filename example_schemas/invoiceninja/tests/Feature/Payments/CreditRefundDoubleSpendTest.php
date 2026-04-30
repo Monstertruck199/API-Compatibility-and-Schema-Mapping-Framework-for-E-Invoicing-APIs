@@ -48,13 +48,13 @@ class CreditRefundDoubleSpendTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 
     /**
      * Test that refunding a payment with credits properly updates the client's credit_balance.
-     * 
+     *
      * This confirms the bug where client.credit_balance is not updated when credits are
      * restored during a refund, leading to a potential double-spend scenario.
      */
@@ -199,14 +199,17 @@ class CreditRefundDoubleSpendTest extends TestCase
 
         // THIS IS THE BUG: client credit_balance should also be restored to $40,000
         // If this assertion fails, it confirms the bug
-        $this->assertEquals(40000, $client->credit_balance, 
+        $this->assertEquals(
+            40000,
+            $client->credit_balance,
             'Client credit_balance should be restored when credit is refunded. ' .
-            'Current value: ' . $client->credit_balance);
+            'Current value: ' . $client->credit_balance,
+        );
     }
 
     /**
      * Test that a user cannot double-spend credits after a refund.
-     * 
+     *
      * This test confirms that after refunding a payment that used credits:
      * 1. The credit balance is properly restored
      * 2. The client credit_balance is properly updated
@@ -324,9 +327,12 @@ class CreditRefundDoubleSpendTest extends TestCase
         $this->assertEquals(50000, $invoice->balance, 'Invoice balance should be restored after refund');
 
         // BUG CHECK: client credit_balance should match credit balance
-        $this->assertEquals(40000, $client->credit_balance,
+        $this->assertEquals(
+            40000,
+            $client->credit_balance,
             'Client credit_balance should be restored when credit is refunded. ' .
-            'If this is 0 but credit.balance is 40000, the bug exists.');
+            'If this is 0 but credit.balance is 40000, the bug exists.',
+        );
 
         // Step 3: Re-apply the credit to the same invoice
         // This should work correctly without causing negative balance
@@ -365,9 +371,12 @@ class CreditRefundDoubleSpendTest extends TestCase
         $this->assertEquals(0, $invoice->balance, 'Invoice should be paid');
 
         // CRITICAL: Client credit_balance should NOT be negative
-        $this->assertGreaterThanOrEqual(0, $client->credit_balance,
+        $this->assertGreaterThanOrEqual(
+            0,
+            $client->credit_balance,
             'Client credit_balance should never be negative! Current value: ' . $client->credit_balance .
-            '. This indicates a double-spend bug.');
+            '. This indicates a double-spend bug.',
+        );
     }
 
     /**
@@ -477,13 +486,16 @@ class CreditRefundDoubleSpendTest extends TestCase
         $invoice->refresh();
         $credit->refresh();
         $client->refresh();
-        
+
         $payment = Payment::find($this->decodePrimaryKey($payment_id));
 
         // Only $10,000 should be actually refunded (gateway refund)
         // The $40,000 credit portion is "restored" not "refunded"
-        $this->assertEquals(10000, $payment->refunded, 
-            'Only the cash portion ($10,000) should be gateway refunded');
+        $this->assertEquals(
+            10000,
+            $payment->refunded,
+            'Only the cash portion ($10,000) should be gateway refunded',
+        );
 
         // Invoice balance should be restored
         $this->assertEquals(50000, $invoice->balance, 'Invoice balance should be restored to $50,000');
@@ -492,9 +504,12 @@ class CreditRefundDoubleSpendTest extends TestCase
         $this->assertEquals(40000, $credit->balance, 'Credit balance should be restored to $40,000');
 
         // CLIENT CREDIT BALANCE SHOULD ALSO BE RESTORED - THIS IS THE BUG
-        $this->assertEquals(40000, $client->credit_balance,
+        $this->assertEquals(
+            40000,
+            $client->credit_balance,
             'BUG: Client credit_balance should be restored to $40,000 when credit is refunded. ' .
-            'Actual value: ' . $client->credit_balance);
+            'Actual value: ' . $client->credit_balance,
+        );
 
         // === STEP 3: Re-apply the credit (should work without double spend) ===
         $response = $this->withHeaders([
@@ -520,19 +535,25 @@ class CreditRefundDoubleSpendTest extends TestCase
         $this->assertEquals(0, $credit->balance, 'Credit should be used');
 
         // CRITICAL CHECK: Credit balance should NOT be negative
-        $this->assertGreaterThanOrEqual(0, $client->credit_balance,
+        $this->assertGreaterThanOrEqual(
+            0,
+            $client->credit_balance,
             'CRITICAL BUG: Client credit_balance is negative (' . $client->credit_balance . ')! ' .
-            'This indicates a double-spend vulnerability.');
+            'This indicates a double-spend vulnerability.',
+        );
 
         // Credit balance should be exactly 0, not negative
-        $this->assertEquals(0, $client->credit_balance,
+        $this->assertEquals(
+            0,
+            $client->credit_balance,
             'Client credit_balance should be exactly 0 after re-applying the credit. ' .
-            'Actual: ' . $client->credit_balance);
+            'Actual: ' . $client->credit_balance,
+        );
     }
 
     /**
      * Test partial credit usage with full refund.
-     * 
+     *
      * Scenario:
      * - Credit $40,000 available
      * - Payment uses only $20,000 of credit + $10,000 cash = $30,000 to invoice
@@ -629,16 +650,22 @@ class CreditRefundDoubleSpendTest extends TestCase
         $client->refresh();
         $invoice->refresh();
 
-        $this->assertEquals(40000, $credit->balance, 
-            'Credit should be fully restored to $40,000. Actual: ' . $credit->balance);
-        $this->assertEquals(40000, $client->credit_balance, 
-            'Client credit_balance should be restored to $40,000. Actual: ' . $client->credit_balance);
+        $this->assertEquals(
+            40000,
+            $credit->balance,
+            'Credit should be fully restored to $40,000. Actual: ' . $credit->balance,
+        );
+        $this->assertEquals(
+            40000,
+            $client->credit_balance,
+            'Client credit_balance should be restored to $40,000. Actual: ' . $client->credit_balance,
+        );
         $this->assertEquals(30000, $invoice->balance, 'Invoice balance should be restored');
     }
 
     /**
      * Test partial refund of a payment that used partial credit.
-     * 
+     *
      * Scenario:
      * - Credit $40,000 available
      * - Payment uses $30,000 credit + $20,000 cash = $50,000 to invoice
@@ -735,23 +762,35 @@ class CreditRefundDoubleSpendTest extends TestCase
         $invoice->refresh();
 
         // Since $15,000 < $30,000 credit used, only credit should be restored (no gateway refund)
-        $this->assertEquals(0, $payment->refunded, 
-            'No gateway refund should occur when refund is within credit portion. Actual: ' . $payment->refunded);
+        $this->assertEquals(
+            0,
+            $payment->refunded,
+            'No gateway refund should occur when refund is within credit portion. Actual: ' . $payment->refunded,
+        );
 
         // Credit balance: $10,000 + $15,000 = $25,000
-        $this->assertEquals(25000, $credit->balance, 
-            'Credit balance should be $25,000 ($10k remaining + $15k restored). Actual: ' . $credit->balance);
-        $this->assertEquals(25000, $client->credit_balance, 
-            'Client credit_balance should be $25,000. Actual: ' . $client->credit_balance);
+        $this->assertEquals(
+            25000,
+            $credit->balance,
+            'Credit balance should be $25,000 ($10k remaining + $15k restored). Actual: ' . $credit->balance,
+        );
+        $this->assertEquals(
+            25000,
+            $client->credit_balance,
+            'Client credit_balance should be $25,000. Actual: ' . $client->credit_balance,
+        );
 
         // Invoice balance should be $15,000
-        $this->assertEquals(15000, $invoice->balance, 
-            'Invoice balance should be $15,000. Actual: ' . $invoice->balance);
+        $this->assertEquals(
+            15000,
+            $invoice->balance,
+            'Invoice balance should be $15,000. Actual: ' . $invoice->balance,
+        );
     }
 
     /**
      * Test partial refund that exceeds credit portion and requires gateway refund.
-     * 
+     *
      * Scenario:
      * - Payment uses $30,000 credit + $20,000 cash = $50,000
      * - Refund $40,000 (exceeds $30,000 credit, needs $10,000 gateway refund)
@@ -841,21 +880,33 @@ class CreditRefundDoubleSpendTest extends TestCase
         $invoice->refresh();
 
         // Credit fully restored ($30,000), plus $10,000 gateway refund
-        $this->assertEquals(10000, $payment->refunded, 
-            'Gateway refund should be $10,000 ($40k refund - $30k credit restore). Actual: ' . $payment->refunded);
+        $this->assertEquals(
+            10000,
+            $payment->refunded,
+            'Gateway refund should be $10,000 ($40k refund - $30k credit restore). Actual: ' . $payment->refunded,
+        );
 
-        $this->assertEquals(30000, $credit->balance, 
-            'Credit should be fully restored to $30,000. Actual: ' . $credit->balance);
-        $this->assertEquals(30000, $client->credit_balance, 
-            'Client credit_balance should be $30,000. Actual: ' . $client->credit_balance);
+        $this->assertEquals(
+            30000,
+            $credit->balance,
+            'Credit should be fully restored to $30,000. Actual: ' . $credit->balance,
+        );
+        $this->assertEquals(
+            30000,
+            $client->credit_balance,
+            'Client credit_balance should be $30,000. Actual: ' . $client->credit_balance,
+        );
 
-        $this->assertEquals(40000, $invoice->balance, 
-            'Invoice balance should be $40,000. Actual: ' . $invoice->balance);
+        $this->assertEquals(
+            40000,
+            $invoice->balance,
+            'Invoice balance should be $40,000. Actual: ' . $invoice->balance,
+        );
     }
 
     /**
      * Test multiple sequential refunds on the same payment.
-     * 
+     *
      * Scenario:
      * - Payment: $30,000 credit + $20,000 cash = $50,000
      * - First refund: $15,000 (restores $15,000 credit)
@@ -969,19 +1020,31 @@ class CreditRefundDoubleSpendTest extends TestCase
         $invoice->refresh();
 
         // Second refund: $15,000 remaining credit + $5,000 gateway
-        $this->assertEquals(5000, $payment->refunded, 
-            'Gateway refund should be $5,000 ($20k - $15k remaining credit). Actual: ' . $payment->refunded);
-        $this->assertEquals(30000, $credit->balance, 
-            'Credit should be fully restored to $30,000. Actual: ' . $credit->balance);
-        $this->assertEquals(30000, $client->credit_balance, 
-            'Client credit_balance should be $30,000. Actual: ' . $client->credit_balance);
-        $this->assertEquals(35000, $invoice->balance, 
-            'Invoice balance should be $35,000 ($15k + $20k refunded). Actual: ' . $invoice->balance);
+        $this->assertEquals(
+            5000,
+            $payment->refunded,
+            'Gateway refund should be $5,000 ($20k - $15k remaining credit). Actual: ' . $payment->refunded,
+        );
+        $this->assertEquals(
+            30000,
+            $credit->balance,
+            'Credit should be fully restored to $30,000. Actual: ' . $credit->balance,
+        );
+        $this->assertEquals(
+            30000,
+            $client->credit_balance,
+            'Client credit_balance should be $30,000. Actual: ' . $client->credit_balance,
+        );
+        $this->assertEquals(
+            35000,
+            $invoice->balance,
+            'Invoice balance should be $35,000 ($15k + $20k refunded). Actual: ' . $invoice->balance,
+        );
     }
 
     /**
      * Test multiple credits used in a single payment with partial refund.
-     * 
+     *
      * Scenario:
      * - Credit A: $20,000
      * - Credit B: $15,000
@@ -1096,25 +1159,37 @@ class CreditRefundDoubleSpendTest extends TestCase
         $invoice->refresh();
 
         // No gateway refund (all from credits)
-        $this->assertEquals(0, $payment->refunded, 
-            'No gateway refund should occur. Actual: ' . $payment->refunded);
+        $this->assertEquals(
+            0,
+            $payment->refunded,
+            'No gateway refund should occur. Actual: ' . $payment->refunded,
+        );
 
         // Total credit restored: $25,000 (distributed across credits in order)
         // The exact distribution depends on iteration order, but total should be $25,000
         $total_credit_restored = $credit_a->balance + $credit_b->balance;
-        $this->assertEquals(25000, $total_credit_restored, 
-            'Total credit restored should be $25,000. Actual: ' . $total_credit_restored);
+        $this->assertEquals(
+            25000,
+            $total_credit_restored,
+            'Total credit restored should be $25,000. Actual: ' . $total_credit_restored,
+        );
 
-        $this->assertEquals(25000, $client->credit_balance, 
-            'Client credit_balance should be $25,000. Actual: ' . $client->credit_balance);
+        $this->assertEquals(
+            25000,
+            $client->credit_balance,
+            'Client credit_balance should be $25,000. Actual: ' . $client->credit_balance,
+        );
 
-        $this->assertEquals(25000, $invoice->balance, 
-            'Invoice balance should be $25,000. Actual: ' . $invoice->balance);
+        $this->assertEquals(
+            25000,
+            $invoice->balance,
+            'Invoice balance should be $25,000. Actual: ' . $invoice->balance,
+        );
     }
 
     /**
      * Test that a credit used across multiple payments refunds correctly.
-     * 
+     *
      * Scenario:
      * - Credit $40,000
      * - Payment 1 uses $25,000 → credit.balance = $15,000
@@ -1244,10 +1319,16 @@ class CreditRefundDoubleSpendTest extends TestCase
         $credit->refresh();
         $client->refresh();
 
-        $this->assertEquals(25000, $credit->balance, 
-            'Credit should be $25,000 after refunding Payment 1. Actual: ' . $credit->balance);
-        $this->assertEquals(25000, $client->credit_balance, 
-            'Client credit_balance should be $25,000. Actual: ' . $client->credit_balance);
+        $this->assertEquals(
+            25000,
+            $credit->balance,
+            'Credit should be $25,000 after refunding Payment 1. Actual: ' . $credit->balance,
+        );
+        $this->assertEquals(
+            25000,
+            $client->credit_balance,
+            'Client credit_balance should be $25,000. Actual: ' . $client->credit_balance,
+        );
 
         // Refund Payment 2's $15,000
         $response = $this->withHeaders([
@@ -1266,15 +1347,21 @@ class CreditRefundDoubleSpendTest extends TestCase
         $credit->refresh();
         $client->refresh();
 
-        $this->assertEquals(40000, $credit->balance, 
-            'Credit should be fully restored to $40,000. Actual: ' . $credit->balance);
-        $this->assertEquals(40000, $client->credit_balance, 
-            'Client credit_balance should be $40,000. Actual: ' . $client->credit_balance);
+        $this->assertEquals(
+            40000,
+            $credit->balance,
+            'Credit should be fully restored to $40,000. Actual: ' . $credit->balance,
+        );
+        $this->assertEquals(
+            40000,
+            $client->credit_balance,
+            'Client credit_balance should be $40,000. Actual: ' . $client->credit_balance,
+        );
     }
 
     /**
      * Test that client credit_balance never goes negative even with complex scenarios.
-     * 
+     *
      * This is the ultimate sanity check for the double-spend bug.
      */
     public function testClientCreditBalanceNeverNegative()
@@ -1341,8 +1428,11 @@ class CreditRefundDoubleSpendTest extends TestCase
             $payment_id = $response->json()['data']['id'];
 
             $client->refresh();
-            $this->assertGreaterThanOrEqual(0, $client->credit_balance,
-                "Cycle $cycle: Client credit_balance should not be negative after payment. Value: " . $client->credit_balance);
+            $this->assertGreaterThanOrEqual(
+                0,
+                $client->credit_balance,
+                "Cycle $cycle: Client credit_balance should not be negative after payment. Value: " . $client->credit_balance,
+            );
 
             // Refund the full amount
             $response = $this->withHeaders([
@@ -1361,12 +1451,15 @@ class CreditRefundDoubleSpendTest extends TestCase
             $client->refresh();
             $credit->refresh();
 
-            $this->assertGreaterThanOrEqual(0, $client->credit_balance,
-                "Cycle $cycle: Client credit_balance should not be negative after refund. Value: " . $client->credit_balance);
+            $this->assertGreaterThanOrEqual(
+                0,
+                $client->credit_balance,
+                "Cycle $cycle: Client credit_balance should not be negative after refund. Value: " . $client->credit_balance,
+            );
 
             $this->assertEquals(50000, $credit->balance,
                 "Cycle $cycle: Credit balance should be restored to $50,000. Value: " . $credit->balance);
-            
+
             $this->assertEquals(50000, $client->credit_balance,
                 "Cycle $cycle: Client credit_balance should be $50,000. Value: " . $client->credit_balance);
         }

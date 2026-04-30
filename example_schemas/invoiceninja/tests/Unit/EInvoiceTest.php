@@ -36,7 +36,7 @@ class EInvoiceTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
         $this->makeTestData();
     }
@@ -63,7 +63,7 @@ class EInvoiceTest extends TestCase
 
             $log = new EInvoicingLog();
             $log->counter = -1;
-            $log->direction = (bool)rand(0, 1) ? 'sent' : 'received';
+            $log->direction = (bool) rand(0, 1) ? 'sent' : 'received';
             $log->tenant_id = $company->company_key;
             $log->legal_entity_id = 1;
             $log->save();
@@ -124,7 +124,7 @@ class EInvoiceTest extends TestCase
             'purchased' => 0,
             'sent' => 0,
             'received' => 0,
-            'period' => now()->subYear()->format('Y-m-d')."|".now()->format('Y-m-d'),
+            'period' => now()->subYear()->format('Y-m-d') . "|" . now()->format('Y-m-d'),
         ];
 
         $record_query = EInvoicingLog::where('created_at', '<', now()->subYear())
@@ -169,7 +169,7 @@ class EInvoiceTest extends TestCase
 
 
         $log->notes = "{$stub['purchased']} purchased, {$stub['sent']} sent, {$stub['received']} received, {$stub['period']} period";
-        nlog($log->tenant_id ?? $log->license_key. " : " .$log->notes);
+        nlog($log->tenant_id ?? $log->license_key . " : " . $log->notes);
         $log->save();
 
         EInvoicingLog::where('created_at', '<', now()->subYear())

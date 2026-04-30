@@ -34,68 +34,68 @@ class GoCardlessInstantBankPaymentTest extends TestCase
     use MakesHash;
 
     private array $mock = [
-  'events' =>
-  [
-    [
-      'id' => 'EV032JF',
-      'links' =>
-      [
-        'customer' => 'CU001ZDX',
-        'billing_request' => 'BRQ0005',
-        'billing_request_flow' => 'BRF0005S6VYV',
-        'customer_bank_account' => 'BA001V2111PK6J',
-      ],
-      'action' => 'payer_details_confirmed',
-      'details' =>
-      [
-        'cause' => 'billing_request_payer_details_confirmed',
-        'origin' => 'api',
-        'description' => 'Payer has confirmed all their details for this billing request.',
-      ],
-      'metadata' => [],
-      'created_at' => '2022-11-06T08:50:32.641Z',
-      'resource_type' => 'billing_requests',
-    ],
-    [
-      'id' => 'EV032JF67TF2',
-      'links' =>
-      [
-        'customer' => 'CU001DXYDR3',
-        'billing_request' => 'BRQ005YJ7GHF',
-        'customer_bank_account' => 'BA00V2111PK',
-        'mandate_request_mandate' => 'MD01W5RP7GA',
-      ],
-      'action' => 'fulfilled',
-      'details' =>
-      [
-        'cause' => 'billing_request_fulfilled',
-        'origin' => 'api',
-        'description' => 'This billing request has been fulfilled, and the resources have been created.',
-      ],
-      'metadata' => [],
-      'created_at' => '2022-11-06T08:50:35.134Z',
-      'resource_type' => 'billing_requests',
-    ],
-    [
-      'id' => 'EV032JF67S0M8',
-      'links' =>
-      [
-        'mandate' => 'MD001W5RP7GA1W',
-      ],
-      'action' => 'created',
-      'details' =>
-      [
-        'cause' => 'mandate_created',
-        'origin' => 'api',
-        'description' => 'Mandate created via the API.',
-      ],
-      'metadata' =>
-      [],
-      'created_at' => '2022-11-06T08:50:34.667Z',
-      'resource_type' => 'mandates',
-    ],
-  ],
-];
+        'events' =>
+        [
+            [
+                'id' => 'EV032JF',
+                'links' =>
+                [
+                    'customer' => 'CU001ZDX',
+                    'billing_request' => 'BRQ0005',
+                    'billing_request_flow' => 'BRF0005S6VYV',
+                    'customer_bank_account' => 'BA001V2111PK6J',
+                ],
+                'action' => 'payer_details_confirmed',
+                'details' =>
+                [
+                    'cause' => 'billing_request_payer_details_confirmed',
+                    'origin' => 'api',
+                    'description' => 'Payer has confirmed all their details for this billing request.',
+                ],
+                'metadata' => [],
+                'created_at' => '2022-11-06T08:50:32.641Z',
+                'resource_type' => 'billing_requests',
+            ],
+            [
+                'id' => 'EV032JF67TF2',
+                'links' =>
+                [
+                    'customer' => 'CU001DXYDR3',
+                    'billing_request' => 'BRQ005YJ7GHF',
+                    'customer_bank_account' => 'BA00V2111PK',
+                    'mandate_request_mandate' => 'MD01W5RP7GA',
+                ],
+                'action' => 'fulfilled',
+                'details' =>
+                [
+                    'cause' => 'billing_request_fulfilled',
+                    'origin' => 'api',
+                    'description' => 'This billing request has been fulfilled, and the resources have been created.',
+                ],
+                'metadata' => [],
+                'created_at' => '2022-11-06T08:50:35.134Z',
+                'resource_type' => 'billing_requests',
+            ],
+            [
+                'id' => 'EV032JF67S0M8',
+                'links' =>
+                [
+                    'mandate' => 'MD001W5RP7GA1W',
+                ],
+                'action' => 'created',
+                'details' =>
+                [
+                    'cause' => 'mandate_created',
+                    'origin' => 'api',
+                    'description' => 'Mandate created via the API.',
+                ],
+                'metadata' =>
+                [],
+                'created_at' => '2022-11-06T08:50:34.667Z',
+                'resource_type' => 'mandates',
+            ],
+        ],
+    ];
 
 
     protected function setUp(): void
@@ -105,7 +105,7 @@ class GoCardlessInstantBankPaymentTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 
@@ -135,10 +135,10 @@ class GoCardlessInstantBankPaymentTest extends TestCase
 
         $invoice = Invoice::factory()->create(
             [
-              'user_id' => $this->user->id,
-              'company_id' => $this->company->id,
-              'client_id' => $this->client->id
-            ]
+                'user_id' => $this->user->id,
+                'company_id' => $this->company->id,
+                'client_id' => $this->client->id,
+            ],
         );
 
         $invoice->status_id = Invoice::STATUS_SENT;

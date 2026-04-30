@@ -29,7 +29,7 @@ class ActivityApiTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->withoutExceptionHandling();
@@ -41,13 +41,13 @@ class ActivityApiTest extends TestCase
         $data = [
             'entity' => 'invoices',
             'entity_id' => $this->invoice->hashed_id,
-            'notes' => 'These are notes'
+            'notes' => 'These are notes',
         ];
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/activities/notes', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/activities/notes', $data);
 
         $response->assertStatus(200);
 
@@ -61,13 +61,13 @@ class ActivityApiTest extends TestCase
         $data = [
             'entity' => 'credits',
             'entity_id' => $this->credit->hashed_id,
-            'notes' => 'These are notes'
+            'notes' => 'These are notes',
         ];
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/activities/notes', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/activities/notes', $data);
 
         $response->assertStatus(200);
 
@@ -81,13 +81,13 @@ class ActivityApiTest extends TestCase
         $data = [
             'entity' => 'quotes',
             'entity_id' => $this->quote->hashed_id,
-            'notes' => 'These are notes'
+            'notes' => 'These are notes',
         ];
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/activities/notes', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/activities/notes', $data);
 
         $response->assertStatus(200);
 
@@ -102,13 +102,13 @@ class ActivityApiTest extends TestCase
         $data = [
             'entity' => 'clients',
             'entity_id' => $this->client->hashed_id,
-            'notes' => 'These are notes'
+            'notes' => 'These are notes',
         ];
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/activities/notes', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/activities/notes', $data);
 
         $response->assertStatus(200);
 
@@ -123,13 +123,13 @@ class ActivityApiTest extends TestCase
         $data = [
             'entity' => 'recurring_invoices',
             'entity_id' => $this->recurring_invoice->hashed_id,
-            'notes' => 'These are notes'
+            'notes' => 'These are notes',
         ];
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/activities/notes', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/activities/notes', $data);
 
         $response->assertStatus(200);
 
@@ -144,13 +144,13 @@ class ActivityApiTest extends TestCase
         $data = [
             'entity' => 'expenses',
             'entity_id' => $this->expense->hashed_id,
-            'notes' => 'These are notes'
+            'notes' => 'These are notes',
         ];
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/activities/notes', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/activities/notes', $data);
 
         $response->assertStatus(200);
 
@@ -164,13 +164,13 @@ class ActivityApiTest extends TestCase
         $data = [
             'entity' => 'recurring_expenses',
             'entity_id' => $this->recurring_expense->hashed_id,
-            'notes' => 'These are notes'
+            'notes' => 'These are notes',
         ];
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/activities/notes', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/activities/notes', $data);
 
         $response->assertStatus(200);
 
@@ -185,13 +185,13 @@ class ActivityApiTest extends TestCase
         $data = [
             'entity' => 'vendors',
             'entity_id' => $this->vendor->hashed_id,
-            'notes' => 'These are notes'
+            'notes' => 'These are notes',
         ];
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/activities/notes', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/activities/notes', $data);
 
         $response->assertStatus(200);
 
@@ -205,13 +205,13 @@ class ActivityApiTest extends TestCase
         $data = [
             'entity' => 'purchase_orders',
             'entity_id' => $this->purchase_order->hashed_id,
-            'notes' => 'These are notes'
+            'notes' => 'These are notes',
         ];
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/activities/notes', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/activities/notes', $data);
 
         $response->assertStatus(200);
 
@@ -225,13 +225,13 @@ class ActivityApiTest extends TestCase
         $data = [
             'entity' => 'tasks',
             'entity_id' => $this->task->hashed_id,
-            'notes' => 'These are notes'
+            'notes' => 'These are notes',
         ];
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/activities/notes', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/activities/notes', $data);
 
         $response->assertStatus(200);
 
@@ -245,13 +245,13 @@ class ActivityApiTest extends TestCase
         $data = [
             'entity' => 'projects',
             'entity_id' => $this->project->hashed_id,
-            'notes' => 'These are notes'
+            'notes' => 'These are notes',
         ];
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/activities/notes', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/activities/notes', $data);
 
         $response->assertStatus(200);
 
@@ -265,13 +265,13 @@ class ActivityApiTest extends TestCase
         $data = [
             'entity' => 'payments',
             'entity_id' => $this->payment->hashed_id,
-            'notes' => 'These are notes'
+            'notes' => 'These are notes',
         ];
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/activities/notes', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/activities/notes', $data);
 
         $response->assertStatus(200);
 
@@ -289,7 +289,7 @@ class ActivityApiTest extends TestCase
 
         $data = [
             'entity' => 'invoice',
-            'entity_id' => $invoice->hashed_id
+            'entity_id' => $invoice->hashed_id,
         ];
 
         $response = false;

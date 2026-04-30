@@ -1,7 +1,8 @@
 import json
 import os
-import requests
 import sys
+
+import requests
 
 
 def save_schema(schema, status, headers):

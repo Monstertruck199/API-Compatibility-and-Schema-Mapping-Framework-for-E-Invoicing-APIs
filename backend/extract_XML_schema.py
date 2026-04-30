@@ -1,8 +1,9 @@
 import json
 import os
-import requests
 import sys
 import xml.etree.ElementTree as ET
+
+import requests
 
 
 def save_schema(schema, status, headers):

@@ -62,7 +62,7 @@ class InvoiceEmailTest extends TestCase
                 "entity" => 'App\Models\Invoice',
                 "entity_id" => $this->invoice->id,
                 "subject" => 'Reminder $number',
-                "template" => $template
+                "template" => $template,
             ];
 
             $request->initialize($data);
@@ -114,7 +114,7 @@ class InvoiceEmailTest extends TestCase
             "entity" => 'blergen',
             "entity_id" => $this->invoice->hashed_id,
             "subject" => 'Reminder $number',
-            "template" => "email_template_invoice"
+            "template" => "email_template_invoice",
         ];
 
         $response = false;
@@ -152,7 +152,7 @@ class InvoiceEmailTest extends TestCase
                         'date' => \Carbon\Carbon::parse('2023-10-10')->format('Y-m-d H:m:s') ?? '',
                     ],
                 ],
-            ]
+            ],
         ];
 
         $system_log->save();
@@ -161,7 +161,7 @@ class InvoiceEmailTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->postJson('/api/v1/emails/clientHistory/'.$this->client->hashed_id);
+        ])->postJson('/api/v1/emails/clientHistory/' . $this->client->hashed_id);
 
         $response->assertStatus(200);
 
@@ -200,7 +200,7 @@ class InvoiceEmailTest extends TestCase
                         'date' => \Carbon\Carbon::parse('2023-10-10')->format('Y-m-d H:m:s') ?? '',
                     ],
                 ],
-            ]
+            ],
         ];
 
         $system_log->save();
@@ -239,7 +239,7 @@ class InvoiceEmailTest extends TestCase
             "entity" => 'invoice',
             "entity_id" => $this->invoice->hashed_id,
             "subject" => 'Reminder $number',
-            "template" => "first_custom"
+            "template" => "first_custom",
         ];
 
         $response = false;
@@ -260,7 +260,7 @@ class InvoiceEmailTest extends TestCase
             'template' => 'email_template_invoice',
             'entity' => 'invoice',
             'entity_id' => $this->invoice->hashed_id,
-            'cc_email' => 'jj@gmail.com'
+            'cc_email' => 'jj@gmail.com',
         ];
 
         $response = false;

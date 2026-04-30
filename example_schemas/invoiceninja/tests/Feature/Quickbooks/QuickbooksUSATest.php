@@ -867,7 +867,7 @@ class QuickbooksUSATest extends TestCase
             $this->assertContains(
                 $tax_code_ref,
                 ['TAX', 'NON'],
-                "US company should only use 'TAX' or 'NON' as TaxCodeRef, got '{$tax_code_ref}'"
+                "US company should only use 'TAX' or 'NON' as TaxCodeRef, got '{$tax_code_ref}'",
             );
         }
     }
@@ -1001,7 +1001,7 @@ class QuickbooksUSATest extends TestCase
             $this->assertEquals(
                 $expected_tax_codes[$i],
                 $line['SalesItemLineDetail']['TaxCodeRef']['value'],
-                "Line {$i} ({$line['Description']}) has wrong TaxCodeRef"
+                "Line {$i} ({$line['Description']}) has wrong TaxCodeRef",
             );
         }
 

@@ -40,7 +40,7 @@ class ProductTest extends TestCase
         Model::reguard();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->makeTestData();
@@ -53,7 +53,7 @@ class ProductTest extends TestCase
 
         $product = [
             'cost' => 10,
-            'vendor_id' => $this->vendor->hashed_id
+            'vendor_id' => $this->vendor->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -142,7 +142,7 @@ class ProductTest extends TestCase
     {
         $p = Product::factory()->create([
             'user_id' => $this->user->id,
-            'company_id' => $this->company->id
+            'company_id' => $this->company->id,
         ]);
 
 
@@ -209,7 +209,7 @@ class ProductTest extends TestCase
                 'custom_value3' => 'custom',
                 'custom_value4' => 'custom',
                 'is_deleted' => 0,
-            ]
+            ],
         )
             ->assertStatus(200);
 
@@ -223,13 +223,13 @@ class ProductTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/products/'.$this->encodePrimaryKey($product->id), $product_update)
+        ])->put('/api/v1/products/' . $this->encodePrimaryKey($product->id), $product_update)
             ->assertStatus(200);
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->delete('/api/v1/products/'.$this->encodePrimaryKey($product->id))
+        ])->delete('/api/v1/products/' . $this->encodePrimaryKey($product->id))
         ->assertStatus(200);
     }
 }

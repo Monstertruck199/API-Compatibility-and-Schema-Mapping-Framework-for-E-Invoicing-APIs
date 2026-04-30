@@ -41,7 +41,7 @@ class CompanyGatewayResolutionTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         if (! config('ninja.testvars.stripe')) {

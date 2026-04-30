@@ -176,11 +176,11 @@ class RecurringDatesTest extends TestCase
         $client = Client::factory()->create(['user_id' => $user->id, 'company_id' => $company->id]);
 
         ClientContact::factory()->create([
-                'user_id' => $user->id,
-                'client_id' => $client->id,
-                'company_id' => $company->id,
-                'is_primary' => 1,
-            ]);
+            'user_id' => $user->id,
+            'client_id' => $client->id,
+            'company_id' => $company->id,
+            'is_primary' => 1,
+        ]);
 
         $recurring_invoice = RecurringInvoice::factory()->create([
             'user_id' => $user->id,
@@ -270,11 +270,11 @@ class RecurringDatesTest extends TestCase
         $client = Client::factory()->create(['user_id' => $user->id, 'company_id' => $company->id]);
 
         ClientContact::factory()->create([
-                'user_id' => $user->id,
-                'client_id' => $client->id,
-                'company_id' => $company->id,
-                'is_primary' => 1,
-            ]);
+            'user_id' => $user->id,
+            'client_id' => $client->id,
+            'company_id' => $company->id,
+            'is_primary' => 1,
+        ]);
 
 
 
@@ -355,11 +355,11 @@ class RecurringDatesTest extends TestCase
         $client = Client::factory()->create(['user_id' => $user->id, 'company_id' => $company->id]);
 
         ClientContact::factory()->create([
-                'user_id' => $user->id,
-                'client_id' => $client->id,
-                'company_id' => $company->id,
-                'is_primary' => 1,
-            ]);
+            'user_id' => $user->id,
+            'client_id' => $client->id,
+            'company_id' => $company->id,
+            'is_primary' => 1,
+        ]);
 
 
 
@@ -439,11 +439,11 @@ class RecurringDatesTest extends TestCase
         $client = Client::factory()->create(['user_id' => $user->id, 'company_id' => $company->id]);
 
         ClientContact::factory()->create([
-                'user_id' => $user->id,
-                'client_id' => $client->id,
-                'company_id' => $company->id,
-                'is_primary' => 1,
-            ]);
+            'user_id' => $user->id,
+            'client_id' => $client->id,
+            'company_id' => $company->id,
+            'is_primary' => 1,
+        ]);
 
         $this->assertEquals('1', $client->getSetting('entity_send_time'));
         $this->assertEquals('1', $client->getSetting('timezone_id'));
@@ -521,11 +521,11 @@ class RecurringDatesTest extends TestCase
         $client = Client::factory()->create(['user_id' => $user->id, 'company_id' => $company->id]);
 
         ClientContact::factory()->create([
-                'user_id' => $user->id,
-                'client_id' => $client->id,
-                'company_id' => $company->id,
-                'is_primary' => 1,
-            ]);
+            'user_id' => $user->id,
+            'client_id' => $client->id,
+            'company_id' => $company->id,
+            'is_primary' => 1,
+        ]);
 
         $this->assertEquals('23', $client->getSetting('entity_send_time'));
         $this->assertEquals('113', $client->getSetting('timezone_id'));
@@ -602,11 +602,11 @@ class RecurringDatesTest extends TestCase
         $client = Client::factory()->create(['user_id' => $user->id, 'company_id' => $company->id]);
 
         ClientContact::factory()->create([
-                'user_id' => $user->id,
-                'client_id' => $client->id,
-                'company_id' => $company->id,
-                'is_primary' => 1,
-            ]);
+            'user_id' => $user->id,
+            'client_id' => $client->id,
+            'company_id' => $company->id,
+            'is_primary' => 1,
+        ]);
 
         $this->assertEquals('1', $client->getSetting('entity_send_time'));
         $this->assertEquals('113', $client->getSetting('timezone_id'));

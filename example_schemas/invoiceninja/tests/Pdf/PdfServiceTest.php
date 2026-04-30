@@ -89,12 +89,12 @@ class PdfServiceTest extends TestCase
 
         $company = Company::factory()->create(array_merge([
             'account_id' => $this->account->id,
-            'settings' => $settings
+            'settings' => $settings,
         ], $company_props));
 
         $client = Client::factory()->create([
             'user_id' => $this->user->id,
-            'company_id' => $company->id
+            'company_id' => $company->id,
         ]);
 
         $contact = ClientContact::factory()->create([
@@ -127,13 +127,13 @@ class PdfServiceTest extends TestCase
     {
 
         $company = Company::factory()->create(array_merge([
-                    'account_id' => $this->account->id,
-                    'settings' => $settings
-                ], $company_props));
+            'account_id' => $this->account->id,
+            'settings' => $settings,
+        ], $company_props));
 
         $vendor = Vendor::factory()->create([
             'user_id' => $this->user->id,
-            'company_id' => $company->id
+            'company_id' => $company->id,
         ]);
 
         $contact = VendorContact::factory()->create([
@@ -198,20 +198,20 @@ class PdfServiceTest extends TestCase
 
 
             $statement = (new \App\Services\Client\Statement($client, [
-                            'start_date' => '1970-01-01',
-                            'end_date' => '2045-01-01',
-                            'show_payments_table' => true,
-                            'show_aging_table' => true,
-                            'show_credits_table' => true,
-                            'template' => $design->hashed_id,
-                            'status' => 'all',
-                        ]));
+                'start_date' => '1970-01-01',
+                'end_date' => '2045-01-01',
+                'show_payments_table' => true,
+                'show_aging_table' => true,
+                'show_credits_table' => true,
+                'template' => $design->hashed_id,
+                'status' => 'all',
+            ]));
 
             $pdf = $statement->run();
 
             $this->assertNotNull($pdf);
 
-            \Illuminate\Support\Facades\Storage::put('/pdf/template_statements_' . basename($template). '.pdf', $pdf);
+            \Illuminate\Support\Facades\Storage::put('/pdf/template_statements_' . basename($template) . '.pdf', $pdf);
 
             $design->forceDelete();
             $company->forceDelete();
@@ -242,7 +242,7 @@ class PdfServiceTest extends TestCase
 
             $this->assertNotNull($pdf);
 
-            \Illuminate\Support\Facades\Storage::put('/pdf/template_payments_' . basename($template). '.pdf', $pdf);
+            \Illuminate\Support\Facades\Storage::put('/pdf/template_payments_' . basename($template) . '.pdf', $pdf);
 
         }
 
@@ -269,7 +269,7 @@ class PdfServiceTest extends TestCase
 
             $this->assertNotNull($pdf);
 
-            \Illuminate\Support\Facades\Storage::put('/pdf/template_delivery_note_' . basename($template). '.pdf', $pdf);
+            \Illuminate\Support\Facades\Storage::put('/pdf/template_delivery_note_' . basename($template) . '.pdf', $pdf);
 
         }
 
@@ -333,7 +333,7 @@ class PdfServiceTest extends TestCase
 
             $this->assertNotNull($pdf);
 
-            \Illuminate\Support\Facades\Storage::put('/pdf/po_' . $design->name.'.pdf', $pdf);
+            \Illuminate\Support\Facades\Storage::put('/pdf/po_' . $design->name . '.pdf', $pdf);
 
         });
 
@@ -397,7 +397,7 @@ class PdfServiceTest extends TestCase
 
             $this->assertNotNull($pdf);
 
-            \Illuminate\Support\Facades\Storage::put('/pdf/markdown_' . $design->name.'.pdf', $pdf);
+            \Illuminate\Support\Facades\Storage::put('/pdf/markdown_' . $design->name . '.pdf', $pdf);
 
         });
 
@@ -450,7 +450,7 @@ class PdfServiceTest extends TestCase
 
             $this->assertNotNull($pdf);
 
-            \Illuminate\Support\Facades\Storage::put('/pdf/desc_' . $design->name.'.pdf', $pdf);
+            \Illuminate\Support\Facades\Storage::put('/pdf/desc_' . $design->name . '.pdf', $pdf);
 
         });
 
@@ -496,7 +496,7 @@ class PdfServiceTest extends TestCase
 
             $this->assertNotNull($pdf);
 
-            \Illuminate\Support\Facades\Storage::put('/pdf/max_fields_' . $design->name.'.pdf', $pdf);
+            \Illuminate\Support\Facades\Storage::put('/pdf/max_fields_' . $design->name . '.pdf', $pdf);
 
         });
 
@@ -538,7 +538,7 @@ class PdfServiceTest extends TestCase
 
             $this->assertNotNull($pdf);
 
-            \Illuminate\Support\Facades\Storage::put('/pdf/min_fields_' . $design->name.'.pdf', $pdf);
+            \Illuminate\Support\Facades\Storage::put('/pdf/min_fields_' . $design->name . '.pdf', $pdf);
 
         });
 
@@ -554,7 +554,7 @@ class PdfServiceTest extends TestCase
             'end_date' => '2023-01-01',
             'show_aging_table' => true,
             'show_payments_table' => true,
-            'status' => 'all'
+            'status' => 'all',
         ]);
 
 
@@ -585,7 +585,7 @@ class PdfServiceTest extends TestCase
 
             $this->assertNotNull($pdf);
 
-            \Illuminate\Support\Facades\Storage::put('/pdf/' . $design->name.'.pdf', $pdf);
+            \Illuminate\Support\Facades\Storage::put('/pdf/' . $design->name . '.pdf', $pdf);
 
         });
 
@@ -603,7 +603,7 @@ class PdfServiceTest extends TestCase
 
             $this->assertNotNull($pdf);
 
-            \Illuminate\Support\Facades\Storage::put('/pdf/dn_' . $design->name.'.pdf', $pdf);
+            \Illuminate\Support\Facades\Storage::put('/pdf/dn_' . $design->name . '.pdf', $pdf);
 
         });
 

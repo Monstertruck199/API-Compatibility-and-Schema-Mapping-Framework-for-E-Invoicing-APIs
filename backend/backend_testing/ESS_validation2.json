@@ -15,13 +15,8 @@
     "description": "Patient must be an adult and have signed consent before proceeding."
   },
   "data": {
-    "source": [
-      "patient.age",
-      "patient.consentSigned"
-    ],
-    "target": [
-      "enrollment.eligibility"
-    ],
+    "source": ["patient.age", "patient.consentSigned"],
+    "target": ["enrollment.eligibility"],
     "description": "Checks adult eligibility and consent status for trial enrollment."
   },
   "value": "1"

@@ -6,7 +6,6 @@ from copy import deepcopy
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-
 DIRECT = "directly_compatible"
 MAPPING = "compatible_with_mapping"
 INCOMPATIBLE = "incompatible"

@@ -101,7 +101,7 @@ class WaveTest extends TestCase
     public function testVendorAndExpenseWaveImport()
     {
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/wave_vendors.csv'
+            base_path() . '/tests/Feature/Import/wave_vendors.csv',
         );
         $hash = Str::random(32);
 
@@ -132,7 +132,7 @@ class WaveTest extends TestCase
             'import_type' => 'waveaccounting',
         ];
 
-        Cache::put($hash.'-vendor', base64_encode($csv), 360);
+        Cache::put($hash . '-vendor', base64_encode($csv), 360);
 
         $csv_importer = new Wave($data, $this->company);
 
@@ -160,7 +160,7 @@ class WaveTest extends TestCase
 
         // now lets try importing expenses / bills
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/wave_expenses.csv'
+            base_path() . '/tests/Feature/Import/wave_expenses.csv',
         );
         $hash = Str::random(32);
 
@@ -197,7 +197,7 @@ class WaveTest extends TestCase
             'import_type' => 'waveaccounting',
         ];
 
-        Cache::put($hash.'-invoice', base64_encode($csv), 360);
+        Cache::put($hash . '-invoice', base64_encode($csv), 360);
 
         $csv_importer = new Wave($data, $this->company);
 
@@ -211,7 +211,7 @@ class WaveTest extends TestCase
     public function testClientWaveImport()
     {
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/wave_clients.csv'
+            base_path() . '/tests/Feature/Import/wave_clients.csv',
         );
         $hash = Str::random(32);
 
@@ -252,7 +252,7 @@ class WaveTest extends TestCase
             'import_type' => 'waveaccounting',
         ];
 
-        Cache::put($hash.'-client', base64_encode($csv), 360);
+        Cache::put($hash . '-client', base64_encode($csv), 360);
 
         $csv_importer = new Wave($data, $this->company);
 
@@ -287,7 +287,7 @@ class WaveTest extends TestCase
         //first import all the clients
 
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/wave_clients.csv'
+            base_path() . '/tests/Feature/Import/wave_clients.csv',
         );
         $hash = Str::random(32);
 
@@ -328,7 +328,7 @@ class WaveTest extends TestCase
             'import_type' => 'waveaccounting',
         ];
 
-        Cache::put($hash.'-client', base64_encode($csv), 360);
+        Cache::put($hash . '-client', base64_encode($csv), 360);
 
         $csv_importer = new Wave($data, $this->company);
 
@@ -337,7 +337,7 @@ class WaveTest extends TestCase
         //now import the invoices
 
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/wave_invoices.csv'
+            base_path() . '/tests/Feature/Import/wave_invoices.csv',
         );
         $hash = Str::random(32);
 
@@ -374,7 +374,7 @@ class WaveTest extends TestCase
             'import_type' => 'waveaccounting',
         ];
 
-        Cache::put($hash.'-invoice', base64_encode($csv), 360);
+        Cache::put($hash . '-invoice', base64_encode($csv), 360);
 
         $csv_importer = new Wave($data, $this->company);
 

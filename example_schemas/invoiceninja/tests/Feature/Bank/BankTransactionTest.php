@@ -35,7 +35,7 @@ class BankTransactionTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 
@@ -95,7 +95,7 @@ class BankTransactionTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->getJson('/api/v1/bank_transactions?bank_integration_ids='.$bi->hashed_id);
+        ])->getJson('/api/v1/bank_transactions?bank_integration_ids=' . $bi->hashed_id);
 
         $response->assertStatus(200);
 
@@ -108,7 +108,7 @@ class BankTransactionTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->getJson('/api/v1/bank_transactions?bank_integration_ids='.$bi2->hashed_id);
+        ])->getJson('/api/v1/bank_transactions?bank_integration_ids=' . $bi2->hashed_id);
 
         $response->assertStatus(200);
 
@@ -121,7 +121,7 @@ class BankTransactionTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->getJson('/api/v1/bank_transactions?bank_integration_ids='.$bi2->hashed_id.",".$bi->hashed_id);
+        ])->getJson('/api/v1/bank_transactions?bank_integration_ids=' . $bi2->hashed_id . "," . $bi->hashed_id);
 
         $response->assertStatus(200);
 
@@ -172,7 +172,7 @@ class BankTransactionTest extends TestCase
 
         $data['transactions'][] = [
             'id' => $bt->hashed_id,
-            'expense_id' => $this->expense->hashed_id
+            'expense_id' => $this->expense->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -198,7 +198,7 @@ class BankTransactionTest extends TestCase
 
         $data['transactions'][] = [
             'id' => $bt->hashed_id,
-            'expense_id' => $e->hashed_id
+            'expense_id' => $e->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -219,7 +219,7 @@ class BankTransactionTest extends TestCase
 
         $data['transactions'][] = [
             'id' => $bt->hashed_id,
-            'expense_id' => $e2->hashed_id
+            'expense_id' => $e2->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -269,7 +269,7 @@ class BankTransactionTest extends TestCase
 
         $data['transactions'][] = [
             'id' => $bt->hashed_id,
-            'expense_id' => $this->expense->hashed_id
+            'expense_id' => $this->expense->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -294,7 +294,7 @@ class BankTransactionTest extends TestCase
 
         $data['transactions'][] = [
             'id' => $bt->hashed_id,
-            'expense_id' => $e->hashed_id
+            'expense_id' => $e->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -313,7 +313,7 @@ class BankTransactionTest extends TestCase
     {
         $data = [
             'ids' => [$this->bank_integration->hashed_id],
-            'action' => 'archive'
+            'action' => 'archive',
         ];
 
         $response = $this->withHeaders([
@@ -324,7 +324,7 @@ class BankTransactionTest extends TestCase
 
         $data = [
             'ids' => [$this->bank_integration->hashed_id],
-            'action' => 'restore'
+            'action' => 'restore',
         ];
 
         $response = $this->withHeaders([
@@ -335,7 +335,7 @@ class BankTransactionTest extends TestCase
 
         $data = [
             'ids' => [$this->bank_integration->hashed_id],
-            'action' => 'delete'
+            'action' => 'delete',
         ];
 
         $response = $this->withHeaders([
@@ -371,7 +371,7 @@ class BankTransactionTest extends TestCase
 
         $data['transactions'][] = [
             'id' => $bt->hashed_id,
-            'expense_id' => $this->expense->hashed_id
+            'expense_id' => $this->expense->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -430,7 +430,7 @@ class BankTransactionTest extends TestCase
 
         $data['transactions'][] = [
             'id' => $bt->hashed_id,
-            'payment_id' => $p->hashed_id
+            'payment_id' => $p->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -470,7 +470,7 @@ class BankTransactionTest extends TestCase
 
         $data['transactions'][] = [
             'id' => $bt->hashed_id,
-            'payment_id' => $this->payment->hashed_id
+            'payment_id' => $this->payment->hashed_id,
         ];
 
         $response = $this->withHeaders([

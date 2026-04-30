@@ -33,7 +33,7 @@ class ClientGatewayTokenApiTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         if (! config('ninja.testvars.stripe')) {
@@ -278,7 +278,7 @@ class ClientGatewayTokenApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/client_gateway_tokens/'.$arr['data']['id'], $data);
+        ])->put('/api/v1/client_gateway_tokens/' . $arr['data']['id'], $data);
 
         $response->assertStatus(200);
 
@@ -306,7 +306,7 @@ class ClientGatewayTokenApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/client_gateway_tokens/'.$arr['data']['id']);
+        ])->get('/api/v1/client_gateway_tokens/' . $arr['data']['id']);
 
         $response->assertStatus(200);
     }

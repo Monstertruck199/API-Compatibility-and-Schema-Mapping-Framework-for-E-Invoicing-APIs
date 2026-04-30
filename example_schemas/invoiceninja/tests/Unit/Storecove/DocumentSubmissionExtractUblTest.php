@@ -19,12 +19,11 @@ use Modules\Admin\Jobs\Storecove\DocumentSubmission;
 
 class DocumentSubmissionExtractUblTest extends TestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        if(!class_exists(DocumentSubmission::class)) {
+        if (!class_exists(DocumentSubmission::class)) {
             $this->markTestSkipped('DocumentSubmission class does not exist');
         }
     }

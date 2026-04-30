@@ -40,7 +40,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class InvoiceMarkPaidTest extends TestCase
 {
-
     public $invoice;
 
     public $company;
@@ -74,7 +73,7 @@ class InvoiceMarkPaidTest extends TestCase
             return $resource;
 
         });
-        
+
         Event::fake();
 
     }
@@ -82,7 +81,7 @@ class InvoiceMarkPaidTest extends TestCase
     private function buildData()
     {
 
-        if($this->account){
+        if ($this->account) {
             $this->account->forceDelete();
         }
         /** @var \App\Models\Account $account */
@@ -97,7 +96,7 @@ class InvoiceMarkPaidTest extends TestCase
         $this->user = User::factory()->create([
             'account_id' => $this->account->id,
             'confirmation_code' => 'xyz123',
-            'email' => \Illuminate\Support\Str::random(32)."@example.com",
+            'email' => \Illuminate\Support\Str::random(32) . "@example.com",
         ]);
 
         $settings = CompanySettings::defaults();
@@ -166,7 +165,7 @@ class InvoiceMarkPaidTest extends TestCase
             'line_items' => $line_items,
             'status_id' => 1,
             'uses_inclusive_taxes' => false,
-            'is_amount_discount' => false
+            'is_amount_discount' => false,
         ]);
 
         $i->calc()->getInvoice();
@@ -231,7 +230,7 @@ class InvoiceMarkPaidTest extends TestCase
             'line_items' => $line_items,
             'status_id' => 1,
             'uses_inclusive_taxes' => false,
-            'is_amount_discount' => false
+            'is_amount_discount' => false,
         ]);
 
         $i->calc()->getInvoice();
@@ -241,7 +240,7 @@ class InvoiceMarkPaidTest extends TestCase
 
         $data = [
             'action' => 'mark_paid',
-            'ids' => [$i->hashed_id]
+            'ids' => [$i->hashed_id],
         ];
 
         $response = $this->withHeaders([

@@ -76,7 +76,7 @@ class SystemLogApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/system_logs/'.$hashed_id);
+        ])->get('/api/v1/system_logs/' . $hashed_id);
 
         $response->assertStatus(200);
 
@@ -87,12 +87,12 @@ class SystemLogApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/system_logs/'.$hashed_id, $sl)->assertStatus(400);
+        ])->put('/api/v1/system_logs/' . $hashed_id, $sl)->assertStatus(400);
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->delete('/api/v1/system_logs/'.$hashed_id)->assertStatus(400);
+        ])->delete('/api/v1/system_logs/' . $hashed_id)->assertStatus(400);
     }
 
     public function testStoreRouteFails()

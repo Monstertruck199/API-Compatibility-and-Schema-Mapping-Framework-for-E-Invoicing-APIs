@@ -50,7 +50,7 @@ class FreshbooksTest extends TestCase
     public function testClientFreshbooksImport()
     {
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/freshbooks_clients.csv'
+            base_path() . '/tests/Feature/Import/freshbooks_clients.csv',
         );
         $hash = Str::random(32);
 
@@ -75,7 +75,7 @@ class FreshbooksTest extends TestCase
             'import_type' => 'freshbooks',
         ];
 
-        Cache::put($hash.'-client', base64_encode($csv), 360);
+        Cache::put($hash . '-client', base64_encode($csv), 360);
 
         $csv_importer = new Freshbooks($data, $this->company);
 
@@ -98,7 +98,7 @@ class FreshbooksTest extends TestCase
     public function testInvoiceZohoImport()
     {
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/freshbooks_clients.csv'
+            base_path() . '/tests/Feature/Import/freshbooks_clients.csv',
         );
         $hash = Str::random(32);
 
@@ -123,7 +123,7 @@ class FreshbooksTest extends TestCase
             'import_type' => 'freshbooks',
         ];
 
-        Cache::put($hash.'-client', base64_encode($csv), 360);
+        Cache::put($hash . '-client', base64_encode($csv), 360);
 
         $csv_importer = new Freshbooks($data, $this->company);
 
@@ -145,7 +145,7 @@ class FreshbooksTest extends TestCase
         //now import the invoices
 
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/freshbooks_invoices.csv'
+            base_path() . '/tests/Feature/Import/freshbooks_invoices.csv',
         );
         $hash = Str::random(32);
 
@@ -176,7 +176,7 @@ class FreshbooksTest extends TestCase
             'import_type' => 'freshbooks',
         ];
 
-        Cache::put($hash.'-invoice', base64_encode($csv), 360);
+        Cache::put($hash . '-invoice', base64_encode($csv), 360);
 
         $csv_importer = new Freshbooks($data, $this->company);
 

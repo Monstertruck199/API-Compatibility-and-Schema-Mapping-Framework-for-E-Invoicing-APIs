@@ -50,7 +50,7 @@ class RecurringInvoiceTest extends TestCase
         Model::reguard();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->makeTestData();
@@ -174,7 +174,7 @@ class RecurringInvoiceTest extends TestCase
         $response->assertStatus(200);
 
         $ri->cursor()->each(function ($e) {
-            $this->assertTrue((bool)$e->uses_inclusive_taxes);
+            $this->assertTrue((bool) $e->uses_inclusive_taxes);
         });
 
         $data = [
@@ -262,9 +262,9 @@ class RecurringInvoiceTest extends TestCase
         ];
 
         $response = $this->withHeaders([
-           'X-API-SECRET' => config('ninja.api_secret'),
-           'X-API-TOKEN' => $this->token,
-       ])->postJson('/api/v1/recurring_invoices/bulk', $data)
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/recurring_invoices/bulk', $data)
        ->assertStatus(200);
 
         $arr = $response->json();
@@ -491,11 +491,11 @@ class RecurringInvoiceTest extends TestCase
         ]);
 
         $p2 = Product::factory()->create([
-           'company_id' => $this->company->id,
-           'user_id' => $this->user->id,
-           'cost' => 20,
-           'price' => 20,
-           'product_key' => 'floyd',
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'cost' => 20,
+            'price' => 20,
+            'product_key' => 'floyd',
         ]);
 
         $recurring_invoice = RecurringInvoiceFactory::create($this->company->id, $this->user->id);
@@ -681,7 +681,7 @@ class RecurringInvoiceTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/recurring_invoices/'.$arr['data']['id'].'?stop=true', $data)
+        ])->put('/api/v1/recurring_invoices/' . $arr['data']['id'] . '?stop=true', $data)
             ->assertStatus(200);
 
         $arr = $response->json();
@@ -744,14 +744,14 @@ class RecurringInvoiceTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/recurring_invoices/'.$this->encodePrimaryKey($RecurringInvoice->id));
+        ])->get('/api/v1/recurring_invoices/' . $this->encodePrimaryKey($RecurringInvoice->id));
 
         $response->assertStatus(200);
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/recurring_invoices/'.$this->encodePrimaryKey($RecurringInvoice->id).'/edit');
+        ])->get('/api/v1/recurring_invoices/' . $this->encodePrimaryKey($RecurringInvoice->id) . '/edit');
 
         $response->assertStatus(200);
 
@@ -766,7 +766,7 @@ class RecurringInvoiceTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/recurring_invoices/'.$this->encodePrimaryKey($RecurringInvoice->id), $RecurringInvoice_update)
+        ])->put('/api/v1/recurring_invoices/' . $this->encodePrimaryKey($RecurringInvoice->id), $RecurringInvoice_update)
             ->assertStatus(200);
 
         $arr = $response->json();
@@ -776,7 +776,7 @@ class RecurringInvoiceTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/recurring_invoices/'.$this->encodePrimaryKey($RecurringInvoice->id), $RecurringInvoice_update)
+        ])->put('/api/v1/recurring_invoices/' . $this->encodePrimaryKey($RecurringInvoice->id), $RecurringInvoice_update)
             ->assertStatus(200);
 
         $response = $this->withHeaders([
@@ -788,7 +788,7 @@ class RecurringInvoiceTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->delete('/api/v1/recurring_invoices/'.$this->encodePrimaryKey($RecurringInvoice->id));
+        ])->delete('/api/v1/recurring_invoices/' . $this->encodePrimaryKey($RecurringInvoice->id));
 
         $response->assertStatus(200);
     }
@@ -954,7 +954,7 @@ class RecurringInvoiceTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/recurring_invoices?product_key=' . $p1->product_key .',' . $p2->product_key)
+        ])->get('/api/v1/recurring_invoices?product_key=' . $p1->product_key . ',' . $p2->product_key)
             ->assertStatus(200);
 
         $arr = $response->json();

@@ -43,7 +43,7 @@ class LateFeeTest extends TestCase
     {
         parent::setUp();
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->makeTestData();
@@ -65,7 +65,7 @@ class LateFeeTest extends TestCase
         $this->user = User::factory()->create([
             'account_id' => $this->account->id,
             'confirmation_code' => 'xyz123',
-            'email' => \Illuminate\Support\Str::random(32)."@example.com",
+            'email' => \Illuminate\Support\Str::random(32) . "@example.com",
         ]);
 
         $this->company = Company::factory()->create([
@@ -538,7 +538,7 @@ class LateFeeTest extends TestCase
             (new ReminderJob())->handle();
             $invoice = $i->fresh();
 
-            $x = (bool)$invoice->reminder1_sent;
+            $x = (bool) $invoice->reminder1_sent;
             $this->travelTo(now()->addHour());
 
         } while ($x === false);

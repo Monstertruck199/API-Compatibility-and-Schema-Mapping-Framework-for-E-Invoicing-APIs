@@ -60,7 +60,7 @@ class StorecoveTest extends TestCase
         }
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
     }
@@ -133,7 +133,7 @@ class StorecoveTest extends TestCase
             'user_id' => $client->user_id,
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
-            'email' => $this->faker->safeEmail()
+            'email' => $this->faker->safeEmail(),
         ]);
 
         $invoice = \App\Models\Invoice::factory()->create([
@@ -194,7 +194,7 @@ class StorecoveTest extends TestCase
         $line_items = $invoice->line_items;
 
         foreach ($line_items as &$item) {
-            $item->tax_id = (string)\App\Models\Product::PRODUCT_TYPE_REVERSE_TAX;
+            $item->tax_id = (string) \App\Models\Product::PRODUCT_TYPE_REVERSE_TAX;
         }
         unset($item);
 
@@ -327,7 +327,7 @@ class StorecoveTest extends TestCase
             'company_country' => 'DE',
             'client_country' => 'DE',
             'client_vat' => 'DE173755434',
-          'classification' => 'business',
+            'classification' => 'business',
             'has_valid_vat' => true,
             'over_threshold' => true,
             'legal_entity_id' => 290868,
@@ -470,8 +470,8 @@ class StorecoveTest extends TestCase
         $serializer = new Serializer($normalizers, $encoders);
 
         $context = [
-          DateTimeNormalizer::FORMAT_KEY => 'Y-m-d',
-          AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
+            DateTimeNormalizer::FORMAT_KEY => 'Y-m-d',
+            AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
         ];
 
         $p = file_get_contents(base_path('tests/Integration/Einvoice/samples/peppol.xml'));
@@ -1023,7 +1023,7 @@ class StorecoveTest extends TestCase
         $settings->state = 'Lazio';
         $settings->postal_code = '00187';
         $settings->phone = '06 1234567';
-        $settings->email = \Illuminate\Support\Str::random(32)."@example.com";
+        $settings->email = \Illuminate\Support\Str::random(32) . "@example.com";
         $settings->country_id = '380'; // Italy's ISO country code
         $settings->vat_number = 'IT92443356490'; // Italian VAT number
         $settings->id_number = 'RM 123456'; // Typical Italian company registration format
@@ -1036,8 +1036,8 @@ class StorecoveTest extends TestCase
 
 
         $company = Company::factory()->create([
-          'account_id' => $this->account->id,
-          'settings' => $settings,
+            'account_id' => $this->account->id,
+            'settings' => $settings,
         ]);
 
         $this->user->companies()->attach($company->id, [
@@ -1054,48 +1054,6 @@ class StorecoveTest extends TestCase
 
         $c =
         Client::create([
-          'company_id' => $company->id,
-          'user_id' => $this->user->id,
-          'name' => 'Impresa Esempio S.p.A.',
-          'website' => 'https://www.impresa-esempio.it',
-          'private_notes' => 'Queste sono note private per il cliente di prova.',
-          'balance' => 0,
-          'paid_to_date' => 0,
-          'vat_number' => 'IT92443356489', // Italian VAT number with IT prefix
-          'id_number' => 'B12345678', // Typical format for Italian company registration numbers
-          'custom_value1' => '2024-07-22 10:00:00',
-          'custom_value2' => 'blu', // Italian for blue
-          'custom_value3' => 'parolaesempio', // Italian for sample word
-          'custom_value4' => 'test@esempio.it',
-          'address1' => 'Via Esempio 123',
-          'address2' => '2º Piano, Ufficio 45',
-          'city' => 'Roma',
-          'state' => 'Lazio',
-          'postal_code' => '00187',
-          'country_id' => '380', // Italy
-          'shipping_address1' => 'Via Esempio 123',
-          'shipping_address2' => '2º Piano, Ufficio 45',
-          'shipping_city' => 'Roma',
-          'shipping_state' => 'Lazio',
-          'shipping_postal_code' => '00187',
-          'shipping_country_id' => '380', // Italy
-          'settings' => ClientSettings::defaults(),
-          'client_hash' => \Illuminate\Support\Str::random(32),
-          'routing_id' => 'SCSCSCS',
-          'classification' => 'business',
-        ]);
-
-        ClientContact::factory()->create([
-          'company_id' => $company->id,
-          'user_id' => $this->user->id,
-          'client_id' => $c->id,
-          'first_name' => 'Contact First',
-          'last_name' => 'Contact Last',
-          'email' => 'david+c1@invoiceninja.com',
-        ]);
-
-        $c2 =
-          Client::create([
             'company_id' => $company->id,
             'user_id' => $this->user->id,
             'name' => 'Impresa Esempio S.p.A.',
@@ -1103,7 +1061,7 @@ class StorecoveTest extends TestCase
             'private_notes' => 'Queste sono note private per il cliente di prova.',
             'balance' => 0,
             'paid_to_date' => 0,
-            'vat_number' => 'RSSMRA85M01H501Z', // Italian VAT number with IT prefix
+            'vat_number' => 'IT92443356489', // Italian VAT number with IT prefix
             'id_number' => 'B12345678', // Typical format for Italian company registration numbers
             'custom_value1' => '2024-07-22 10:00:00',
             'custom_value2' => 'blu', // Italian for blue
@@ -1124,17 +1082,59 @@ class StorecoveTest extends TestCase
             'settings' => ClientSettings::defaults(),
             'client_hash' => \Illuminate\Support\Str::random(32),
             'routing_id' => 'SCSCSCS',
-            'classification' => 'individual',
+            'classification' => 'business',
+        ]);
+
+        ClientContact::factory()->create([
+            'company_id' => $company->id,
+            'user_id' => $this->user->id,
+            'client_id' => $c->id,
+            'first_name' => 'Contact First',
+            'last_name' => 'Contact Last',
+            'email' => 'david+c1@invoiceninja.com',
+        ]);
+
+        $c2 =
+          Client::create([
+              'company_id' => $company->id,
+              'user_id' => $this->user->id,
+              'name' => 'Impresa Esempio S.p.A.',
+              'website' => 'https://www.impresa-esempio.it',
+              'private_notes' => 'Queste sono note private per il cliente di prova.',
+              'balance' => 0,
+              'paid_to_date' => 0,
+              'vat_number' => 'RSSMRA85M01H501Z', // Italian VAT number with IT prefix
+              'id_number' => 'B12345678', // Typical format for Italian company registration numbers
+              'custom_value1' => '2024-07-22 10:00:00',
+              'custom_value2' => 'blu', // Italian for blue
+              'custom_value3' => 'parolaesempio', // Italian for sample word
+              'custom_value4' => 'test@esempio.it',
+              'address1' => 'Via Esempio 123',
+              'address2' => '2º Piano, Ufficio 45',
+              'city' => 'Roma',
+              'state' => 'Lazio',
+              'postal_code' => '00187',
+              'country_id' => '380', // Italy
+              'shipping_address1' => 'Via Esempio 123',
+              'shipping_address2' => '2º Piano, Ufficio 45',
+              'shipping_city' => 'Roma',
+              'shipping_state' => 'Lazio',
+              'shipping_postal_code' => '00187',
+              'shipping_country_id' => '380', // Italy
+              'settings' => ClientSettings::defaults(),
+              'client_hash' => \Illuminate\Support\Str::random(32),
+              'routing_id' => 'SCSCSCS',
+              'classification' => 'individual',
           ]);
 
 
         ClientContact::factory()->create([
-          'company_id' => $company->id,
-          'user_id' => $this->user->id,
-          'client_id' => $c2->id,
-          'first_name' => 'Contact First',
-          'last_name' => 'Contact Last',
-          'email' => 'david+c2@invoiceninja.com',
+            'company_id' => $company->id,
+            'user_id' => $this->user->id,
+            'client_id' => $c2->id,
+            'first_name' => 'Contact First',
+            'last_name' => 'Contact Last',
+            'email' => 'david+c2@invoiceninja.com',
         ]);
 
 
@@ -1160,7 +1160,7 @@ class StorecoveTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'IT-'.rand(1000, 100000),
+            'number' => 'IT-' . rand(1000, 100000),
             'date' => now()->format('Y-m-d'),
             'due_date' => now()->addDays(14)->format('Y-m-d'),
         ]);
@@ -1186,7 +1186,7 @@ class StorecoveTest extends TestCase
         $settings->state = 'Berlin';
         $settings->postal_code = '10115';
         $settings->phone = '030 1234567';
-        $settings->email = \Illuminate\Support\Str::random(32)."@example.com";
+        $settings->email = \Illuminate\Support\Str::random(32) . "@example.com";
         $settings->country_id = '276'; // Germany's ISO country code
         $settings->vat_number = 'DE123456789';
         $settings->id_number = 'HRB 98765';
@@ -1199,8 +1199,8 @@ class StorecoveTest extends TestCase
 
 
         $company = Company::factory()->create([
-          'account_id' => $this->account->id,
-          'settings' => $settings,
+            'account_id' => $this->account->id,
+            'settings' => $settings,
         ]);
 
         $this->user->companies()->attach($company->id, [
@@ -1217,34 +1217,34 @@ class StorecoveTest extends TestCase
 
         $c =
         Client::create([
-        'company_id' => $company->id,
-        'user_id' => $this->user->id,
-        'name' => 'Beispiel GmbH',
-        'website' => 'https://www.beispiel.de',
-        'private_notes' => 'Dies sind private Notizen für den Testkunden.',
-        'balance' => 0,
-        'paid_to_date' => 0,
-        'vat_number' => 'DE123456789', // German VAT number with DE prefix
-        'id_number' => 'HRB 12345', // Typical format for German company registration numbers
-        'custom_value1' => '2024-07-22 10:00:00',
-        'custom_value2' => 'blau', // German for blue
-        'custom_value3' => 'beispielwort', // German for sample word
-        'custom_value4' => 'test@beispiel.de',
-        'address1' => 'Beispielstraße 123',
-        'address2' => '2. Stock, Büro 45',
-        'city' => 'Berlin',
-        'state' => 'Berlin',
-        'postal_code' => '10115',
-        'country_id' => '276', // Germany
-        'shipping_address1' => 'Beispielstraße 123',
-        'shipping_address2' => '2. Stock, Büro 45',
-        'shipping_city' => 'Berlin',
-        'shipping_state' => 'Berlin',
-        'shipping_postal_code' => '10115',
-        'shipping_country_id' => '276', // Germany
-        'settings' => ClientSettings::Defaults(),
-        'client_hash' => \Illuminate\Support\Str::random(32),
-        'routing_id' => 'DEDEDE',
+            'company_id' => $company->id,
+            'user_id' => $this->user->id,
+            'name' => 'Beispiel GmbH',
+            'website' => 'https://www.beispiel.de',
+            'private_notes' => 'Dies sind private Notizen für den Testkunden.',
+            'balance' => 0,
+            'paid_to_date' => 0,
+            'vat_number' => 'DE123456789', // German VAT number with DE prefix
+            'id_number' => 'HRB 12345', // Typical format for German company registration numbers
+            'custom_value1' => '2024-07-22 10:00:00',
+            'custom_value2' => 'blau', // German for blue
+            'custom_value3' => 'beispielwort', // German for sample word
+            'custom_value4' => 'test@beispiel.de',
+            'address1' => 'Beispielstraße 123',
+            'address2' => '2. Stock, Büro 45',
+            'city' => 'Berlin',
+            'state' => 'Berlin',
+            'postal_code' => '10115',
+            'country_id' => '276', // Germany
+            'shipping_address1' => 'Beispielstraße 123',
+            'shipping_address2' => '2. Stock, Büro 45',
+            'shipping_city' => 'Berlin',
+            'shipping_state' => 'Berlin',
+            'shipping_postal_code' => '10115',
+            'shipping_country_id' => '276', // Germany
+            'settings' => ClientSettings::Defaults(),
+            'client_hash' => \Illuminate\Support\Str::random(32),
+            'routing_id' => 'DEDEDE',
         ]);
 
         $item = new InvoiceItem();
@@ -1269,7 +1269,7 @@ class StorecoveTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'DE-'.rand(1000, 100000),
+            'number' => 'DE-' . rand(1000, 100000),
             'date' => now()->format('Y-m-d'),
             'due_date' => now()->addDays(14)->format('Y-m-d'),
         ]);
@@ -1294,7 +1294,7 @@ class StorecoveTest extends TestCase
         $settings->state = 'Madrid';
         $settings->postal_code = '28013';
         $settings->phone = '030 1234567';
-        $settings->email = \Illuminate\Support\Str::random(32)."@example.com";
+        $settings->email = \Illuminate\Support\Str::random(32) . "@example.com";
         $settings->country_id = '724'; // Germany's ISO country code
         $settings->vat_number = 'ESB16645678';
         $settings->id_number = 'HRB 12345';
@@ -1306,8 +1306,8 @@ class StorecoveTest extends TestCase
         $settings->classification = 'business';
 
         $company = Company::factory()->create([
-          'account_id' => $this->account->id,
-          'settings' => $settings,
+            'account_id' => $this->account->id,
+            'settings' => $settings,
         ]);
 
         $this->user->companies()->attach($company->id, [
@@ -1324,34 +1324,34 @@ class StorecoveTest extends TestCase
 
         $c =
         Client::create([
-          'company_id' => $company->id,
-          'user_id' => $this->user->id,
-          'name' => 'Empresa Ejemplo S.A.',
-          'website' => 'https://www.empresa-ejemplo.es',
-          'private_notes' => 'Estas son notas privadas para el cliente de prueba.',
-          'balance' => 0,
-          'paid_to_date' => 0,
-          'vat_number' => 'ESB12345678', // Spanish VAT number with ES prefix
-          'id_number' => 'B12345678', // Typical format for Spanish company registration numbers
-          'custom_value1' => '2024-07-22 10:00:00',
-          'custom_value2' => 'azul', // Spanish for blue
-          'custom_value3' => 'palabraejemplo', // Spanish for sample word
-          'custom_value4' => 'test@ejemplo.com',
-          'address1' => 'Calle Ejemplo 123',
-          'address2' => '2ª Planta, Oficina 45',
-          'city' => 'Madrid',
-          'state' => 'Madrid',
-          'postal_code' => '28013',
-          'country_id' => '724', // Spain
-          'shipping_address1' => 'Calle Ejemplo 123',
-          'shipping_address2' => '2ª Planta, Oficina 45',
-          'shipping_city' => 'Madrid',
-          'shipping_state' => 'Madrid',
-          'shipping_postal_code' => '28013',
-          'shipping_country_id' => '724', // Spain
-          'settings' => ClientSettings::Defaults(),
-          'client_hash' => \Illuminate\Support\Str::random(32),
-          'routing_id' => 'SCSCSC',
+            'company_id' => $company->id,
+            'user_id' => $this->user->id,
+            'name' => 'Empresa Ejemplo S.A.',
+            'website' => 'https://www.empresa-ejemplo.es',
+            'private_notes' => 'Estas son notas privadas para el cliente de prueba.',
+            'balance' => 0,
+            'paid_to_date' => 0,
+            'vat_number' => 'ESB12345678', // Spanish VAT number with ES prefix
+            'id_number' => 'B12345678', // Typical format for Spanish company registration numbers
+            'custom_value1' => '2024-07-22 10:00:00',
+            'custom_value2' => 'azul', // Spanish for blue
+            'custom_value3' => 'palabraejemplo', // Spanish for sample word
+            'custom_value4' => 'test@ejemplo.com',
+            'address1' => 'Calle Ejemplo 123',
+            'address2' => '2ª Planta, Oficina 45',
+            'city' => 'Madrid',
+            'state' => 'Madrid',
+            'postal_code' => '28013',
+            'country_id' => '724', // Spain
+            'shipping_address1' => 'Calle Ejemplo 123',
+            'shipping_address2' => '2ª Planta, Oficina 45',
+            'shipping_city' => 'Madrid',
+            'shipping_state' => 'Madrid',
+            'shipping_postal_code' => '28013',
+            'shipping_country_id' => '724', // Spain
+            'settings' => ClientSettings::Defaults(),
+            'client_hash' => \Illuminate\Support\Str::random(32),
+            'routing_id' => 'SCSCSC',
         ]);
 
         $item = new InvoiceItem();
@@ -1376,7 +1376,7 @@ class StorecoveTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'ES-'.rand(1000, 100000),
+            'number' => 'ES-' . rand(1000, 100000),
             'date' => now()->format('Y-m-d'),
             'due_date' => now()->addDays(14)->format('Y-m-d'),
         ]);
@@ -1402,7 +1402,7 @@ class StorecoveTest extends TestCase
         $settings->state = 'Île-de-France';
         $settings->postal_code = '75002';
         $settings->phone = '01 23456789';
-        $settings->email = \Illuminate\Support\Str::random(32)."@example.com";
+        $settings->email = \Illuminate\Support\Str::random(32) . "@example.com";
         $settings->country_id = '250'; // France's ISO country code
         $settings->vat_number = 'FR82345678911';
         $settings->id_number = '12345678900010';
@@ -1414,8 +1414,8 @@ class StorecoveTest extends TestCase
         $settings->currency_id = '3';
 
         $company = Company::factory()->create([
-          'account_id' => $this->account->id,
-          'settings' => $settings,
+            'account_id' => $this->account->id,
+            'settings' => $settings,
         ]);
 
         $this->user->companies()->attach($company->id, [
@@ -1432,35 +1432,35 @@ class StorecoveTest extends TestCase
 
         $c =
         Client::create([
-          'company_id' => $company->id,
-          'user_id' => $this->user->id,
-          'name' => 'Exemple Société S.A.',
-          'website' => 'https://www.exemple-societe.fr',
-          'private_notes' => 'Ceci est une note privée pour le client test.',
-          'balance' => 0,
-          'paid_to_date' => 0,
-          'vat_number' => 'FR12345678901',
-          'id_number' => '12345678900010', // Typical format for French company registration numbers
-          'custom_value1' => '2024-07-22 10:00:00',
-          'custom_value2' => 'bleu',
-          'custom_value3' => 'motexemple',
-          'custom_value4' => 'test@example.com',
-          'address1' => '123 Rue de l\'Exemple',
-          'address2' => '2ème étage, Bureau 45',
-          'city' => 'Paris',
-          'state' => 'Île-de-France',
-          'postal_code' => '75001',
-          'country_id' => '250', // France
-          'shipping_address1' => '123 Rue de l\'Exemple',
-          'shipping_address2' => '2ème étage, Bureau 45',
-          'shipping_city' => 'Paris',
-          'shipping_state' => 'Île-de-France',
-          'shipping_postal_code' => '75001',
-          'shipping_country_id' => '250', // France
-          'classification' => 'business',
-          'settings' => ClientSettings::Defaults(),
-          'client_hash' => \Illuminate\Support\Str::random(32),
-          'routing_id' => '',
+            'company_id' => $company->id,
+            'user_id' => $this->user->id,
+            'name' => 'Exemple Société S.A.',
+            'website' => 'https://www.exemple-societe.fr',
+            'private_notes' => 'Ceci est une note privée pour le client test.',
+            'balance' => 0,
+            'paid_to_date' => 0,
+            'vat_number' => 'FR12345678901',
+            'id_number' => '12345678900010', // Typical format for French company registration numbers
+            'custom_value1' => '2024-07-22 10:00:00',
+            'custom_value2' => 'bleu',
+            'custom_value3' => 'motexemple',
+            'custom_value4' => 'test@example.com',
+            'address1' => '123 Rue de l\'Exemple',
+            'address2' => '2ème étage, Bureau 45',
+            'city' => 'Paris',
+            'state' => 'Île-de-France',
+            'postal_code' => '75001',
+            'country_id' => '250', // France
+            'shipping_address1' => '123 Rue de l\'Exemple',
+            'shipping_address2' => '2ème étage, Bureau 45',
+            'shipping_city' => 'Paris',
+            'shipping_state' => 'Île-de-France',
+            'shipping_postal_code' => '75001',
+            'shipping_country_id' => '250', // France
+            'classification' => 'business',
+            'settings' => ClientSettings::Defaults(),
+            'client_hash' => \Illuminate\Support\Str::random(32),
+            'routing_id' => '',
         ]);
 
 
@@ -1486,7 +1486,7 @@ class StorecoveTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'DE-'.rand(1000, 100000),
+            'number' => 'DE-' . rand(1000, 100000),
             'date' => now()->format('Y-m-d'),
             'due_date' => now()->addDays(14)->format('Y-m-d'),
         ]);
@@ -1513,7 +1513,7 @@ class StorecoveTest extends TestCase
         $settings->state = 'Vienna';
         $settings->postal_code = '1010';
         $settings->phone = '+43 1 23456789';
-        $settings->email = \Illuminate\Support\Str::random(32)."@example.com";
+        $settings->email = \Illuminate\Support\Str::random(32) . "@example.com";
         $settings->country_id = '40'; // Austria's ISO country code
         $settings->vat_number = 'ATU92335648';
         $settings->id_number = 'FN 123456x';
@@ -1525,8 +1525,8 @@ class StorecoveTest extends TestCase
 
 
         $company = Company::factory()->create([
-          'account_id' => $this->account->id,
-          'settings' => $settings,
+            'account_id' => $this->account->id,
+            'settings' => $settings,
         ]);
 
         $this->user->companies()->attach($company->id, [
@@ -1543,35 +1543,35 @@ class StorecoveTest extends TestCase
 
         $c =
         Client::create([
-          'company_id' => $company->id,
-          'user_id' => $this->user->id,
-          'name' => 'Beispiel Firma GmbH',
-          'website' => 'https://www.beispiel-firma.at',
-          'private_notes' => 'Dies sind private Notizen zum Testkunden.',
-          'balance' => 0,
-          'paid_to_date' => 0,
-          'vat_number' => 'ATU87654321',
-          'id_number' => $is_gov ? 'ATU12312321' : 'FN 123456x', // Example format for Austrian company registration numbers
-          'custom_value1' => '2024-07-22 10:00:00',
-          'custom_value2' => 'blau',
-          'custom_value3' => 'musterwort',
-          'custom_value4' => 'test@example.com',
-          'address1' => 'Musterstraße 123',
-          'address2' => '2. Etage, Büro 45',
-          'city' => 'Vienna',
-          'state' => 'Vienna',
-          'postal_code' => '1010',
-          'country_id' => '40', // Austria
-          'shipping_address1' => 'Musterstraße 123',
-          'shipping_address2' => '2. Etage, Büro 45',
-          'shipping_city' => 'Vienna',
-          'shipping_state' => 'Vienna',
-          'shipping_postal_code' => '1010',
-          'shipping_country_id' => '40', // Austria
-          'settings' => ClientSettings::Defaults(),
-          'client_hash' => \Illuminate\Support\Str::random(32),
-          'routing_id' => '',
-          'classification' => $is_gov ? 'government' : 'business',
+            'company_id' => $company->id,
+            'user_id' => $this->user->id,
+            'name' => 'Beispiel Firma GmbH',
+            'website' => 'https://www.beispiel-firma.at',
+            'private_notes' => 'Dies sind private Notizen zum Testkunden.',
+            'balance' => 0,
+            'paid_to_date' => 0,
+            'vat_number' => 'ATU87654321',
+            'id_number' => $is_gov ? 'ATU12312321' : 'FN 123456x', // Example format for Austrian company registration numbers
+            'custom_value1' => '2024-07-22 10:00:00',
+            'custom_value2' => 'blau',
+            'custom_value3' => 'musterwort',
+            'custom_value4' => 'test@example.com',
+            'address1' => 'Musterstraße 123',
+            'address2' => '2. Etage, Büro 45',
+            'city' => 'Vienna',
+            'state' => 'Vienna',
+            'postal_code' => '1010',
+            'country_id' => '40', // Austria
+            'shipping_address1' => 'Musterstraße 123',
+            'shipping_address2' => '2. Etage, Büro 45',
+            'shipping_city' => 'Vienna',
+            'shipping_state' => 'Vienna',
+            'shipping_postal_code' => '1010',
+            'shipping_country_id' => '40', // Austria
+            'settings' => ClientSettings::Defaults(),
+            'client_hash' => \Illuminate\Support\Str::random(32),
+            'routing_id' => '',
+            'classification' => $is_gov ? 'government' : 'business',
         ]);
 
 
@@ -1597,7 +1597,7 @@ class StorecoveTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'DE-'.rand(1000, 100000),
+            'number' => 'DE-' . rand(1000, 100000),
             'date' => now()->format('Y-m-d'),
             'due_date' => now()->addDays(14)->format('Y-m-d'),
         ]);
@@ -1622,7 +1622,7 @@ class StorecoveTest extends TestCase
         $settings->state = 'Bucharest';
         $settings->postal_code = '010101';
         $settings->phone = '021 1234567';
-        $settings->email = \Illuminate\Support\Str::random(32)."@example.com";
+        $settings->email = \Illuminate\Support\Str::random(32) . "@example.com";
         $settings->country_id = '642'; // Romania's ISO country code
         $settings->vat_number = 'RO92443356490'; // Romanian VAT number format
         $settings->id_number = 'B12345678'; // Typical Romanian company registration format
@@ -1635,8 +1635,8 @@ class StorecoveTest extends TestCase
 
 
         $company = Company::factory()->create([
-          'account_id' => $this->account->id,
-          'settings' => $settings,
+            'account_id' => $this->account->id,
+            'settings' => $settings,
         ]);
 
         $this->user->companies()->attach($company->id, [
@@ -1653,44 +1653,44 @@ class StorecoveTest extends TestCase
 
         $c =
         Client::create([
-          'company_id' => $company->id,
-          'user_id' => $this->user->id,
-          'name' => 'Impresa Esempio S.R.L.',
-          'website' => 'https://www.impresa-esempio.ro',
-          'private_notes' => 'Acestea sunt note private pentru clientul de test.',
-          'balance' => 0,
-          'paid_to_date' => 0,
-          'vat_number' => 'RO9244336489', // Romanian VAT number with RO prefix
-          'id_number' => 'J40/12345/2024', // Typical format for Romanian company registration numbers
-          'custom_value1' => '2024-07-22 10:00:00',
-          'custom_value2' => 'albastru', // Romanian for blue
-          'custom_value3' => 'cuvantexemplu', // Romanian for sample word
-          'custom_value4' => 'test@exemplu.ro',
-          'address1' => 'Strada Exemplu 123',
-          'address2' => 'Etaj 2, Birou 45',
-          'city' => 'Bucharest',
-          'state' => 'Bucharest',
-          'postal_code' => '010101',
-          'country_id' => '642', // Romania
-          'shipping_address1' => 'Strada Exemplu 123',
-          'shipping_address2' => 'Etaj 2, Birou 45',
-          'shipping_city' => 'Bucharest',
-          'shipping_state' => 'Bucharest',
-          'shipping_postal_code' => '010101',
-          'shipping_country_id' => '642', // Romania
-          'settings' => ClientSettings::defaults(),
-          'client_hash' => \Illuminate\Support\Str::random(32),
-          'routing_id' => 'SCSCSCS',
-          'classification' => 'business',
+            'company_id' => $company->id,
+            'user_id' => $this->user->id,
+            'name' => 'Impresa Esempio S.R.L.',
+            'website' => 'https://www.impresa-esempio.ro',
+            'private_notes' => 'Acestea sunt note private pentru clientul de test.',
+            'balance' => 0,
+            'paid_to_date' => 0,
+            'vat_number' => 'RO9244336489', // Romanian VAT number with RO prefix
+            'id_number' => 'J40/12345/2024', // Typical format for Romanian company registration numbers
+            'custom_value1' => '2024-07-22 10:00:00',
+            'custom_value2' => 'albastru', // Romanian for blue
+            'custom_value3' => 'cuvantexemplu', // Romanian for sample word
+            'custom_value4' => 'test@exemplu.ro',
+            'address1' => 'Strada Exemplu 123',
+            'address2' => 'Etaj 2, Birou 45',
+            'city' => 'Bucharest',
+            'state' => 'Bucharest',
+            'postal_code' => '010101',
+            'country_id' => '642', // Romania
+            'shipping_address1' => 'Strada Exemplu 123',
+            'shipping_address2' => 'Etaj 2, Birou 45',
+            'shipping_city' => 'Bucharest',
+            'shipping_state' => 'Bucharest',
+            'shipping_postal_code' => '010101',
+            'shipping_country_id' => '642', // Romania
+            'settings' => ClientSettings::defaults(),
+            'client_hash' => \Illuminate\Support\Str::random(32),
+            'routing_id' => 'SCSCSCS',
+            'classification' => 'business',
         ]);
 
         ClientContact::factory()->create([
-          'company_id' => $company->id,
-          'user_id' => $this->user->id,
-          'client_id' => $c->id,
-          'first_name' => 'Contact First',
-          'last_name' => 'Contact Last',
-          'email' => 'david+c1@invoiceninja.com',
+            'company_id' => $company->id,
+            'user_id' => $this->user->id,
+            'client_id' => $c->id,
+            'first_name' => 'Contact First',
+            'last_name' => 'Contact Last',
+            'email' => 'david+c1@invoiceninja.com',
         ]);
 
 
@@ -1716,7 +1716,7 @@ class StorecoveTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'IT-'.rand(1000, 100000),
+            'number' => 'IT-' . rand(1000, 100000),
             'date' => now()->format('Y-m-d'),
             'due_date' => now()->addDays(14)->format('Y-m-d'),
         ]);
@@ -1940,14 +1940,14 @@ class StorecoveTest extends TestCase
         // nlog($xml);
 
         $identifiers = [
-          "routing" => [
-            "eIdentifiers" => [
-                [
-                'scheme' => 'ES:VAT',
-                'id' => 'ESB53625999'
+            "routing" => [
+                "eIdentifiers" => [
+                    [
+                        'scheme' => 'ES:VAT',
+                        'id' => 'ESB53625999',
+                    ],
                 ],
-            ]
-          ]
+            ],
         ];
 
         $sc = new \App\Services\EDocument\Gateway\Storecove\Storecove();
@@ -1979,14 +1979,14 @@ class StorecoveTest extends TestCase
         // nlog($xml);
 
         $identifiers = [
-          "routing" => [
-            "eIdentifiers" => [
-              [
-                'scheme' => 'DE:VAT',
-                'id' => 'DE010101010'
-              ]
-            ]
-          ]
+            "routing" => [
+                "eIdentifiers" => [
+                    [
+                        'scheme' => 'DE:VAT',
+                        'id' => 'DE010101010',
+                    ],
+                ],
+            ],
         ];
 
         $sc = new \App\Services\EDocument\Gateway\Storecove\Storecove();

@@ -29,7 +29,7 @@ class ARSummaryReportServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->account = Account::factory()->create([
             'hosted_client_count' => 1000,
             'hosted_company_count' => 1000,
@@ -41,7 +41,7 @@ class ARSummaryReportServiceTest extends TestCase
         $this->user = User::factory()->create([
             'account_id' => $this->account->id,
             'confirmation_code' => 'xyz123',
-            'email' => \Illuminate\Support\Str::random(32)."@example.com",
+            'email' => \Illuminate\Support\Str::random(32) . "@example.com",
         ]);
 
         $settings = CompanySettings::defaults();
@@ -83,7 +83,7 @@ class ARSummaryReportServiceTest extends TestCase
 
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->withoutExceptionHandling();
@@ -198,25 +198,25 @@ class ARSummaryReportServiceTest extends TestCase
             'report_keys' => [],
             'user_id' => $this->user->id,
         ]);
-        
+
         $reflection = new \ReflectionClass($reportLegacy);
         $property = $reflection->getProperty('useOptimizedQuery');
         $property->setValue($reportLegacy, false);
-        
+
         $csvLegacy = $reportLegacy->run();
 
         // Both should contain same client name and amounts
         $this->assertEquals(
             substr_count($csvOptimized, 'Test Client ABC'),
             substr_count($csvLegacy, 'Test Client ABC'),
-            'Both implementations should include client name'
+            'Both implementations should include client name',
         );
 
         // Both CSVs should have same structure (same number of lines)
         $this->assertEquals(
             substr_count($csvOptimized, "\n"),
             substr_count($csvLegacy, "\n"),
-            'Both implementations should produce same CSV structure'
+            'Both implementations should produce same CSV structure',
         );
     }
 

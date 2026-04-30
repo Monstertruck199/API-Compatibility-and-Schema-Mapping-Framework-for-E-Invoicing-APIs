@@ -31,7 +31,7 @@ class CancelInvoiceTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
         Model::reguard();
 

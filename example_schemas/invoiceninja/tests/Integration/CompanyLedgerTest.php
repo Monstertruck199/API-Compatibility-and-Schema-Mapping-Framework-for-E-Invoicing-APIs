@@ -139,7 +139,7 @@ class CompanyLedgerTest extends TestCase
             'user_id' => $this->user->id,
             'company_id' => $this->company->id,
             'balance' => 0,
-            'paid_to_date' => 0
+            'paid_to_date' => 0,
         ]);
 
         $i = Invoice::factory()->create([

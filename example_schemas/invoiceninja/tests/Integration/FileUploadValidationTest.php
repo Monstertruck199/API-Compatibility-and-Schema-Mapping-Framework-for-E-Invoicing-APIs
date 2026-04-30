@@ -104,10 +104,10 @@ class FileUploadValidationTest extends TestCase
         $this->assertFalse($acc['data']['documents'][0]['is_public']);
 
         $data = [
-                    'documents' => [$file],
-                    'is_public' => true,
-                    '_method' => 'PUT',
-                ];
+            'documents' => [$file],
+            'is_public' => true,
+            '_method' => 'PUT',
+        ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),

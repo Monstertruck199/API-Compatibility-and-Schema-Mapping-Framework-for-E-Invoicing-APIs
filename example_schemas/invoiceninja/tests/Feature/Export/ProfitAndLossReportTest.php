@@ -45,7 +45,7 @@ class ProfitAndLossReportTest extends TestCase
         $this->faker = \Faker\Factory::create();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->withoutExceptionHandling();
@@ -89,7 +89,7 @@ class ProfitAndLossReportTest extends TestCase
         $this->user = User::factory()->create([
             'account_id' => $this->account->id,
             'confirmation_code' => 'xyz123',
-            'email' => \Illuminate\Support\Str::random(32)."@example.com",
+            'email' => \Illuminate\Support\Str::random(32) . "@example.com",
         ]);
 
         $settings = CompanySettings::defaults();
@@ -161,7 +161,7 @@ class ProfitAndLossReportTest extends TestCase
             'user_id' => $this->user->id,
             'company_id' => $this->company->id,
             'is_deleted' => 0,
-            'settings' => $settings
+            'settings' => $settings,
         ]);
 
 
@@ -189,7 +189,7 @@ class ProfitAndLossReportTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'uses_inclusive_taxes' => false,
-            'exchange_rate' => 2
+            'exchange_rate' => 2,
         ]);
 
         Invoice::factory()->create([
@@ -210,7 +210,7 @@ class ProfitAndLossReportTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'uses_inclusive_taxes' => false,
-            'exchange_rate' => 1
+            'exchange_rate' => 1,
         ]);
 
 

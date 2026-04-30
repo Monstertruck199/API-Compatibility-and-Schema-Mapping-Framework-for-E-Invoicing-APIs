@@ -51,7 +51,7 @@ class CheckDataTest extends TestCase
         $this->faker = \Faker\Factory::create();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
     }
@@ -69,7 +69,7 @@ class CheckDataTest extends TestCase
         $this->user = User::factory()->create([
             'account_id' => $this->account->id,
             'confirmation_code' => 'xyz123',
-            'email' => \Illuminate\Support\Str::random(32)."@example.com",
+            'email' => \Illuminate\Support\Str::random(32) . "@example.com",
         ]);
 
         $settings = CompanySettings::defaults();
@@ -113,14 +113,14 @@ class CheckDataTest extends TestCase
         ]);
 
         ClientContact::factory()->create([
-                'user_id' => $this->user->id,
-                'client_id' => $this->client->id,
-                'company_id' => $this->company->id,
-                'is_primary' => 1,
-                'first_name' => 'john',
-                'last_name' => 'doe',
-                'email' => 'john@doe.com'
-            ]);
+            'user_id' => $this->user->id,
+            'client_id' => $this->client->id,
+            'company_id' => $this->company->id,
+            'is_primary' => 1,
+            'first_name' => 'john',
+            'last_name' => 'doe',
+            'email' => 'john@doe.com',
+        ]);
 
     }
 
@@ -183,12 +183,12 @@ class CheckDataTest extends TestCase
 
         User::factory()->create([
             'account_id' => $this->account->id,
-            'email' => \Illuminate\Support\Str::random(32)."@example.com",
+            'email' => \Illuminate\Support\Str::random(32) . "@example.com",
         ]);
 
         User::factory()->create([
             'account_id' => $this->account->id,
-            'email' => \Illuminate\Support\Str::random(32)."@example.com",
+            'email' => \Illuminate\Support\Str::random(32) . "@example.com",
         ]);
 
         $user_hash = 'a';
@@ -197,11 +197,11 @@ class CheckDataTest extends TestCase
             ->where(
                 \DB::raw('CONCAT_WS(" ", first_name, last_name)'),
                 'like',
-                '%'.$user_hash.'%'
+                '%' . $user_hash . '%',
             )
             ->get();
 
-        $user_count_refactor = User::whereRaw("account_id = ? AND CONCAT_WS(' ', first_name, last_name) like ?", [$this->company->account_id, '%'.$user_hash.'%'])
+        $user_count_refactor = User::whereRaw("account_id = ? AND CONCAT_WS(' ', first_name, last_name) like ?", [$this->company->account_id, '%' . $user_hash . '%'])
             ->get();
 
 

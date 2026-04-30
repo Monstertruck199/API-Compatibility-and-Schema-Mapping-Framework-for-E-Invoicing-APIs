@@ -77,7 +77,7 @@ class QuickbooksTest extends TestCase
             "Taxable" => true,
             "UnitPrice" => $non_inventory_product->price,
             "Type" => "NonInventory",
-            
+
             // "AssetAccountRef" => [
             //     "value" => "81", // Replace with your actual asset account ID
             //     "name" => "Inventory Asset"
@@ -107,7 +107,7 @@ class QuickbooksTest extends TestCase
             "Taxable" => true,
             "UnitPrice" => $service_product->price,
             "Type" => "Service",
-           
+
             "TrackQtyOnHand" => false,
 
         ]);
@@ -156,7 +156,7 @@ class QuickbooksTest extends TestCase
                 "Address" => $client->present()->email(),
             ],
             "PrimaryPhone" => [
-                "FreeFormNumber" => $client->present()->phone()
+                "FreeFormNumber" => $client->present()->phone(),
             ],
             "CompanyName" => $client->present()->name(),
             "BillAddr" => [
@@ -164,14 +164,14 @@ class QuickbooksTest extends TestCase
                 "City" => $client->city ?? '',
                 "CountrySubDivisionCode" => $client->state ?? '',
                 "PostalCode" => $client->postal_code ?? '',
-                "Country" => $client->country->iso_3166_3
+                "Country" => $client->country->iso_3166_3,
             ],
             "ShipAddr" => [
                 "Line1" => $client->shipping_address1 ?? '',
                 "City" => $client->shipping_city ?? '',
                 "CountrySubDivisionCode" => $client->shipping_state ?? '',
                 "PostalCode" => $client->shipping_postal_code ?? '',
-                "Country" => $client->shipping_country->iso_3166_3
+                "Country" => $client->shipping_country->iso_3166_3,
             ],
             "GivenName" => $client->present()->first_name(),
             "FamilyName" => $client->present()->last_name(),
@@ -409,10 +409,10 @@ class QuickbooksTest extends TestCase
         $invoiceData = [
             "Line" => $line_items,
             "CustomerRef" => [
-                "value" => data_get($customer, 'Id.value')
+                "value" => data_get($customer, 'Id.value'),
             ],
             "BillEmail" => [
-                "Address" => $client->present()->email()
+                "Address" => $client->present()->email(),
             ],
             "TxnDate" => $i->date,
             "DueDate" => $i->due_date,
@@ -425,11 +425,11 @@ class QuickbooksTest extends TestCase
             // "ApplyTaxAfterDiscount" => false,
             // "TxnTaxDetail" => $taxDetail,
             // "TxnTaxDetail" => [
-                // "UseAutomatedSalesTax" => true,
-                // "TxnTaxCodeRef" => [
-                    // "value" => "SALES_TAX_STUB" // Use the appropriate tax code for your QuickBooks account
-                //     "DefaultTaxRateRef" => [
-                // ],
+            // "UseAutomatedSalesTax" => true,
+            // "TxnTaxCodeRef" => [
+            // "value" => "SALES_TAX_STUB" // Use the appropriate tax code for your QuickBooks account
+            //     "DefaultTaxRateRef" => [
+            // ],
             // ]
             // "Note" => $this->invoice->public_notes,
         ];

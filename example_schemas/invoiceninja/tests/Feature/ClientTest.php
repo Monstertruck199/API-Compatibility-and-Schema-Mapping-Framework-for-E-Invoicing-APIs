@@ -61,7 +61,7 @@ class ClientTest extends TestCase
         ClientContact::reguard();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->makeTestData();
@@ -168,7 +168,7 @@ class ClientTest extends TestCase
             'name' => [
                 'first_name' => 'John',
                 'last_name' => 'Doe',
-            ]
+            ],
         ];
 
         $response = $this->withHeaders([
@@ -228,7 +228,7 @@ class ClientTest extends TestCase
                 ->create([
                     'company_id' => $this->company->id,
                     'user_id' => $this->user->id,
-                    'settings' => $settings
+                    'settings' => $settings,
                 ]);
 
         $settings = $this->company->settings;
@@ -251,25 +251,25 @@ class ClientTest extends TestCase
     {
         $data = [
 
-                'address1' => '105 Drive',
-                'address2' => '122',
-                'city' => 'NoRoses',
-                'contacts' => [
-                    '0' => [
-                        'email' => 'craig@gmail.za',
-                        'first_name' => 'Leon',
-                        'last_name' => 'Labagne'
-                    ],
-                    'is_primary' => true,
-                    'send_email' => false
+            'address1' => '105 Drive',
+            'address2' => '122',
+            'city' => 'NoRoses',
+            'contacts' => [
+                '0' => [
+                    'email' => 'craig@gmail.za',
+                    'first_name' => 'Leon',
+                    'last_name' => 'Labagne',
                 ],
-                'country_id' => 710,
-                'id_number' => '2003/028851/06',
-                'name' => 'Targas Ltd',
-                'postal_code' => '2196',
-                'private_notes' => 'DMARC Client | Tenant ID: 45 | Team Name: Targas',
-                'state' => 'Gauteng',
-                'vat_number' => 'VAT: 33'
+                'is_primary' => true,
+                'send_email' => false,
+            ],
+            'country_id' => 710,
+            'id_number' => '2003/028851/06',
+            'name' => 'Targas Ltd',
+            'postal_code' => '2196',
+            'private_notes' => 'DMARC Client | Tenant ID: 45 | Team Name: Targas',
+            'state' => 'Gauteng',
+            'vat_number' => 'VAT: 33',
 
         ];
 
@@ -287,13 +287,13 @@ class ClientTest extends TestCase
         $data = [
             "contacts" => [
                 [
-                "email" => "tenda@gmail.com",
-                "first_name" => "Tenda",
-                "last_name" => "Bavuma",
+                    "email" => "tenda@gmail.com",
+                    "first_name" => "Tenda",
+                    "last_name" => "Bavuma",
                 ],
             ],
             "name" => "Tenda Bavuma",
-            ];
+        ];
 
 
         $response = $this->withHeaders([
@@ -314,20 +314,20 @@ class ClientTest extends TestCase
     {
         $data = [
             "contacts" => [
-            [
-            "email" => "tenda@gmail.com",
-            "first_name" => "Tenda",
-            "is_primary" => true,
-            "last_name" => "Bavuma",
-            "password" => null,
-            "send_email" => true
+                [
+                    "email" => "tenda@gmail.com",
+                    "first_name" => "Tenda",
+                    "is_primary" => true,
+                    "last_name" => "Bavuma",
+                    "password" => null,
+                    "send_email" => true,
+                ],
             ],
-        ],
             "country_id" => "356",
             "display_name" => "Tenda Bavuma",
             "name" => "Tenda Bavuma",
             "shipping_country_id" => "356",
-            ];
+        ];
 
 
         $response = $this->withHeaders([
@@ -376,7 +376,7 @@ class ClientTest extends TestCase
             'user_id' => $this->user->id,
             'client_id' => $c1->id,
             'company_id' => $this->company->id,
-            'email' => ''
+            'email' => '',
         ]);
 
 
@@ -429,7 +429,7 @@ class ClientTest extends TestCase
             'custom_value4' => 0,
             'status' => 1,
             'client_id' => $this->encodePrimaryKey($this->client->id),
-            'line_items' => $this->buildLineItems()
+            'line_items' => $this->buildLineItems(),
         ];
 
         $response = $this->withHeaders([
@@ -468,13 +468,13 @@ class ClientTest extends TestCase
             'custom_value4' => 0,
             'status' => 1,
             'client_id' => $this->encodePrimaryKey($this->client->id),
-            'line_items' => $this->buildLineItems(3)
+            'line_items' => $this->buildLineItems(3),
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/credits/'.$credit->hashed_id, $data)
+        ])->putJson('/api/v1/credits/' . $credit->hashed_id, $data)
             ->assertStatus(200);
 
         $credit = $credit->fresh();
@@ -570,14 +570,14 @@ class ClientTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/clients/'.$this->encodePrimaryKey($this->client->id));
+        ])->get('/api/v1/clients/' . $this->encodePrimaryKey($this->client->id));
 
         $response->assertStatus(200);
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/clients/'.$this->encodePrimaryKey($this->client->id).'/edit');
+        ])->get('/api/v1/clients/' . $this->encodePrimaryKey($this->client->id) . '/edit');
 
         $response->assertStatus(200);
 
@@ -588,13 +588,13 @@ class ClientTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/clients/'.$this->encodePrimaryKey($this->client->id), $client_update)
+        ])->putJson('/api/v1/clients/' . $this->encodePrimaryKey($this->client->id), $client_update)
             ->assertStatus(200);
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->delete('/api/v1/clients/'.$this->encodePrimaryKey($this->client->id));
+        ])->delete('/api/v1/clients/' . $this->encodePrimaryKey($this->client->id));
 
         $response->assertStatus(200);
 
@@ -616,7 +616,7 @@ class ClientTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/clients/'.$this->encodePrimaryKey($this->client->id), $client_update)
+        ])->putJson('/api/v1/clients/' . $this->encodePrimaryKey($this->client->id), $client_update)
             ->assertStatus(400);
     }
 
@@ -717,7 +717,7 @@ class ClientTest extends TestCase
         $company_token->user_id = $user->id;
         $company_token->company_id = $company->id;
         $company_token->account_id = $account->id;
-        $company_token->name = $user->first_name.' '.$user->last_name;
+        $company_token->name = $user->first_name . ' ' . $user->last_name;
         $company_token->token = Str::random(64);
         $company_token->is_system = true;
 
@@ -727,7 +727,7 @@ class ClientTest extends TestCase
 
         $data = [
             'name' => 'A loyal Client',
-            'contacts' => \Illuminate\Support\Str::random(32)."@example.com",
+            'contacts' => \Illuminate\Support\Str::random(32) . "@example.com",
         ];
 
         // try {
@@ -774,7 +774,7 @@ class ClientTest extends TestCase
         $company_token->user_id = $user->id;
         $company_token->company_id = $company->id;
         $company_token->account_id = $account->id;
-        $company_token->name = $user->first_name.' '.$user->last_name;
+        $company_token->name = $user->first_name . ' ' . $user->last_name;
         $company_token->token = Str::random(64);
         $company_token->is_system = true;
         $company_token->save();
@@ -784,7 +784,7 @@ class ClientTest extends TestCase
         $data = [
             'name' => 'A loyal Client',
             'contacts' => [
-                ['email' => \Illuminate\Support\Str::random(32)."@example.com"],
+                ['email' => \Illuminate\Support\Str::random(32) . "@example.com"],
             ],
         ];
 
@@ -800,7 +800,7 @@ class ClientTest extends TestCase
             'name' => 'A loyal Client',
             'contacts' => [
                 [
-                    'email' => \Illuminate\Support\Str::random(32)."@example.com",
+                    'email' => \Illuminate\Support\Str::random(32) . "@example.com",
                     'password' => '*****',
                 ],
             ],
@@ -816,7 +816,7 @@ class ClientTest extends TestCase
             'name' => 'A loyal Client',
             'contacts' => [
                 [
-                    'email' => \Illuminate\Support\Str::random(32)."@example.com",
+                    'email' => \Illuminate\Support\Str::random(32) . "@example.com",
                     'password' => '1',
                 ],
             ],
@@ -840,7 +840,7 @@ class ClientTest extends TestCase
             'name' => 'A loyal Client',
             'contacts' => [
                 [
-                    'email' => \Illuminate\Support\Str::random(32)."@example.com",
+                    'email' => \Illuminate\Support\Str::random(32) . "@example.com",
                     'password' => '1Qajsj...33',
                 ],
             ],
@@ -863,11 +863,11 @@ class ClientTest extends TestCase
             'name' => 'A loyal Client',
             'contacts' => [
                 [
-                    'email' => \Illuminate\Support\Str::random(32)."@example.com",
+                    'email' => \Illuminate\Support\Str::random(32) . "@example.com",
                     'password' => '1Qajsj...33',
                 ],
                 [
-                    'email' => \Illuminate\Support\Str::random(32)."@example.com",
+                    'email' => \Illuminate\Support\Str::random(32) . "@example.com",
                     'password' => '1234AAAAAaaaaa',
                 ],
             ],
@@ -894,11 +894,11 @@ class ClientTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/clients/'.$this->client_id, $data)->assertStatus(200);
+        ])->putJson('/api/v1/clients/' . $this->client_id, $data)->assertStatus(200);
 
         $arr = $response->json();
 
-        $safe_email = \Illuminate\Support\Str::random(32)."@example.com";
+        $safe_email = \Illuminate\Support\Str::random(32) . "@example.com";
 
         $data = [
             'name' => 'A loyal Client',
@@ -932,7 +932,7 @@ class ClientTest extends TestCase
 
         $this->assertEquals(0, strlen($contact->password));
 
-        $safe_email = \Illuminate\Support\Str::random(32)."@example.com";
+        $safe_email = \Illuminate\Support\Str::random(32) . "@example.com";
 
         $data = [
             'name' => 'A loyal Client',
@@ -985,7 +985,7 @@ class ClientTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/clients/'.$this->client->hashed_id, $data);
+        ])->putJson('/api/v1/clients/' . $this->client->hashed_id, $data);
         // } catch (ValidationException $e) {
         //     $message = json_decode($e->validator->getMessageBag(), 1);
         //     $this->assertNotNull($message);

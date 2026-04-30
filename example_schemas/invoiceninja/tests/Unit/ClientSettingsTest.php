@@ -123,7 +123,7 @@ class ClientSettingsTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/clients/'.$client_id, $data);
+        ])->putJson('/api/v1/clients/' . $client_id, $data);
 
         $response->assertStatus(200);
 
@@ -157,7 +157,7 @@ class ClientSettingsTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/clients/'.$client_id, $data);
+        ])->putJson('/api/v1/clients/' . $client_id, $data);
 
         $response->assertStatus(200);
 

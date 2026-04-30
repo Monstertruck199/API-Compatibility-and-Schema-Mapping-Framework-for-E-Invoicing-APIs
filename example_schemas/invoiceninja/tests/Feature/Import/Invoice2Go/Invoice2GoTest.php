@@ -50,7 +50,7 @@ class Invoice2GoTest extends TestCase
     public function testInvoice2GoImport()
     {
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/i2g_invoices.csv'
+            base_path() . '/tests/Feature/Import/i2g_invoices.csv',
         );
         $hash = Str::random(32);
 
@@ -104,7 +104,7 @@ class Invoice2GoTest extends TestCase
             'import_type' => 'invoice2go',
         ];
 
-        Cache::put($hash.'-invoice', base64_encode($csv), 360);
+        Cache::put($hash . '-invoice', base64_encode($csv), 360);
 
         $csv_importer = new Invoice2Go($data, $this->company);
 

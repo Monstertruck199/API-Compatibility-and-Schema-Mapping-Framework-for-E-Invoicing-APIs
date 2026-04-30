@@ -38,7 +38,7 @@ class NotificationTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->makeTestData();
@@ -76,7 +76,7 @@ class NotificationTest extends TestCase
 
         $notifications = new \stdClass();
         $notifications->email = ["enable_e_invoice_received_notification"];
-        $company_user->update(['notifications' => (array)$notifications]);
+        $company_user->update(['notifications' => (array) $notifications]);
 
         $notifications = $this->findCompanyUserNotificationType($company_user, ['enable_e_invoice_received_notification']);
 
@@ -119,7 +119,7 @@ class NotificationTest extends TestCase
 
         $notifications = new \stdClass();
         $notifications->email = ["invoice_late_user","quote_approved_user"];
-        $company_user->update(['notifications' => (array)$notifications]);
+        $company_user->update(['notifications' => (array) $notifications]);
 
         $i = Invoice::factory()->create([
             'user_id' => $u->id,
@@ -150,13 +150,13 @@ class NotificationTest extends TestCase
         $notifications = new \stdClass();
         $notifications->email = ["inventory_all"];
 
-        $this->user->company_users()->where('company_id', $this->company->id)->update(['notifications' => (array)$notifications]);
+        $this->user->company_users()->where('company_id', $this->company->id)->update(['notifications' => (array) $notifications]);
 
         $this->assertTrue(property_exists($this->cu->notifications, 'email'));
 
         $p = Product::factory()->create([
             'user_id' => $this->user->id,
-            'company_id' => $this->company->id
+            'company_id' => $this->company->id,
         ]);
 
         $notification_users = $this->filterUsersByPermissions($this->company->company_users, $p, ['inventory_all']);
@@ -176,10 +176,10 @@ class NotificationTest extends TestCase
 
         $p = Product::factory()->create([
             'user_id' => $this->user->id,
-            'company_id' => $this->company->id
+            'company_id' => $this->company->id,
         ]);
 
-        $this->user->company_users()->where('company_id', $this->company->id)->update(['notifications' => (array)$notifications]);
+        $this->user->company_users()->where('company_id', $this->company->id)->update(['notifications' => (array) $notifications]);
 
         $notification_users = $this->filterUsersByPermissions($this->company->company_users, $p, ['inventory_all']);
         $this->assertCount(1, $notification_users->toArray());
@@ -192,10 +192,10 @@ class NotificationTest extends TestCase
 
         $p = Product::factory()->create([
             'user_id' => $this->user->id,
-            'company_id' => $this->company->id
+            'company_id' => $this->company->id,
         ]);
 
-        $this->user->company_users()->where('company_id', $this->company->id)->update(['notifications' => (array)$notifications]);
+        $this->user->company_users()->where('company_id', $this->company->id)->update(['notifications' => (array) $notifications]);
 
         $notification_users = $this->filterUsersByPermissions($this->company->company_users, $p, ['all_user_notifications']);
         $this->assertCount(1, $notification_users->toArray());
@@ -229,13 +229,13 @@ class NotificationTest extends TestCase
 
         $p = Product::factory()->create([
             'user_id' => $u->id,
-            'company_id' => $this->company->id
+            'company_id' => $this->company->id,
         ]);
 
 
         $notifications = new \stdClass();
         $notifications->email = ["all_user_notifications"];
-        $this->user->company_users()->where('company_id', $this->company->id)->update(['notifications' => (array)$notifications]);
+        $this->user->company_users()->where('company_id', $this->company->id)->update(['notifications' => (array) $notifications]);
 
         $methods = $this->findUserEntityNotificationType($p, $this->cu, ['all_user_notifications']);
         $this->assertCount(0, $methods);
@@ -266,7 +266,7 @@ class NotificationTest extends TestCase
 
         $p = Product::factory()->create([
             'user_id' => $this->user->id,
-            'company_id' => $this->company->id
+            'company_id' => $this->company->id,
         ]);
 
         $methods = $this->findUserEntityNotificationType($p, $cu, ['inventory_user']);

@@ -3,24 +3,24 @@
  */
 
 const {
-    schemaOptions,
-    renderComparisonSelectors,
-    runComparison,
-    renderComparison
-} = require('../frontend/schema-comparison');
+  schemaOptions,
+  renderComparisonSelectors,
+  runComparison,
+  renderComparison
+} = require('../frontend/schema-comparison')
 
 beforeEach(() => {
-    document.body.innerHTML = `
+  document.body.innerHTML = `
     <div id="comparison-root"></div>
-    `;
-    global.fetch = jest.fn();
-  global.alert = jest.fn();
-  global.API_BASE_URL = 'http://localhost:5000';
+    `
+  global.fetch = jest.fn()
+  global.alert = jest.fn()
+  global.API_BASE_URL = 'http://localhost:5000'
 
-  global.runComparison = jest.fn();
+  global.runComparison = jest.fn()
 
-  jest.resetModules();
-  moduleRef = require('../frontend/schema-comparison');
+  jest.resetModules()
+  moduleRef = require('../frontend/schema-comparison')
 
   global.svSchemas = [
     {
@@ -41,77 +41,77 @@ beforeEach(() => {
         required: []
       }
     }
-  ];
-});
+  ]
+})
 
 afterEach(() => {
-    jest.clearAllMocks()
-});
+  jest.clearAllMocks()
+})
 
 test('schemaOptions renders option list', () => {
-    const html = schemaOptions();
-    expect(html).toContain('Schema A');
-    expect(html).toContain('Schema B');
-});
+  const html = schemaOptions()
+  expect(html).toContain('Schema A')
+  expect(html).toContain('Schema B')
+})
 
 test('schemaOptions marks selected option', () => {
-    const html = schemaOptions('Schema B');
+  const html = schemaOptions('Schema B')
 
-    expect(html).toContain('selected');
-    expect(html).toContain('Schema B');
-});
+  expect(html).toContain('selected')
+  expect(html).toContain('Schema B')
+})
 
 test('renderComparisonSelectors renders dropdowns', () => {
-    renderComparisonSelectors();
+  renderComparisonSelectors()
 
-    const root = document.getElementById('comparison-root');
+  const root = document.getElementById('comparison-root')
 
-    expect(root.innerHTML).toContain('Source schema');
-    expect(root.innerHTML).toContain('Target schema');
-    expect(root.querySelector('#cmp-source')).not.toBeNull();
-    expect(root.querySelector('#cmp-target')).not.toBeNull();
-});
+  expect(root.innerHTML).toContain('Source schema')
+  expect(root.innerHTML).toContain('Target schema')
+  expect(root.querySelector('#cmp-source')).not.toBeNull()
+  expect(root.querySelector('#cmp-target')).not.toBeNull()
+})
 
 test('change event triggers comparison logic', async () => {
-  renderComparisonSelectors();
+  renderComparisonSelectors()
 
-  document.getElementById('cmp-source').value = '0';
-  document.getElementById('cmp-target').value = '1';
+  document.getElementById('cmp-source').value = '0'
+  document.getElementById('cmp-target').value = '1'
 
   fetch.mockResolvedValue({
     ok: true,
     json: async () => ({})
-  });
+  })
 
-  const source = document.getElementById('cmp-source');
-  source.dispatchEvent(new Event('change'));
+  const source = document.getElementById('cmp-source')
+  source.dispatchEvent(new Event('change'))
 
-  expect(fetch).toHaveBeenCalled();
-});
+  expect(fetch).toHaveBeenCalled()
+})
 
 test('renderComparisonSelectors auto-runs comparison when >= 2 schemas', async () => {
-  renderComparisonSelectors();
+  renderComparisonSelectors()
 
-  await Promise.resolve();
+  await Promise.resolve()
 
-  expect(fetch).toHaveBeenCalled();
-});
+  expect(fetch).toHaveBeenCalled()
+})
 
 test('runComparison calls API and renders comparison', async () => {
   document.body.innerHTML = `
     <div id="comparison-root"></div>
     <div id="comparison-output"></div>
-  `;
+  `
 
   global.svSchemas = [
     { name: 'A', schema: {} },
     { name: 'B', schema: {} }
-  ];
+  ]
 
-  renderComparisonSelectors();
+  renderComparisonSelectors()
 
-  document.getElementById('cmp-source').value = '0';
-  document.getElementById('cmp-target').value = '1';
+  document.getElementById('cmp-source').value = '0'
+  document.getElementById('cmp-target').value = '1'
 
   const mockResponse = {
     normalized_source: {
@@ -122,59 +122,59 @@ test('runComparison calls API and renders comparison', async () => {
       properties: { b: { type: 'number' } },
       required: []
     }
-  };
+  }
 
   fetch.mockResolvedValue({
     ok: true,
     json: async () => mockResponse
-  });
+  })
 
-  await runComparison();
+  await runComparison()
 
   expect(fetch).toHaveBeenCalledWith(
     'http://localhost:5000/api/compare',
     expect.objectContaining({
       method: 'POST'
     })
-  );
+  )
 
-  const output = document.getElementById('comparison-output');
+  const output = document.getElementById('comparison-output')
 
-  expect(output.innerHTML).toContain('a');
-  expect(output.innerHTML).toContain('b');
-});
+  expect(output.innerHTML).toContain('a')
+  expect(output.innerHTML).toContain('b')
+})
 
 test('runComparison shows alert on API error', async () => {
-  renderComparisonSelectors();
+  renderComparisonSelectors()
 
-  document.getElementById('cmp-source').value = '0';
-  document.getElementById('cmp-target').value = '1';
+  document.getElementById('cmp-source').value = '0'
+  document.getElementById('cmp-target').value = '1'
 
   fetch.mockResolvedValue({
     ok: false,
     json: async () => ({ error: 'Comparison failed' })
-  });
+  })
 
-  await runComparison();
+  await runComparison()
 
-  expect(alert).toHaveBeenCalledWith('Comparison failed');
-});
+  expect(alert).toHaveBeenCalledWith('Comparison failed')
+})
 
 test('runComparison handles fetch failure', async () => {
-  renderComparisonSelectors();
+  renderComparisonSelectors()
 
-  document.getElementById('cmp-source').value = '0';
-  document.getElementById('cmp-target').value = '1';
+  document.getElementById('cmp-source').value = '0'
+  document.getElementById('cmp-target').value = '1'
 
-  fetch.mockRejectedValue(new Error('Network error'));
+  fetch.mockRejectedValue(new Error('Network error'))
 
-  await runComparison();
+  await runComparison()
 
-  expect(alert).toHaveBeenCalled();
-});
+  expect(alert).toHaveBeenCalled()
+})
 
 test('renderComparison displays aligned fields', () => {
-  document.body.innerHTML += `<div id="comparison-output"></div>`;
+  document.body.innerHTML += '<div id="comparison-output"></div>'
 
   const comparison = {
     normalized_source: {
@@ -189,20 +189,20 @@ test('renderComparison displays aligned fields', () => {
       },
       required: []
     }
-  };
+  }
 
-  renderComparison(comparison);
+  renderComparison(comparison)
 
-  const output = document.getElementById('comparison-output');
+  const output = document.getElementById('comparison-output')
 
-  expect(output.innerHTML).toContain('a');
-  expect(output.innerHTML).toContain('b');
-  expect(output.innerHTML).toContain('string');
-  expect(output.innerHTML).toContain('number');
-});
+  expect(output.innerHTML).toContain('a')
+  expect(output.innerHTML).toContain('b')
+  expect(output.innerHTML).toContain('string')
+  expect(output.innerHTML).toContain('number')
+})
 
 test('renderComparison marks missing fields correctly', () => {
-  document.body.innerHTML += `<div id="comparison-output"></div>`;
+  document.body.innerHTML += '<div id="comparison-output"></div>'
 
   const comparison = {
     normalized_source: {
@@ -215,24 +215,24 @@ test('renderComparison marks missing fields correctly', () => {
       properties: {},
       required: []
     }
-  };
+  }
 
-  renderComparison(comparison);
+  renderComparison(comparison)
 
-  const output = document.getElementById('comparison-output');
+  const output = document.getElementById('comparison-output')
 
-  expect(output.innerHTML).toContain('missing');
-});
+  expect(output.innerHTML).toContain('missing')
+})
 
 test('renderComparison handles empty schemas', () => {
-  document.body.innerHTML += `<div id="comparison-output"></div>`;
+  document.body.innerHTML += '<div id="comparison-output"></div>'
 
   renderComparison({
     normalized_source: {},
     normalized_target: {}
-  });
+  })
 
-  const output = document.getElementById('comparison-output');
+  const output = document.getElementById('comparison-output')
 
-  expect(output.innerHTML).toContain('cmp-split');
-});
+  expect(output.innerHTML).toContain('cmp-split')
+})

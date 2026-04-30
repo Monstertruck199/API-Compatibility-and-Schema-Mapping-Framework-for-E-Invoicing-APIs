@@ -119,13 +119,13 @@ class VerifactuApiTest extends TestCase
 
         $data = [
             'name' => 'testX',
-            'settings' => (array)$settings,
+            'settings' => (array) $settings,
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/group_settings/'.$gs->hashed_id, $data);
+        ])->putJson('/api/v1/group_settings/' . $gs->hashed_id, $data);
 
         nlog($response->json());
         $response->assertStatus(422);
@@ -175,7 +175,7 @@ class VerifactuApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/companies/'.$this->company->hashed_id, $data);
+        ])->putJson('/api/v1/companies/' . $this->company->hashed_id, $data);
 
         $response->assertStatus(200);
 
@@ -196,8 +196,8 @@ class VerifactuApiTest extends TestCase
         $data = [
             'name' => 'A loyal Client',
             'settings' => [
-                'lock_invoices' => 'off'
-            ]
+                'lock_invoices' => 'off',
+            ],
         ];
 
         $response = $this->withHeaders([
@@ -338,7 +338,7 @@ class VerifactuApiTest extends TestCase
 
         $data = [
             'action' => 'cancel',
-            'ids' => [$invoice->hashed_id]
+            'ids' => [$invoice->hashed_id],
         ];
 
         $response = $this->withHeaders([
@@ -514,19 +514,19 @@ class VerifactuApiTest extends TestCase
 
         $data = [
             'action' => 'delete',
-            'ids' => [$invoice->hashed_id]
+            'ids' => [$invoice->hashed_id],
         ];
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/invoices/bulk', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/invoices/bulk', $data);
 
         $response->assertStatus(422);
 
         $data = [
             'action' => 'delete',
-            'ids' => [$invoice2->hashed_id]
+            'ids' => [$invoice2->hashed_id],
         ];
 
         sleep(1);
@@ -557,7 +557,7 @@ class VerifactuApiTest extends TestCase
 
         $data = [
             'action' => 'archive',
-            'ids' => [$invoice->hashed_id]
+            'ids' => [$invoice->hashed_id],
         ];
 
         $response = $this->withHeaders([
@@ -570,7 +570,7 @@ class VerifactuApiTest extends TestCase
 
         $data = [
             'action' => 'restore',
-            'ids' => [$invoice->hashed_id]
+            'ids' => [$invoice->hashed_id],
         ];
 
         $response = $this->withHeaders([
@@ -624,7 +624,7 @@ class VerifactuApiTest extends TestCase
 
         $data = [
             'action' => 'delete',
-            'ids' => [$invoice->hashed_id]
+            'ids' => [$invoice->hashed_id],
         ];
 
         $response = $this->withHeaders([
@@ -653,7 +653,7 @@ class VerifactuApiTest extends TestCase
 
         $data = [
             'action' => 'delete',
-            'ids' => [$invoice->hashed_id]
+            'ids' => [$invoice->hashed_id],
         ];
 
         $response = $this->withHeaders([
@@ -666,7 +666,7 @@ class VerifactuApiTest extends TestCase
 
         $data = [
             'action' => 'restore',
-            'ids' => [$invoice->hashed_id]
+            'ids' => [$invoice->hashed_id],
         ];
 
         $response = $this->withHeaders([
@@ -838,23 +838,23 @@ class VerifactuApiTest extends TestCase
         $response->assertStatus(200);
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/invoices', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/invoices', $data);
 
         $response->assertStatus(200);
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/invoices', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/invoices', $data);
 
         $response->assertStatus(200);
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/invoices', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/invoices', $data);
 
         $response->assertStatus(200);
 
@@ -1223,7 +1223,7 @@ class VerifactuApiTest extends TestCase
         $data = [
             'action' => 'cancel',
             'ids' => [$invoice->hashed_id],
-            'reason' => 'R3'
+            'reason' => 'R3',
         ];
 
         $response = $this->withHeaders([
@@ -1264,7 +1264,7 @@ class VerifactuApiTest extends TestCase
 
         $data = [
             'action' => 'delete',
-            'ids' => [$invoice->hashed_id]
+            'ids' => [$invoice->hashed_id],
         ];
 
         $response = $this->withHeaders([
@@ -1278,7 +1278,7 @@ class VerifactuApiTest extends TestCase
 
         $data = [
             'action' => 'restore',
-            'ids' => [$this->invoice->hashed_id]
+            'ids' => [$this->invoice->hashed_id],
         ];
 
         $response = $this->withHeaders([
@@ -1305,7 +1305,7 @@ class VerifactuApiTest extends TestCase
 
         $data = [
             'action' => 'archive',
-            'ids' => [$invoice->hashed_id]
+            'ids' => [$invoice->hashed_id],
         ];
 
         $response = $this->withHeaders([
@@ -1321,7 +1321,7 @@ class VerifactuApiTest extends TestCase
 
         $data = [
             'action' => 'restore',
-            'ids' => [$invoice->hashed_id]
+            'ids' => [$invoice->hashed_id],
         ];
 
         $response = $this->withHeaders([
@@ -1356,7 +1356,7 @@ class VerifactuApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/companies/'.$this->company->hashed_id, $this->company->toArray())
+        ])->putJson('/api/v1/companies/' . $this->company->hashed_id, $this->company->toArray())
         ->assertStatus(200);
 
         $settings = $this->company->settings;
@@ -1366,7 +1366,7 @@ class VerifactuApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/companies/'.$this->company->hashed_id, $this->company->toArray())
+        ])->putJson('/api/v1/companies/' . $this->company->hashed_id, $this->company->toArray())
         ->assertStatus(200);
 
 

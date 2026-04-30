@@ -62,7 +62,7 @@ class ExpenseCategoryApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/expense_categories/'.$this->encodePrimaryKey($this->expense_category->id), $data);
+        ])->put('/api/v1/expense_categories/' . $this->encodePrimaryKey($this->expense_category->id), $data);
 
         $response->assertStatus(200);
     }
@@ -72,7 +72,7 @@ class ExpenseCategoryApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/expense_categories/'.$this->encodePrimaryKey($this->expense_category->id));
+        ])->get('/api/v1/expense_categories/' . $this->encodePrimaryKey($this->expense_category->id));
 
         $response->assertStatus(200);
     }
@@ -82,7 +82,7 @@ class ExpenseCategoryApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/expense_categories/'.$this->encodePrimaryKey($this->expense_category->id));
+        ])->get('/api/v1/expense_categories/' . $this->encodePrimaryKey($this->expense_category->id));
 
         $arr = $response->json();
 

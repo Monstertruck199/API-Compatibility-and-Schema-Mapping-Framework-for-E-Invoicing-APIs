@@ -37,7 +37,7 @@ class ClassificationTest extends TestCase
     {
         $data = [
             'name' => 'Personal Company',
-            'classification' => 'individual'
+            'classification' => 'individual',
         ];
 
         $response = $this->withHeaders([
@@ -56,7 +56,7 @@ class ClassificationTest extends TestCase
     {
         $data = [
             'name' => 'Personal Company',
-            'classification' => 'this_is_not_validated'
+            'classification' => 'this_is_not_validated',
         ];
 
         $response = $this->withHeaders([
@@ -76,7 +76,7 @@ class ClassificationTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/clients/'.$this->client->hashed_id, $this->client->toArray());
+        ])->putJson('/api/v1/clients/' . $this->client->hashed_id, $this->client->toArray());
 
         $response->assertStatus(200);
 
@@ -92,7 +92,7 @@ class ClassificationTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/clients/'.$this->client->hashed_id, $this->client->toArray());
+        ])->putJson('/api/v1/clients/' . $this->client->hashed_id, $this->client->toArray());
 
         $response->assertStatus(422);
 
@@ -102,7 +102,7 @@ class ClassificationTest extends TestCase
     {
         $data = [
             'name' => 'Personal Company',
-            'classification' => 'individual'
+            'classification' => 'individual',
         ];
 
         $response = $this->withHeaders([
@@ -121,7 +121,7 @@ class ClassificationTest extends TestCase
     {
         $data = [
             'name' => 'Personal Company',
-            'classification' => 'this_is_not_validated'
+            'classification' => 'this_is_not_validated',
         ];
 
         $response = $this->withHeaders([
@@ -140,7 +140,7 @@ class ClassificationTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/vendors/'.$this->vendor->hashed_id, $this->vendor->toArray());
+        ])->putJson('/api/v1/vendors/' . $this->vendor->hashed_id, $this->vendor->toArray());
 
         $response->assertStatus(200);
 
@@ -156,7 +156,7 @@ class ClassificationTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/vendors/'.$this->vendor->hashed_id, $this->vendor->toArray());
+        ])->putJson('/api/v1/vendors/' . $this->vendor->hashed_id, $this->vendor->toArray());
 
         $response->assertStatus(422);
 
@@ -172,7 +172,7 @@ class ClassificationTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/companies/'.$this->company->hashed_id, $this->company->toArray());
+        ])->putJson('/api/v1/companies/' . $this->company->hashed_id, $this->company->toArray());
 
         $response->assertStatus(200);
 
@@ -191,7 +191,7 @@ class ClassificationTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/companies/'.$this->company->hashed_id, $this->company->toArray());
+        ])->putJson('/api/v1/companies/' . $this->company->hashed_id, $this->company->toArray());
 
         $response->assertStatus(422);
 
@@ -207,7 +207,7 @@ class ClassificationTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/companies/'.$this->company->hashed_id, $this->company->toArray());
+        ])->putJson('/api/v1/companies/' . $this->company->hashed_id, $this->company->toArray());
 
         $response->assertStatus(200);
 

@@ -28,12 +28,21 @@ class EmailQualityTest extends TestCase
     {
         $presenter = new class ($companyName) {
             private string $name;
-            public function __construct(string $name) { $this->name = $name; }
-            public function name(): string { return $this->name; }
+            public function __construct(string $name)
+            {
+                $this->name = $name;
+            }
+            public function name(): string
+            {
+                return $this->name;
+            }
         };
 
         $owner_presenter = new class {
-            public function name(): string { return 'Test Owner'; }
+            public function name(): string
+            {
+                return 'Test Owner';
+            }
         };
 
         $owner = $this->createMock(User::class);
@@ -44,8 +53,11 @@ class EmailQualityTest extends TestCase
         $company->method('owner')->willReturn($owner);
         $company->method('notification')->willReturn(
             new class {
-                public function ninja() { return null; }
-            }
+                public function ninja()
+                {
+                    return null;
+                }
+            },
         );
 
         return $company;

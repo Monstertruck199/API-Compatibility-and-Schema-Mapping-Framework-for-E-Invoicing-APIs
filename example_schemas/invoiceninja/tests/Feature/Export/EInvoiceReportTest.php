@@ -44,7 +44,7 @@ class EInvoiceReportTest extends TestCase
         $this->faker = \Faker\Factory::create();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->withoutExceptionHandling();
@@ -91,7 +91,7 @@ class EInvoiceReportTest extends TestCase
         $this->user = User::factory()->create([
             'account_id' => $this->account->id,
             'confirmation_code' => 'xyz123',
-            'email' => \Illuminate\Support\Str::random(32).'@example.com',
+            'email' => \Illuminate\Support\Str::random(32) . '@example.com',
         ]);
 
         $settings = CompanySettings::defaults();
@@ -187,16 +187,16 @@ class EInvoiceReportTest extends TestCase
             'start_date' => '2000-01-01',
             'end_date' => '2030-01-11',
             'date_range' => 'custom',
-            'report_keys' => []
+            'report_keys' => [],
         ];
 
         $e = Expense::factory()->create([
-           'user_id' => $this->user->id,
-           'company_id' => $this->company->id,
-           'amount' => 100,
-           'public_notes' => 'Expensive Business!!',
-           'should_be_invoiced' => true,
-       ]);
+            'user_id' => $this->user->id,
+            'company_id' => $this->company->id,
+            'amount' => 100,
+            'public_notes' => 'Expensive Business!!',
+            'should_be_invoiced' => true,
+        ]);
 
         $a = new Activity();
         $a->expense_id = $e->id;

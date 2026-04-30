@@ -160,7 +160,7 @@ class LoginTest extends TestCase
         $company_token->user_id = $user->id;
         $company_token->company_id = $company->id;
         $company_token->account_id = $account->id;
-        $company_token->name = $user->first_name.' '.$user->last_name;
+        $company_token->name = $user->first_name . ' ' . $user->last_name;
         $company_token->token = \Illuminate\Support\Str::random(64);
         $company_token->is_system = true;
         $company_token->save();

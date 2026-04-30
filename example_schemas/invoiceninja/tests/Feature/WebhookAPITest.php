@@ -33,7 +33,7 @@ class WebhookAPITest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
         $this->makeTestData();
 
@@ -47,7 +47,7 @@ class WebhookAPITest extends TestCase
             'target_url' => 'http://hook.com',
             'event_id' => 1, //create client
             'format' => 'JSON',
-            'headers' => []
+            'headers' => [],
         ];
 
         $response = $this->withHeaders([
@@ -67,7 +67,7 @@ class WebhookAPITest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->postJson("/api/v1/webhooks/".$arr['data']['id']."/retry", $data);
+        ])->postJson("/api/v1/webhooks/" . $arr['data']['id'] . "/retry", $data);
 
         $response->assertStatus(200);
 
@@ -135,7 +135,7 @@ class WebhookAPITest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/webhooks/'.$arr['data']['id'], $data);
+        ])->putJson('/api/v1/webhooks/' . $arr['data']['id'], $data);
 
         $response->assertStatus(200);
 
@@ -150,7 +150,7 @@ class WebhookAPITest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/webhooks/'.$arr['data']['id'], $data);
+        ])->putJson('/api/v1/webhooks/' . $arr['data']['id'], $data);
 
         $response->assertStatus(200);
 
@@ -161,7 +161,7 @@ class WebhookAPITest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->delete('/api/v1/webhooks/'.$arr['data']['id']);
+        ])->delete('/api/v1/webhooks/' . $arr['data']['id']);
 
         $arr = $response->json();
 

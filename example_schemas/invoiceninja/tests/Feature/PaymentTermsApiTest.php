@@ -42,7 +42,7 @@ class PaymentTermsApiTest extends TestCase
         Model::reguard();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 
@@ -120,7 +120,7 @@ class PaymentTermsApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/payment_terms/'.$this->encodePrimaryKey($payment_term->id), ['num_days' => 5000]);
+        ])->put('/api/v1/payment_terms/' . $this->encodePrimaryKey($payment_term->id), ['num_days' => 5000]);
 
         $response->assertStatus(200);
     }
@@ -134,7 +134,7 @@ class PaymentTermsApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->delete('/api/v1/payment_terms/'.$this->encodePrimaryKey($payment_term->id));
+        ])->delete('/api/v1/payment_terms/' . $this->encodePrimaryKey($payment_term->id));
 
         $response->assertStatus(200);
 

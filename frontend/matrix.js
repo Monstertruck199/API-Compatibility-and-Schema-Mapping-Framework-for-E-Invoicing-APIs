@@ -1,66 +1,66 @@
-async function renderMatrixBuilder() {
-  const el = document.getElementById('matrix-root');
-  if (!el) return;
+async function renderMatrixBuilder () {
+  const el = document.getElementById('matrix-root')
+  if (!el) return
   el.innerHTML = `
     <div id="matrix-table-wrap"></div>
-  `;
-  buildMatrix();
+  `
+  buildMatrix()
 }
 
-function escapeRe(s) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function escapeRe (s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
-function highlight(text, query) {
+function highlight (text, query) {
   if (!query) return text
-  return text.replace(new RegExp('(' + escapeRe(query) + ')', 'gi'), '<mark>$1</mark>');
+  return text.replace(new RegExp('(' + escapeRe(query) + ')', 'gi'), '<mark>$1</mark>')
 }
 
-function shortLabel(label) {
-  if (label === 'directly_compatible') return 'Direct';
-  if (label === 'compatible_with_mapping') return 'Mapping Required';
-  if (label === 'incompatible') return 'Incompatible';
-  return 'Direct';
+function shortLabel (label) {
+  if (label === 'directly_compatible') return 'Direct'
+  if (label === 'compatible_with_mapping') return 'Mapping Required'
+  if (label === 'incompatible') return 'Incompatible'
+  return 'Direct'
 }
 
-function matrixCellClass(code) {
-  if (code === 'directly_compatible' || code === 'same_schema') return 'ok';
-  if (code === 'compatible_with_mapping') return 'warn';
-  return 'bad';
+function matrixCellClass (code) {
+  if (code === 'directly_compatible' || code === 'same_schema') return 'ok'
+  if (code === 'compatible_with_mapping') return 'warn'
+  return 'bad'
 }
 
-async function buildMatrix() {
+async function buildMatrix () {
   try {
     const response = await fetch(`${API_BASE_URL}/api/matrix`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ schemas: svSchemas.map(({ name, schema }) => ({ name, schema })) }),
-    });
-    const payload = await response.json();
+      body: JSON.stringify({ schemas: svSchemas.map(({ name, schema }) => ({ name, schema })) })
+    })
+    const payload = await response.json()
     if (!response.ok) {
-      alert(payload.error || 'Could not build matrix');
-      return;
+      alert(payload.error || 'Could not build matrix')
+      return
     }
-    newDrawMatrix(payload.matrix);
+    newDrawMatrix(payload.matrix)
   } catch (error) {
-    alert('Could not reach backend. Start backend/app.py before generating the matrix.');
+    alert('Could not reach backend. Start backend/app.py before generating the matrix.')
   }
 }
 
-let matrixRows = [];
-let activeFilters = new Set(['ok', 'warn', 'bad']);
+let matrixRows = []
+const activeFilters = new Set(['ok', 'warn', 'bad'])
 
-function newDrawMatrix(matrix) {
-  matrixRows = [];
+function newDrawMatrix (matrix) {
+  matrixRows = []
   matrix.forEach(row => {
     row.forEach(cell => {
       if (cell.source != cell.target) {
-        matrixRows.push(cell);
+        matrixRows.push(cell)
       }
-    });
-  });
+    })
+  })
 
-  const wrap = document.getElementById('matrix-table-wrap');
+  const wrap = document.getElementById('matrix-table-wrap')
   wrap.innerHTML = `
     <div class="search-row">
       <div class="search-group">
@@ -97,44 +97,44 @@ function newDrawMatrix(matrix) {
         <tbody id="matrix-tbody"></tbody>
       </table>
     </div>
-  `;
+  `
 
-  renderMatrixRows();
+  renderMatrixRows()
 }
 
-function toggleMatrixFilter(filter) {
+function toggleMatrixFilter (filter) {
   if (activeFilters.has(filter)) {
-    activeFilters.delete(filter);
+    activeFilters.delete(filter)
   } else {
-    activeFilters.add(filter);
+    activeFilters.add(filter)
   }
-  document.querySelector(`.matrix-filter-btn[data-filter="${filter}"]`).classList.toggle('active');
-  renderMatrixRows();
+  document.querySelector(`.matrix-filter-btn[data-filter="${filter}"]`).classList.toggle('active')
+  renderMatrixRows()
 }
-  
-function renderMatrixRows() {
+
+function renderMatrixRows () {
   const srcQ = (document.getElementById('search-source')?.value || '').trim().toLowerCase()
   const tgtQ = (document.getElementById('search-target')?.value || '').trim().toLowerCase()
-  const tbody = document.getElementById('matrix-tbody');
-  const count = document.getElementById('matrix-result-count');
+  const tbody = document.getElementById('matrix-tbody')
+  const count = document.getElementById('matrix-result-count')
 
   const filtered = matrixRows.filter(cell => {
-    const cls = matrixCellClass(cell.compatibility);
-    if (!activeFilters.has(cls)) return false;
-    if (srcQ && !cell.source.toLowerCase().includes(srcQ)) return false;
-    if (tgtQ && !cell.target.toLowerCase().includes(tgtQ)) return false;
-    return true;
-  });
+    const cls = matrixCellClass(cell.compatibility)
+    if (!activeFilters.has(cls)) return false
+    if (srcQ && !cell.source.toLowerCase().includes(srcQ)) return false
+    if (tgtQ && !cell.target.toLowerCase().includes(tgtQ)) return false
+    return true
+  })
 
-  count.textContent = `Showing ${filtered.length} result${filtered.length !== 1 ? 's' : ''}`;
+  count.textContent = `Showing ${filtered.length} result${filtered.length !== 1 ? 's' : ''}`
 
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="4" class="empty-hint">No mappings available</td></tr>`;
+    tbody.innerHTML = '<tr><td colspan="4" class="empty-hint">No mappings available</td></tr>'
   } else {
     tbody.innerHTML = filtered.map(cell => {
-      const cls = matrixCellClass(cell.compatibility);
-      const label = shortLabel(cell.compatibility);
-      const issues = cell.key_issues || cell.issues?.[0]?.message || '';
+      const cls = matrixCellClass(cell.compatibility)
+      const label = shortLabel(cell.compatibility)
+      const issues = cell.key_issues || cell.issues?.[0]?.message || ''
       return `
         <tr class="matrix-list-row">
           <td>${cell.source}</td>
@@ -142,8 +142,8 @@ function renderMatrixRows() {
           <td><span class="status-pill ${cls}">${label}</span></td>
           <td class="matrix-issues-cell">${issues}</td>
         </tr>
-      `;
-    }).join('');
+      `
+    }).join('')
   }
 }
 
@@ -157,5 +157,5 @@ if (typeof module !== 'undefined' && module.exports) {
     highlight,
     shortLabel,
     matrixCellClass
-  };
+  }
 }

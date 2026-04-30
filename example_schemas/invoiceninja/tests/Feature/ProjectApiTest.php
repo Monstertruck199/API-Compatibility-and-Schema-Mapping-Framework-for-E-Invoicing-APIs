@@ -387,7 +387,7 @@ class ProjectApiTest extends TestCase
             'name' => $this->faker->firstName(),
             'client_id' => $this->client->hashed_id,
             'number' => 'duplicate',
-            'budgeted_hours' => null
+            'budgeted_hours' => null,
         ];
 
         $response = $this->withHeaders([
@@ -406,7 +406,7 @@ class ProjectApiTest extends TestCase
             'name' => $this->faker->firstName(),
             'client_id' => $this->client->hashed_id,
             'number' => 'duplicate',
-            'budgeted_hours' => "a"
+            'budgeted_hours' => "a",
         ];
 
         $response = $this->withHeaders([
@@ -425,7 +425,7 @@ class ProjectApiTest extends TestCase
             'name' => $this->faker->firstName(),
             'client_id' => $this->client->hashed_id,
             'number' => 'duplicate',
-            'budgeted_hours' => ""
+            'budgeted_hours' => "",
         ];
 
         $response = $this->withHeaders([
@@ -452,7 +452,7 @@ class ProjectApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/projects/'.$this->encodePrimaryKey($this->project->id));
+        ])->get('/api/v1/projects/' . $this->encodePrimaryKey($this->project->id));
 
         $response->assertStatus(200);
     }
@@ -477,7 +477,7 @@ class ProjectApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/projects/'.$arr['data']['id'], $data)->assertStatus(200);
+        ])->put('/api/v1/projects/' . $arr['data']['id'], $data)->assertStatus(200);
 
         try {
             $response = $this->withHeaders([
@@ -523,7 +523,7 @@ class ProjectApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/projects/'.$this->encodePrimaryKey($this->project->id), $data);
+        ])->put('/api/v1/projects/' . $this->encodePrimaryKey($this->project->id), $data);
 
         $response->assertStatus(200);
     }
@@ -533,7 +533,7 @@ class ProjectApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/projects/'.$this->encodePrimaryKey($this->project->id));
+        ])->get('/api/v1/projects/' . $this->encodePrimaryKey($this->project->id));
 
         $arr = $response->json();
 

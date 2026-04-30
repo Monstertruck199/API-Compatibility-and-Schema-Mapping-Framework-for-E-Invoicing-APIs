@@ -54,7 +54,7 @@ class BankIntegrationApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/bank_integrations/'.$this->encodePrimaryKey($this->bank_integration->id));
+        ])->get('/api/v1/bank_integrations/' . $this->encodePrimaryKey($this->bank_integration->id));
 
         $response->assertStatus(200);
     }

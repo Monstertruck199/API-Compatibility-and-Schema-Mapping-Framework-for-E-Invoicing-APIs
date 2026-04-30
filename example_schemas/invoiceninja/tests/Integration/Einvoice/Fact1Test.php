@@ -131,7 +131,7 @@ class Fact1Test extends TestCase
             'user_id' => $this->user->id,
             'company_id' => $this->company->id,
             'client_id' => $client->id,
-            'number' => 'INV-'.rand(1000, 1000000),
+            'number' => 'INV-' . rand(1000, 1000000),
             'line_items' => [$item],
             'due_date' => now()->addDays(20)->format('Y-m-d'),
             'status_id' => 1,

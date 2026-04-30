@@ -62,7 +62,7 @@ class PeppolTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 
@@ -213,15 +213,12 @@ class PeppolTest extends TestCase
     /**
      * Stubbed if and when we need to send the raw XML
      * due to Storecoves inability to handle special features:
-     * 
-     * ie: attaching documents in base64. 
+     *
+     * ie: attaching documents in base64.
      *
      * @return void
      */
-    public function envelopedMode()
-    {
-        
-    }
+    public function envelopedMode() {}
 
     public function testBeToBeWithSpecialLineItemConfiguration()
     {
@@ -293,25 +290,25 @@ class PeppolTest extends TestCase
             'vat_number' => 'BE173655434',
         ]);
 
-            $item = new InvoiceItem();
-            $item->product_key = "Product Key";
-            $item->notes = "Product Description";
-            $item->cost = 795;
-            $item->quantity = 13.5;
-            $item->discount = 0;
-            $item->is_amount_discount = false;
-            $item->tax_rate1 = 21;
-            $item->tax_name1 = 'TVA';
+        $item = new InvoiceItem();
+        $item->product_key = "Product Key";
+        $item->notes = "Product Description";
+        $item->cost = 795;
+        $item->quantity = 13.5;
+        $item->discount = 0;
+        $item->is_amount_discount = false;
+        $item->tax_rate1 = 21;
+        $item->tax_name1 = 'TVA';
 
-            $item2 = new InvoiceItem();
-            $item2->product_key = "Product Key 2";
-            $item2->notes = "Product Description 2";
-            $item2->cost = 795;
-            $item2->quantity = 2;
-            $item2->discount = 0;
-            $item2->is_amount_discount = false;
-            $item2->tax_rate1 = 21;
-            $item2->tax_name1 = 'TVA';
+        $item2 = new InvoiceItem();
+        $item2->product_key = "Product Key 2";
+        $item2->notes = "Product Description 2";
+        $item2->cost = 795;
+        $item2->quantity = 2;
+        $item2->discount = 0;
+        $item2->is_amount_discount = false;
+        $item2->tax_rate1 = 21;
+        $item2->tax_name1 = 'TVA';
 
         $invoice = Invoice::factory()->create([
             'company_id' => $company->id,
@@ -327,7 +324,7 @@ class PeppolTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item, $item2],
-            'number' => 'DE-'.rand(1000, 100000),
+            'number' => 'DE-' . rand(1000, 100000),
             'date' => now()->format('Y-m-d'),
             'due_date' => now()->addDays(30)->format('Y-m-d'),
             'is_amount_discount' => false,
@@ -409,21 +406,21 @@ class PeppolTest extends TestCase
 
         $data['e_invoice'] = [
             'Invoice' => [
-             'InvoicePeriod' => [
-                [
-                    'StartDate' => '-01',
-                    'EndDate' => 'boop',
-                    'Description' => 'Mustafa',
-                    'HelterSkelter' => 'sif'
-                ]
-             ]
-            ]
+                'InvoicePeriod' => [
+                    [
+                        'StartDate' => '-01',
+                        'EndDate' => 'boop',
+                        'Description' => 'Mustafa',
+                        'HelterSkelter' => 'sif',
+                    ],
+                ],
+            ],
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/invoices/'.$invoice->hashed_id, $data);
+        ])->putJson('/api/v1/invoices/' . $invoice->hashed_id, $data);
 
         $response->assertStatus(422);
 
@@ -493,7 +490,7 @@ class PeppolTest extends TestCase
 
         $data = [
             'entity' => 'invoices',
-            'entity_id' => $invoice->hashed_id
+            'entity_id' => $invoice->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -541,7 +538,7 @@ class PeppolTest extends TestCase
 
         $data = [
             'entity' => 'invoices',
-            'entity_id' => $invoice->hashed_id
+            'entity_id' => $invoice->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -583,24 +580,24 @@ class PeppolTest extends TestCase
         // Direct EntityLevel test to debug validation
         $entityLevel = new EntityLevel();
         $directResult = $entityLevel->checkClient($client);
-         
+
         // Assert direct validation fails
         $this->assertFalse($directResult['passes'], 'Direct EntityLevel validation should fail when address1 and city are empty');
         $this->assertNotEmpty($directResult['client'], 'Direct EntityLevel should have client validation errors');
 
         $data = [
             'entity' => 'clients',
-            'entity_id' => $client->hashed_id
+            'entity_id' => $client->hashed_id,
         ];
 
-        
+
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
         ])->postJson('/api/v1/einvoice/validateEntity', $data);
 
         // Log the response for debugging
-       
+
         $response->assertStatus(422);
 
     }
@@ -622,7 +619,7 @@ class PeppolTest extends TestCase
 
         $entity_data = $this->setupTestData($scenario);
         $client = $entity_data['client'];
-        
+
         // Clear required address fields
         $client->address1 = '';
         $client->city = '';
@@ -635,7 +632,7 @@ class PeppolTest extends TestCase
         // Assert validation fails
         $this->assertFalse($result['passes'], 'Validation should fail when address1 and city are empty');
         $this->assertNotEmpty($result['client'], 'Should have client validation errors');
-        
+
         // Check that address errors are present
         $errorFields = array_column($result['client'], 'field');
         $this->assertContains('address1', $errorFields, 'Should have address1 error');
@@ -695,7 +692,7 @@ class PeppolTest extends TestCase
 
                 $entity_data = $this->setupTestData($scenario);
                 $client = $entity_data['client'];
-                
+
                 // Ensure client has required address fields
                 $client->address1 = 'Test Address';
                 $client->city = 'Test City';
@@ -708,12 +705,14 @@ class PeppolTest extends TestCase
                 $errorFields = array_column($result['client'], 'field');
                 $errorLabels = array_column($result['client'], 'label');
                 $errorFields = array_column($result['client'], 'field');
-                
+
                 // Should not have invalid_vat_number error (check both field and translated label)
-                $hasInvalidVatError = in_array('vat_number', $errorFields) && 
+                $hasInvalidVatError = in_array('vat_number', $errorFields) &&
                     in_array(ctrans('texts.invalid_vat_number'), $errorLabels);
-                $this->assertFalse($hasInvalidVatError, 
-                    "VAT number '{$vatNumber}' for country '{$countryCode}' should be valid");
+                $this->assertFalse(
+                    $hasInvalidVatError,
+                    "VAT number '{$vatNumber}' for country '{$countryCode}' should be valid",
+                );
             }
         }
     }
@@ -771,7 +770,7 @@ class PeppolTest extends TestCase
 
                 $entity_data = $this->setupTestData($scenario);
                 $client = $entity_data['client'];
-                
+
                 // Ensure client has required address fields
                 $client->address1 = 'Test Address';
                 $client->city = 'Test City';
@@ -783,12 +782,14 @@ class PeppolTest extends TestCase
 
                 $errorLabels = array_column($result['client'], 'label');
                 $errorFields = array_column($result['client'], 'field');
-                
+
                 // Should have invalid_vat_number error (check both field and translated label)
-                $hasInvalidVatError = in_array('vat_number', $errorFields) && 
+                $hasInvalidVatError = in_array('vat_number', $errorFields) &&
                     in_array(ctrans('texts.invalid_vat_number'), $errorLabels);
-                $this->assertTrue($hasInvalidVatError, 
-                    "VAT number '{$vatNumber}' for country '{$countryCode}' should be invalid");
+                $this->assertTrue(
+                    $hasInvalidVatError,
+                    "VAT number '{$vatNumber}' for country '{$countryCode}' should be invalid",
+                );
             }
         }
     }
@@ -799,7 +800,7 @@ class PeppolTest extends TestCase
     public function testVatNumberValidationSkippedForIndividualsAndGovernment()
     {
         $classifications = ['individual', 'government'];
-        
+
         foreach ($classifications as $classification) {
             $scenario = [
                 'company_vat' => 'DE923356489',
@@ -816,7 +817,7 @@ class PeppolTest extends TestCase
 
             $entity_data = $this->setupTestData($scenario);
             $client = $entity_data['client'];
-            
+
             // Ensure client has required address fields
             $client->address1 = 'Test Address';
             $client->city = 'Test City';
@@ -827,10 +828,13 @@ class PeppolTest extends TestCase
             $result = $entityLevel->checkClient($client);
 
             $errorFields = array_column($result['client'], 'field');
-            
+
             // Should not have vat_number error for individuals/government
-            $this->assertNotContains('vat_number', $errorFields, 
-                "VAT number should not be required for '{$classification}' classification");
+            $this->assertNotContains(
+                'vat_number',
+                $errorFields,
+                "VAT number should not be required for '{$classification}' classification",
+            );
         }
     }
 
@@ -854,7 +858,7 @@ class PeppolTest extends TestCase
 
         $entity_data = $this->setupTestData($scenario);
         $client = $entity_data['client'];
-        
+
         // Ensure client has required address fields
         $client->address1 = 'Test Address';
         $client->city = 'Test City';
@@ -865,10 +869,13 @@ class PeppolTest extends TestCase
         $result = $entityLevel->checkClient($client);
 
         $errorFields = array_column($result['client'], 'field');
-        
+
         // Should have vat_number error for business in EU
-        $this->assertContains('vat_number', $errorFields, 
-            'VAT number should be required for business entities in EU countries');
+        $this->assertContains(
+            'vat_number',
+            $errorFields,
+            'VAT number should be required for business entities in EU countries',
+        );
     }
 
     /**
@@ -904,7 +911,7 @@ class PeppolTest extends TestCase
 
             $entity_data = $this->setupTestData($scenario);
             $client = $entity_data['client'];
-            
+
             // Ensure client has required address fields
             $client->address1 = 'Test Address';
             $client->city = 'Test City';
@@ -916,16 +923,20 @@ class PeppolTest extends TestCase
 
             $errorLabels = array_column($result['client'], 'label');
             $errorFields = array_column($result['client'], 'field');
-            
-            $hasInvalidVatError = in_array('vat_number', $errorFields) && 
+
+            $hasInvalidVatError = in_array('vat_number', $errorFields) &&
                 in_array(ctrans('texts.invalid_vat_number'), $errorLabels);
-            
+
             if ($shouldBeValid) {
-                $this->assertFalse($hasInvalidVatError, 
-                    "VAT number '{$vatNumber}' for country '{$countryCode}' should be valid after stripping special characters");
+                $this->assertFalse(
+                    $hasInvalidVatError,
+                    "VAT number '{$vatNumber}' for country '{$countryCode}' should be valid after stripping special characters",
+                );
             } else {
-                $this->assertTrue($hasInvalidVatError, 
-                    "VAT number '{$vatNumber}' for country '{$countryCode}' should be invalid");
+                $this->assertTrue(
+                    $hasInvalidVatError,
+                    "VAT number '{$vatNumber}' for country '{$countryCode}' should be invalid",
+                );
             }
         }
     }
@@ -955,7 +966,7 @@ class PeppolTest extends TestCase
 
         $data = [
             'entity' => 'invoices',
-            'entity_id' => $invoice->hashed_id
+            'entity_id' => $invoice->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -991,7 +1002,7 @@ class PeppolTest extends TestCase
 
         $data = [
             'entity' => 'invoices',
-            'entity_id' => $invoice->hashed_id
+            'entity_id' => $invoice->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -1035,7 +1046,7 @@ class PeppolTest extends TestCase
 
         $data = [
             'entity' => 'invoices',
-            'entity_id' => $invoice->hashed_id
+            'entity_id' => $invoice->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -1079,13 +1090,13 @@ class PeppolTest extends TestCase
             'Invoice' => [
                 'InvoicePeriod' => [
                     [
-                    'cbc:StartDate' => $invoice->date,
-                    'cbc:EndDate' => $invoice->due_date ?? $invoice->date,
-                    'StartDate' => $invoice->date,
-                    'EndDate' => $invoice->due_date ?? $invoice->date,
-                    ]
-                ]
-            ]
+                        'cbc:StartDate' => $invoice->date,
+                        'cbc:EndDate' => $invoice->due_date ?? $invoice->date,
+                        'StartDate' => $invoice->date,
+                        'EndDate' => $invoice->due_date ?? $invoice->date,
+                    ],
+                ],
+            ],
         ];
         $invoice->save();
 
@@ -1107,7 +1118,7 @@ class PeppolTest extends TestCase
 
         $data = [
             'entity' => 'invoices',
-            'entity_id' => $invoice->hashed_id
+            'entity_id' => $invoice->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -1132,76 +1143,76 @@ class PeppolTest extends TestCase
 
         $scenarios = [
             [
-            'company_vat' => 'DE923356489',
-            'company_country' => 'DE',
-            'client_country' => 'FR',
-            'client_vat' => 'FRAA123456789',
-            'client_id_number' => '123456789',
-            'classification' => 'business',
-            'has_valid_vat' => true,
-            'over_threshold' => true,
-            'legal_entity_id' => 290868,
-            'is_tax_exempt' => false,
+                'company_vat' => 'DE923356489',
+                'company_country' => 'DE',
+                'client_country' => 'FR',
+                'client_vat' => 'FRAA123456789',
+                'client_id_number' => '123456789',
+                'classification' => 'business',
+                'has_valid_vat' => true,
+                'over_threshold' => true,
+                'legal_entity_id' => 290868,
+                'is_tax_exempt' => false,
             ],
             [
-            'company_vat' => 'DE923356489',
-            'company_country' => 'DE',
-            'client_country' => 'DE',
-            'client_vat' => 'DE923356482',
-            'client_id_number' => '123456789',
-            'classification' => 'business',
-            'has_valid_vat' => true,
-            'over_threshold' => true,
-            'legal_entity_id' => 290868,
-            'is_tax_exempt' => false,
+                'company_vat' => 'DE923356489',
+                'company_country' => 'DE',
+                'client_country' => 'DE',
+                'client_vat' => 'DE923356482',
+                'client_id_number' => '123456789',
+                'classification' => 'business',
+                'has_valid_vat' => true,
+                'over_threshold' => true,
+                'legal_entity_id' => 290868,
+                'is_tax_exempt' => false,
             ],
             [
-            'company_vat' => 'DE923356489',
-            'company_country' => 'DE',
-            'client_country' => 'DE',
-            'client_vat' => 'DE923356482',
-            'client_id_number' => '123456789',
-            'classification' => 'business',
-            'has_valid_vat' => true,
-            'over_threshold' => false,
-            'legal_entity_id' => 290868,
-            'is_tax_exempt' => false,
+                'company_vat' => 'DE923356489',
+                'company_country' => 'DE',
+                'client_country' => 'DE',
+                'client_vat' => 'DE923356482',
+                'client_id_number' => '123456789',
+                'classification' => 'business',
+                'has_valid_vat' => true,
+                'over_threshold' => false,
+                'legal_entity_id' => 290868,
+                'is_tax_exempt' => false,
             ],
             [
-            'company_vat' => 'DE923356489',
-            'company_country' => 'DE',
-            'client_country' => 'DE',
-            'client_vat' => 'DE923356482',
-            'client_id_number' => '123456789',
-            'classification' => 'business',
-            'has_valid_vat' => true,
-            'over_threshold' => false,
-            'legal_entity_id' => 290868,
-            'is_tax_exempt' => false,
+                'company_vat' => 'DE923356489',
+                'company_country' => 'DE',
+                'client_country' => 'DE',
+                'client_vat' => 'DE923356482',
+                'client_id_number' => '123456789',
+                'classification' => 'business',
+                'has_valid_vat' => true,
+                'over_threshold' => false,
+                'legal_entity_id' => 290868,
+                'is_tax_exempt' => false,
             ],
             [
-            'company_vat' => 'DE923356489',
-            'company_country' => 'DE',
-            'client_country' => 'DE',
-            'client_vat' => 'AT923356482',
-            'client_id_number' => '123456789',
-            'classification' => 'business',
-            'has_valid_vat' => true,
-            'over_threshold' => false,
-            'legal_entity_id' => 290868,
-            'is_tax_exempt' => false,
+                'company_vat' => 'DE923356489',
+                'company_country' => 'DE',
+                'client_country' => 'DE',
+                'client_vat' => 'AT923356482',
+                'client_id_number' => '123456789',
+                'classification' => 'business',
+                'has_valid_vat' => true,
+                'over_threshold' => false,
+                'legal_entity_id' => 290868,
+                'is_tax_exempt' => false,
             ],
             [
-            'company_vat' => 'DE923356489',
-            'company_country' => 'DE',
-            'client_country' => 'DE',
-            'client_vat' => '',
-            'client_id_number' => '123456789',
-            'classification' => 'individual',
-            'has_valid_vat' => true,
-            'over_threshold' => false,
-            'legal_entity_id' => 290868,
-            'is_tax_exempt' => false,
+                'company_vat' => 'DE923356489',
+                'company_country' => 'DE',
+                'client_country' => 'DE',
+                'client_vat' => '',
+                'client_id_number' => '123456789',
+                'classification' => 'individual',
+                'has_valid_vat' => true,
+                'over_threshold' => false,
+                'legal_entity_id' => 290868,
+                'is_tax_exempt' => false,
             ],
         ];
 
@@ -1222,9 +1233,9 @@ class PeppolTest extends TestCase
                             'cbc:EndDate' => $invoice->due_date ?? $invoice->date,
                             'StartDate' => $invoice->date,
                             'EndDate' => $invoice->due_date ?? $invoice->date,
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ];
 
             $invoice->save();
@@ -1271,9 +1282,9 @@ class PeppolTest extends TestCase
                             'cbc:EndDate' => $invoice->due_date ?? $invoice->date,
                             'StartDate' => $invoice->date,
                             'EndDate' => $invoice->due_date ?? $invoice->date,
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ];
 
             $invoice->save();
@@ -1440,7 +1451,7 @@ class PeppolTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'DE-'.rand(1000, 100000),
+            'number' => 'DE-' . rand(1000, 100000),
             'date' => now()->format('Y-m-d'),
             'is_amount_discount' => false,
         ]);
@@ -1581,7 +1592,7 @@ class PeppolTest extends TestCase
             'tax_rate3' => 0,
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'DE-'.rand(1000, 100000),
+            'number' => 'DE-' . rand(1000, 100000),
             'date' => now()->format('Y-m-d'),
             'is_amount_discount' => false,
             'custom_surcharge1' => 10,
@@ -1715,7 +1726,7 @@ class PeppolTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'DE-'.rand(1000, 100000),
+            'number' => 'DE-' . rand(1000, 100000),
             'date' => now()->format('Y-m-d'),
             'is_amount_discount' => false,
         ]);
@@ -1851,7 +1862,7 @@ class PeppolTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'DE-'.rand(1000, 100000),
+            'number' => 'DE-' . rand(1000, 100000),
             'date' => now()->format('Y-m-d'),
             'due_date' => now()->addDays(30)->format('Y-m-d'),
             'is_amount_discount' => false,
@@ -2006,7 +2017,7 @@ class PeppolTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'DE-'.rand(1000, 100000),
+            'number' => 'DE-' . rand(1000, 100000),
             'date' => now()->format('Y-m-d'),
             'due_date' => now()->addDays(30)->format('Y-m-d'),
             'is_amount_discount' => false,
@@ -2160,7 +2171,7 @@ class PeppolTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'DE-'.rand(1000, 100000),
+            'number' => 'DE-' . rand(1000, 100000),
             'date' => now()->format('Y-m-d'),
             'due_date' => now()->addDays(30)->format('Y-m-d'),
             'is_amount_discount' => true,
@@ -2312,7 +2323,7 @@ class PeppolTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'DE-'.rand(1000, 100000),
+            'number' => 'DE-' . rand(1000, 100000),
             'date' => now()->format('Y-m-d'),
             'due_date' => now()->addDays(30)->format('Y-m-d'),
             'is_amount_discount' => true,
@@ -2457,8 +2468,8 @@ class PeppolTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'DE-'.rand(1000, 100000),
-            'date' => now()->format('Y-m-d')
+            'number' => 'DE-' . rand(1000, 100000),
+            'date' => now()->format('Y-m-d'),
         ]);
 
         $invoice = $invoice->calc()->getInvoice();
@@ -2583,8 +2594,8 @@ class PeppolTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'DE-'.rand(1000, 100000),
-            'date' => now()->format('Y-m-d')
+            'number' => 'DE-' . rand(1000, 100000),
+            'date' => now()->format('Y-m-d'),
         ]);
 
         $invoice = $invoice->calc()->getInvoice();
@@ -2686,8 +2697,8 @@ class PeppolTest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'ITA-'.rand(1000, 100000),
-            'date' => now()->format('Y-m-d')
+            'number' => 'ITA-' . rand(1000, 100000),
+            'date' => now()->format('Y-m-d'),
         ]);
 
         $repo = new InvoiceRepository();

@@ -42,7 +42,7 @@ class ReverseInvoiceTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
         Model::reguard();
 
@@ -90,7 +90,7 @@ class ReverseInvoiceTest extends TestCase
         $item = InvoiceItemFactory::create();
         $item->quantity = 1;
         $item->cost = (float) $total_paid;
-        $item->notes = 'Credit for reversal of '.$this->invoice->number;
+        $item->notes = 'Credit for reversal of ' . $this->invoice->number;
 
         $line_items[] = $item;
 

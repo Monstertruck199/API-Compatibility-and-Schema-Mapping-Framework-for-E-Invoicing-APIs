@@ -32,7 +32,7 @@ class CompanyDocumentsTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 
@@ -50,7 +50,7 @@ class CompanyDocumentsTest extends TestCase
             UploadFile::IMAGE,
             $this->user,
             $this->company,
-            $this->invoice
+            $this->invoice,
         ))->handle();
 
         $this->assertNotNull($document);

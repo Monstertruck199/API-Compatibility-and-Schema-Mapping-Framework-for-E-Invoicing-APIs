@@ -36,7 +36,7 @@ class EInvoiceApiTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 
@@ -44,7 +44,7 @@ class EInvoiceApiTest extends TestCase
     {
         $data = [
             'entity' => 'invoice',
-            'entity_id' => $this->invoice->hashed_id
+            'entity_id' => $this->invoice->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -61,7 +61,7 @@ class EInvoiceApiTest extends TestCase
 
         $data = [
             'entity' => 'invoiceBLAH',
-            'entity_id' => $this->invoice->hashed_id
+            'entity_id' => $this->invoice->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -78,7 +78,7 @@ class EInvoiceApiTest extends TestCase
 
         $data = [
             'entity' => 'invoice',
-            'entity_id' => 'ddf8hjdfh8'
+            'entity_id' => 'ddf8hjdfh8',
         ];
 
         $response = $this->withHeaders([

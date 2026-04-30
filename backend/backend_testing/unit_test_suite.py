@@ -8,28 +8,28 @@ Run with:
     pytest unit_test_suite.py -v
 """
 
-import unittest
 import sys
+import unittest
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from compatibility_engine import (
-    compare_schemas,
-    normalize_schema,
-    normalize_name,
-    tokenize_name,
-    primitive_relation,
-    classify_issues,
-    build_index,
     DIRECT,
-    MAPPING,
     INCOMPATIBLE,
+    MAPPING,
+    build_index,
+    classify_issues,
+    compare_schemas,
+    normalize_name,
+    normalize_schema,
+    primitive_relation,
+    tokenize_name,
 )
 from extract_JSON_schema import infer_schema
-from extract_XML_schema import infer_type, analyze_element, extract_schema_from_xml
+from extract_XML_schema import extract_schema_from_xml, infer_type
 from mapping_engine import build_mapping
 from schema_transformer import build_transformer, generate_transform_code
-
 
 # ---------------------------------------------------------------------------
 # Helpers

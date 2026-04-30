@@ -49,7 +49,7 @@ class TaxPeriodReportTest extends TestCase
         $this->faker = \Faker\Factory::create();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
     }
@@ -94,7 +94,7 @@ class TaxPeriodReportTest extends TestCase
         $this->user = User::factory()->create([
             'account_id' => $this->account->id,
             'confirmation_code' => 'xyz123',
-            'email' => \Illuminate\Support\Str::random(32).'@example.com',
+            'email' => \Illuminate\Support\Str::random(32) . '@example.com',
         ]);
 
         $settings = CompanySettings::defaults();
@@ -118,7 +118,7 @@ class TaxPeriodReportTest extends TestCase
             'settings' => null,
         ]);
 
-        $this->_token =\Illuminate\Support\Str::random(64);
+        $this->_token = \Illuminate\Support\Str::random(64);
 
         $company_token = new \App\Models\CompanyToken();
         $company_token->user_id = $this->user->id;
@@ -260,8 +260,8 @@ class TaxPeriodReportTest extends TestCase
 
         $this->assertNotEmpty($data);
 
-        $this->assertCount(2,$data['invoices']); // 1 invoice row
-        $this->assertCount(2,$data['invoice_items']); // 1 item row
+        $this->assertCount(2, $data['invoices']); // 1 invoice row
+        $this->assertCount(2, $data['invoice_items']); // 1 item row
 
         // Verify invoice report row structure for cash accounting (no payment)
         $invoice_report = $data['invoices'][1];
@@ -283,11 +283,11 @@ class TaxPeriodReportTest extends TestCase
         $this->assertIsNumeric($item_report[5]); // Item taxable amount (payable shows full taxable)
 
         $invoice->service()->markPaid()->save();
-        
+
         (new InvoiceTransactionEventEntryCash())->run($invoice, '2025-10-01', '2025-10-31');
 
         $invoice->fresh();
-        
+
         $payload = [
             'start_date' => '2025-10-01',
             'end_date' => '2025-10-31',
@@ -327,12 +327,12 @@ class TaxPeriodReportTest extends TestCase
 
         $this->travelBack();
     }
-    
-    
+
+
     /**
-     * Test that we adjust appropriately across reporting period where an invoice amount has been both 
+     * Test that we adjust appropriately across reporting period where an invoice amount has been both
      * increased and decreased, and assess that the adjustments are correct.
-     * 
+     *
      * @return void
      */
     public function testInvoiceReportingOverMultiplePeriodsWithAccrualAccountingCheckAdjustmentsForIncreases()
@@ -407,7 +407,7 @@ class TaxPeriodReportTest extends TestCase
 
         $invoice->line_items = $line_items;
         $invoice = $invoice->calc()->getInvoice();
-        
+
         $invoice->fresh();
 
         (new InvoiceTransactionEventEntry())->run($invoice);
@@ -525,7 +525,7 @@ class TaxPeriodReportTest extends TestCase
 
         $invoice->line_items = $line_items;
         $invoice = $invoice->calc()->getInvoice();
-        
+
         $invoice->fresh();
 
         (new InvoiceTransactionEventEntry())->run($invoice);
@@ -713,20 +713,20 @@ class TaxPeriodReportTest extends TestCase
 
         /**
          * refund one third of the total invoice amount
-         * 
+         *
          * this should result in a tax adjustment of -10
          * and a reportable taxable_amount adjustment of -100
-         * 
+         *
          */
         $refund_data = [
             'id' => $payment->hashed_id,
             'date' => '2025-10-15',
             'invoices' => [
                 [
-                'invoice_id' => $invoice->hashed_id,
-                'amount' => 110,
+                    'invoice_id' => $invoice->hashed_id,
+                    'amount' => 110,
                 ],
-            ]
+            ],
         ];
 
         $this->travelTo(\Carbon\Carbon::createFromDate(2025, 10, 15)->startOfDay());
@@ -884,10 +884,10 @@ class TaxPeriodReportTest extends TestCase
             'date' => '2025-11-02',
             'invoices' => [
                 [
-                'invoice_id' => $invoice->hashed_id,
-                'amount' => 110,
+                    'invoice_id' => $invoice->hashed_id,
+                    'amount' => 110,
                 ],
-            ]
+            ],
         ];
 
         $response = $this->withHeaders([
@@ -930,7 +930,7 @@ class TaxPeriodReportTest extends TestCase
         $this->assertEquals(-10, $invoice_report[4]); // Tax refunded (negative)
         $this->assertEquals(-100, $invoice_report[5]); // Taxable refunded (negative)
         $this->assertIsString($invoice_report[6]); // Status should be a string
-        
+
         // Verify item adjustment row
         $item_report = $data['invoice_items'][1];
         nlog($data);
@@ -1140,9 +1140,11 @@ class TaxPeriodReportTest extends TestCase
         $found = false;
         $jan_invoice_idx = -1;
         foreach ($data['invoices'] as $idx => $row) {
-            if ($idx === 0) continue; // Skip header
+            if ($idx === 0) {
+                continue;
+            } // Skip header
 
-            if ((string)$row[0] == (string)$invoice->number) { // Match by invoice number
+            if ((string) $row[0] == (string) $invoice->number) { // Match by invoice number
                 $found = true;
                 $jan_invoice_idx = $idx;
                 break;
@@ -1167,11 +1169,13 @@ class TaxPeriodReportTest extends TestCase
         // Find our specific invoice in January report
         $found = false;
         foreach ($data['invoices'] as $idx => $row) {
-            if ($idx === 0) continue; // Skip header
+            if ($idx === 0) {
+                continue;
+            } // Skip header
 
             nlog("dafad" . $row[0] . " - " . $invoice->number);
 
-            if ((string)$row[0] == (string)$invoice->number) { // Match by invoice number
+            if ((string) $row[0] == (string) $invoice->number) { // Match by invoice number
                 $this->assertIsString($row[6]); // Status should be a string
                 $found = true;
                 break;
@@ -1344,7 +1348,7 @@ class TaxPeriodReportTest extends TestCase
         $item->tax_name1 = 'GST';
         $item->tax_rate1 = 10;
         $item->tax_name2 = '';
-        $item->tax_rate2 = 0;   
+        $item->tax_rate2 = 0;
         $item->tax_name3 = '';
         $item->tax_rate3 = 0;
         $item->discount = 0;
@@ -1425,13 +1429,13 @@ class TaxPeriodReportTest extends TestCase
             'is_income_billed' => true,
         ];
 
-// nlog("post delete");
+        // nlog("post delete");
 
         $data = $this->executeTaxPeriodReportAndSave('testDeletedPaidInvoiceInNextPeriodAccrual', $this->company, $payload, false);
 
         // nlog($invoice->fresh()->transaction_events()->get()->toArray());
         // (new InvoiceTransactionEventEntry())->run($invoice);
-// nlog($data);
+        // nlog($data);
 
         $this->assertCount(2, $data['invoices']);
         $this->assertEquals(-30, $data['invoices'][1][4]); // +$30 GST
@@ -1512,7 +1516,7 @@ class TaxPeriodReportTest extends TestCase
 
         $invoice = $invoice->calc()->getInvoice();
         $invoice->service()->markSent()->markPaid()->save();
-        
+
         // Move to next period and delete
         $this->travelTo(\Carbon\Carbon::createFromDate(2025, 11, 5)->startOfDay());
 
@@ -1724,9 +1728,9 @@ class TaxPeriodReportTest extends TestCase
             [$invoice->id],
             $this->company->db,
             0,
-            true
+            true,
         ))->handle();
-        
+
         $payment_deleted_event = $invoice->fresh()->transaction_events()->where('event_id', 3)->first();
 
         $this->assertNotNull($payment_deleted_event);
@@ -2001,7 +2005,7 @@ class TaxPeriodReportTest extends TestCase
      * Test: Invoice paid in one period, cancelled in next period (cash accounting)
      * Expected: First period shows +tax (payment), second period shows -tax (cancellation reversal)
      *
-     * A cancelled partially paid invoice - will not impact future reports. 
+     * A cancelled partially paid invoice - will not impact future reports.
      */
     public function testCancelledPartiallyPaidInvoiceInNextPeriodCash()
     {
@@ -2335,7 +2339,7 @@ class TaxPeriodReportTest extends TestCase
         $this->travelTo(\Carbon\Carbon::createFromDate(2025, 11, 5)->startOfDay());
 
         $invoice->fresh();
-        
+
         $reversal_payload = array_merge($invoice->toArray(), ['invoice_id' => $invoice->hashed_id, 'client_id' => $this->client->hashed_id]);
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
@@ -2385,7 +2389,7 @@ class TaxPeriodReportTest extends TestCase
      */
     public function testPartialPaymentThenFullRefundAcrossPeriods()
     {
-        
+
         $this->buildData();
         $this->travelTo(\Carbon\Carbon::createFromDate(2025, 12, 1)->startOfDay());
 
@@ -2477,7 +2481,7 @@ class TaxPeriodReportTest extends TestCase
                     'invoice_id' => $invoice->hashed_id,
                     'amount' => 165, // Full refund of partial payment
                 ],
-            ]
+            ],
         ];
 
         $this->travelTo(\Carbon\Carbon::createFromDate(2026, 1, 15)->startOfDay());
@@ -2511,7 +2515,9 @@ class TaxPeriodReportTest extends TestCase
 
         $found = false;
         foreach ($data['invoices'] as $idx => $row) {
-            if ($idx === 0) continue;
+            if ($idx === 0) {
+                continue;
+            }
             if (isset($row[4]) && $row[4] == -15) {
                 $found = true;
                 break;
@@ -2526,7 +2532,7 @@ class TaxPeriodReportTest extends TestCase
     /**
      * Test: Invoice amount increased multiple times across different periods
      * Expected: Each period shows the delta adjustment
-     * 
+     *
      * Works as expected.
      */
     public function testInvoiceIncreasedMultipleTimesAcrossPeriods()
@@ -2616,7 +2622,7 @@ class TaxPeriodReportTest extends TestCase
         $data = $this->executeTaxPeriodReportAndSave('testInvoiceIncreasedMultipleTimesAcrossPeriods', $this->company, $payload, false);
 
         $this->assertEquals(2, $invoice->fresh()->transaction_events()->count());
-        
+
         // Increase to $300
         $line_items[0]->cost = 300;
         $invoice->line_items = $line_items;
@@ -2674,7 +2680,7 @@ class TaxPeriodReportTest extends TestCase
 
         $this->assertCount(2, $data['invoices']); // Header + 1 delta row
         $this->assertCount(2, $data['invoice_items']); // Header + 1 delta row
-    
+
         // Verify November delta row (increase from 100 to 200)
         $nov_delta_report = $data['invoices'][1];
         $this->assertNotNull($nov_delta_report);
@@ -2710,7 +2716,7 @@ class TaxPeriodReportTest extends TestCase
 
         // Verify December delta item row
         $dec_delta_item_report = $data['invoice_items'][1];
-nlog($dec_delta_item_report);
+        nlog($dec_delta_item_report);
 
         $this->assertNotNull($dec_delta_item_report);
         $this->assertEquals(10, $dec_delta_item_report[4]); // Delta tax

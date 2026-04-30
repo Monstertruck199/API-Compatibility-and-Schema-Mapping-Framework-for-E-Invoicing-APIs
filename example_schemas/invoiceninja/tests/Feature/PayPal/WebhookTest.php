@@ -44,7 +44,7 @@ class WebhookTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
     }
@@ -73,8 +73,8 @@ class WebhookTest extends TestCase
 
         $hash_data = [
             'invoices' => [
-                    ['invoice_id' => $invoice->hashed_id, 'amount' => $this->amount],
-                ],
+                ['invoice_id' => $invoice->hashed_id, 'amount' => $this->amount],
+            ],
             'credits' => 0,
             'amount_with_fee' => $this->amount,
             'pre_payment' => false,

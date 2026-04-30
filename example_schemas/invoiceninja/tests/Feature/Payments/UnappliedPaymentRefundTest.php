@@ -36,7 +36,7 @@ class UnappliedPaymentRefundTest extends TestCase
         $this->withoutExceptionHandling();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 

@@ -155,15 +155,15 @@ class VerifactuFeatureTest extends TestCase
         $this->client = $client;
 
         ClientContact::factory()->create([
-                'user_id' => $this->user->id,
-                'client_id' => $this->client->id,
-                'company_id' => $this->company->id,
-                'is_primary' => 1,
-                'first_name' => 'john',
-                'last_name' => 'doe',
-                'email' => 'john@doe.com',
-                'send_email' => true,
-            ]);
+            'user_id' => $this->user->id,
+            'client_id' => $this->client->id,
+            'company_id' => $this->company->id,
+            'is_primary' => 1,
+            'first_name' => 'john',
+            'last_name' => 'doe',
+            'email' => 'john@doe.com',
+            'send_email' => true,
+        ]);
 
         $line_items = [];
 
@@ -336,9 +336,9 @@ class VerifactuFeatureTest extends TestCase
         $soapXml = $cancellation->toSoapEnvelope();
 
         $response = Http::withHeaders([
-                    'Content-Type' => 'text/xml; charset=utf-8',
-                    'SOAPAction' => '',
-                ])
+            'Content-Type' => 'text/xml; charset=utf-8',
+            'SOAPAction' => '',
+        ])
                 ->withOptions([
                     'cert' => storage_path('aeat-cert5.pem'),
                     'ssl_key' => storage_path('aeat-key5.pem'),
@@ -384,7 +384,7 @@ class VerifactuFeatureTest extends TestCase
             'date' => '2025-08-10',
             'status_id' => Invoice::STATUS_SENT,
             'uses_inclusive_taxes' => false,
-            'number' => 'Replaceable Invoice #'.rand(1000000000, 9999999999),
+            'number' => 'Replaceable Invoice #' . rand(1000000000, 9999999999),
         ]);
 
         $invoice->number = 'TEST0033343460-R4';
@@ -637,9 +637,9 @@ class VerifactuFeatureTest extends TestCase
         $this->assertCount(0, $errors);
 
         $response = Http::withHeaders([
-                    'Content-Type' => 'text/xml; charset=utf-8',
-                    'SOAPAction' => '',
-                ])
+            'Content-Type' => 'text/xml; charset=utf-8',
+            'SOAPAction' => '',
+        ])
                 ->withOptions([
                     'cert' => storage_path('aeat-cert5.pem'),
                     'ssl_key' => storage_path('aeat-key5.pem'),
@@ -699,7 +699,7 @@ class VerifactuFeatureTest extends TestCase
         $importeRectificacion = [
             'BaseRectificada' => 100.00,
             'CuotaRectificada' => 21.00,
-            'CuotaRecargoRectificado' => 0.00
+            'CuotaRecargoRectificado' => 0.00,
         ];
 
         $invoice->setRectificationAmounts($importeRectificacion);
@@ -712,7 +712,7 @@ class VerifactuFeatureTest extends TestCase
             'CalificacionOperacion' => 'S1',
             'TipoImpositivo' => 21.00,
             'BaseImponible' => 97.00,
-            'Cuota' => 20.37
+            'Cuota' => 20.37,
         ]);
         $invoice->setDesglose($desglose);
 
@@ -753,7 +753,7 @@ class VerifactuFeatureTest extends TestCase
             'SistemaInformatico',
             'FechaHoraHusoGenRegistro',
             'TipoHuella',
-            'Huella'
+            'Huella',
         ];
 
         $xmlLines = explode("\n", $soapXml);
@@ -906,7 +906,7 @@ class VerifactuFeatureTest extends TestCase
             'CalificacionOperacion' => 'S1',
             'BaseImponibleOimporteNoSujeto' => 1000.00,
             'TipoImpositivo' => 21,
-            'CuotaRepercutida' => 210.00
+            'CuotaRepercutida' => 210.00,
         ]);
         $invoice->setDesglose($desglose);
 
@@ -990,7 +990,7 @@ class VerifactuFeatureTest extends TestCase
             'CalificacionOperacion' => 'S1',
             'BaseImponibleOimporteNoSujeto' => 1000.00,
             'TipoImpositivo' => 21,
-            'CuotaRepercutida' => 210.00
+            'CuotaRepercutida' => 210.00,
         ]);
         $invoice->setDesglose($desglose);
 
@@ -1022,7 +1022,7 @@ class VerifactuFeatureTest extends TestCase
             $invoice->getCuotaTotal(),               // CuotaTotal
             $invoice->getImporteTotal(),              // ImporteTotal
             '',                    // Huella (empty for first calculation)
-            $currentTimestamp      // FechaHoraHusoGenRegistro (current time)
+            $currentTimestamp,      // FechaHoraHusoGenRegistro (current time)
         );
 
         // Replace the placeholder with the correct hash
@@ -1039,9 +1039,9 @@ class VerifactuFeatureTest extends TestCase
 
         // Try direct HTTP approach instead of SOAP client
         $response = Http::withHeaders([
-                'Content-Type' => 'text/xml; charset=utf-8',
-                'SOAPAction' => '',
-            ])
+            'Content-Type' => 'text/xml; charset=utf-8',
+            'SOAPAction' => '',
+        ])
             ->withOptions([
                 'cert' => storage_path('aeat-cert5.pem'),
                 'ssl_key' => storage_path('aeat-key5.pem'),
@@ -1166,7 +1166,7 @@ class VerifactuFeatureTest extends TestCase
             '21.00',               // CuotaTotal
             '121.00',              // ImporteTotal
             $previous_hash,                    // Huella (empty for first calculation)
-            $currentTimestamp      // FechaHoraHusoGenRegistro (current time)
+            $currentTimestamp,      // FechaHoraHusoGenRegistro (current time)
         );
 
         // Replace the placeholder with the correct hash
@@ -1184,9 +1184,9 @@ class VerifactuFeatureTest extends TestCase
 
         // Try direct HTTP approach instead of SOAP client
         $response = Http::withHeaders([
-                'Content-Type' => 'text/xml; charset=utf-8',
-                'SOAPAction' => '',
-            ])
+            'Content-Type' => 'text/xml; charset=utf-8',
+            'SOAPAction' => '',
+        ])
             ->withOptions([
                 'cert' => storage_path('aeat-cert5.pem'),
                 'ssl_key' => storage_path('aeat-key5.pem'),
@@ -1232,7 +1232,7 @@ class VerifactuFeatureTest extends TestCase
         string $cuotaTotal,
         string $importeTotal,
         string $huella,
-        string $fechaHoraHusoGenRegistro
+        string $fechaHoraHusoGenRegistro,
     ): string {
         // Build the hash input string exactly as AEAT expects it
         $hashInput = "IDEmisorFactura={$idEmisorFactura}&" .

@@ -44,7 +44,7 @@ class ReportPreviewTest extends TestCase
     {
         parent::setUp();
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->withoutExceptionHandling();
@@ -392,7 +392,7 @@ class ReportPreviewTest extends TestCase
             'report_keys' => [],
             'include_deleted' => false,
             'user_id' => $this->user->id,
-                ];
+        ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),

@@ -45,7 +45,7 @@ class PasswordTimeoutTest extends TestCase
 
     public function testTrueResponse()
     {
-        Cache::put($this->user->hashed_id.'_'.$this->user->account_id.'_logged_in', true, 3600);
+        Cache::put($this->user->hashed_id . '_' . $this->user->account_id . '_logged_in', true, 3600);
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),

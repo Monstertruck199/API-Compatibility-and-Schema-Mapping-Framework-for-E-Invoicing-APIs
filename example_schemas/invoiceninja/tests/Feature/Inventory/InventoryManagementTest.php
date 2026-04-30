@@ -36,7 +36,7 @@ class InventoryManagementTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         if (config('ninja.testvars.travis') !== false) {

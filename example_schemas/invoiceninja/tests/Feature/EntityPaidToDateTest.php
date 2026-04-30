@@ -43,7 +43,7 @@ class EntityPaidToDateTest extends TestCase
         $this->withoutExceptionHandling();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 

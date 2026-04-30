@@ -56,7 +56,7 @@ class TaskImportTest extends TestCase
 
         /*Need to import clients first*/
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/tasks2.csv'
+            base_path() . '/tests/Feature/Import/tasks2.csv',
         );
         $hash = Str::random(32);
         $column_map = [
@@ -80,7 +80,7 @@ class TaskImportTest extends TestCase
             'import_type' => 'csv',
         ];
 
-        Cache::put($hash.'-task', base64_encode($csv), 360);
+        Cache::put($hash . '-task', base64_encode($csv), 360);
 
         $csv_importer = new Csv($data, $this->company);
 
@@ -125,7 +125,7 @@ class TaskImportTest extends TestCase
 
         /*Need to import clients first*/
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/tasks.csv'
+            base_path() . '/tests/Feature/Import/tasks.csv',
         );
         $hash = Str::random(32);
         $column_map = [
@@ -148,7 +148,7 @@ class TaskImportTest extends TestCase
             'import_type' => 'csv',
         ];
 
-        Cache::put($hash.'-task', base64_encode($csv), 360);
+        Cache::put($hash . '-task', base64_encode($csv), 360);
 
         $csv_importer = new Csv($data, $this->company);
 

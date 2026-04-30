@@ -53,7 +53,7 @@ class PaymentTest extends TestCase
         // $this->withoutExceptionHandling();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 
@@ -412,9 +412,9 @@ class PaymentTest extends TestCase
     {
 
         $c = Client::factory()->create([
-           'user_id' => $this->user->id,
-           'company_id' => $this->company->id,
-       ]);
+            'user_id' => $this->user->id,
+            'company_id' => $this->company->id,
+        ]);
 
         $this->assertEquals(0, $c->balance);
         $this->assertEquals(0, $c->paid_to_date);
@@ -546,7 +546,7 @@ class PaymentTest extends TestCase
                 ],
             ],
             'date' => '2020/12/11',
-            'idempotency_key' => \Illuminate\Support\Str::uuid()->toString()
+            'idempotency_key' => \Illuminate\Support\Str::uuid()->toString(),
         ];
 
         $response = $this->withHeaders([
@@ -565,18 +565,18 @@ class PaymentTest extends TestCase
             'user_id' => $this->user->id,
             'client_id' => $this->client->id,
             'status_id' => Payment::STATUS_COMPLETED,
-            'amount' => 100
+            'amount' => 100,
         ]);
 
 
         $data = [
-            'date' => now()->addDay()->format('Y-m-d')
+            'date' => now()->addDay()->format('Y-m-d'),
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/payments/'.$p->hashed_id, $data);
+        ])->putJson('/api/v1/payments/' . $p->hashed_id, $data);
 
         $response->assertStatus(200);
 
@@ -588,7 +588,7 @@ class PaymentTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/payments/'.$p->hashed_id, $data);
+        ])->putJson('/api/v1/payments/' . $p->hashed_id, $data);
 
         $response->assertStatus(200);
 
@@ -605,7 +605,7 @@ class PaymentTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/payments/'.$p->hashed_id, $data);
+        ])->putJson('/api/v1/payments/' . $p->hashed_id, $data);
 
         $response->assertStatus(422);
 
@@ -618,7 +618,7 @@ class PaymentTest extends TestCase
             'user_id' => $this->user->id,
             'client_id' => $this->client->id,
             'status_id' => Payment::STATUS_COMPLETED,
-            'amount' => 100
+            'amount' => 100,
         ]);
 
         $i = Invoice::factory()->create([
@@ -643,7 +643,7 @@ class PaymentTest extends TestCase
                 ],
             ],
             'date' => '2020/12/11',
-            'idempotency_key' => \Illuminate\Support\Str::uuid()->toString()
+            'idempotency_key' => \Illuminate\Support\Str::uuid()->toString(),
         ];
 
         $response = $this->withHeaders([
@@ -668,13 +668,13 @@ class PaymentTest extends TestCase
                 ],
             ],
             'date' => '2020/12/11',
-            'idempotency_key' => \Illuminate\Support\Str::uuid()->toString()
+            'idempotency_key' => \Illuminate\Support\Str::uuid()->toString(),
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/payments/'.$payment_id, $data);
+        ])->putJson('/api/v1/payments/' . $payment_id, $data);
 
         $response->assertStatus(422);
 
@@ -687,7 +687,7 @@ class PaymentTest extends TestCase
             'user_id' => $this->user->id,
             'client_id' => $this->client->id,
             'status_id' => Payment::STATUS_COMPLETED,
-            'amount' => 100
+            'amount' => 100,
         ]);
 
         $data = [
@@ -700,14 +700,14 @@ class PaymentTest extends TestCase
                 ],
             ],
             'date' => '2020/12/11',
-            'idempotency_key' => sha1(time()).\Illuminate\Support\Str::uuid()->toString()
+            'idempotency_key' => sha1(time()) . \Illuminate\Support\Str::uuid()->toString(),
 
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/payments/'.$payment->hashed_id, $data);
+        ])->putJson('/api/v1/payments/' . $payment->hashed_id, $data);
 
         $response->assertStatus(200);
 
@@ -720,7 +720,7 @@ class PaymentTest extends TestCase
             'user_id' => $this->user->id,
             'client_id' => $this->client->id,
             'status_id' => Payment::STATUS_PENDING,
-            'amount' => 100
+            'amount' => 100,
         ]);
 
         $data = [
@@ -733,14 +733,14 @@ class PaymentTest extends TestCase
                 ],
             ],
             'date' => '2020/12/11',
-            'idempotency_key' => 'dsjafhajklsfhlaksjdhlkajsdjdfjdfljasdfhkjlsafhljfkfhsjlfhiuwayerfiuwaskjgbzmvnjzxnjcbgfkjhdgfoiwwrasdfasdfkashjdfkaskfjdasfda'
+            'idempotency_key' => 'dsjafhajklsfhlaksjdhlkajsdjdfjdfljasdfhkjlsafhljfkfhsjlfhiuwayerfiuwaskjgbzmvnjzxnjcbgfkjhdgfoiwwrasdfasdfkashjdfkaskfjdasfda',
 
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/payments/'.$payment->hashed_id, $data);
+        ])->putJson('/api/v1/payments/' . $payment->hashed_id, $data);
 
         $response->assertStatus(422);
 
@@ -866,7 +866,7 @@ class PaymentTest extends TestCase
                 ],
             ],
             'date' => '2020/12/11',
-            'idempotency_key' => 'dsjafhajklsfhlaksjdhlkajsdjdfjdfljasdfhkjlsafhljfkfhsjlfhiuwayerfiuwaskjgbzmvnjzxnjcbgfkjhdgfoiwwrasdfasdfkashjdfkaskfjdasfda'
+            'idempotency_key' => 'dsjafhajklsfhlaksjdhlkajsdjdfjdfljasdfhkjlsafhljfkfhsjlfhiuwayerfiuwaskjgbzmvnjzxnjcbgfkjhdgfoiwwrasdfasdfkashjdfkaskfjdasfda',
 
         ];
 
@@ -903,7 +903,7 @@ class PaymentTest extends TestCase
         $client = Client::all()->first();
 
         Payment::factory()->create(
-            ['user_id' => $this->user->id, 'company_id' => $this->company->id, 'client_id' => $client->id]
+            ['user_id' => $this->user->id, 'company_id' => $this->company->id, 'client_id' => $client->id],
         );
 
         $response = $this->withHeaders([
@@ -922,21 +922,21 @@ class PaymentTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/payments/'.$this->encodePrimaryKey($Payment->id));
+        ])->get('/api/v1/payments/' . $this->encodePrimaryKey($Payment->id));
 
         $response->assertStatus(200);
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/payments/'.$this->encodePrimaryKey($Payment->id), $Payment->toArray());
+        ])->putJson('/api/v1/payments/' . $this->encodePrimaryKey($Payment->id), $Payment->toArray());
 
         $response->assertStatus(200);
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/payments/'.$this->encodePrimaryKey($Payment->id).'/edit');
+        ])->get('/api/v1/payments/' . $this->encodePrimaryKey($Payment->id) . '/edit');
 
         $response->assertStatus(200);
     }
@@ -1490,7 +1490,7 @@ class PaymentTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/payments/'.$this->encodePrimaryKey($payment->id), $data);
+        ])->putJson('/api/v1/payments/' . $this->encodePrimaryKey($payment->id), $data);
         // } catch (ValidationException $e) {
         // $message = json_decode($e->validator->getMessageBag(), 1);
 
@@ -1554,7 +1554,7 @@ class PaymentTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/payments/'.$this->encodePrimaryKey($payment->id), $data);
+        ])->putJson('/api/v1/payments/' . $this->encodePrimaryKey($payment->id), $data);
         // } catch (ValidationException $e) {
         // $message = json_decode($e->validator->getMessageBag(), 1);
         // \Log::error(print_r($e->validator->getMessageBag(), 1));
@@ -1664,7 +1664,7 @@ class PaymentTest extends TestCase
             $response = $this->withHeaders([
                 'X-API-SECRET' => config('ninja.api_secret'),
                 'X-API-TOKEN' => $this->token,
-            ])->putJson('/api/v1/payments/'.$this->encodePrimaryKey($payment->id), $data);
+            ])->putJson('/api/v1/payments/' . $this->encodePrimaryKey($payment->id), $data);
         } catch (ValidationException $e) {
             $message = json_decode($e->validator->getMessageBag(), 1);
 
@@ -1974,9 +1974,9 @@ class PaymentTest extends TestCase
 
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/payments?include=invoices', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/payments?include=invoices', $data);
 
         $response->assertStatus(422);
 

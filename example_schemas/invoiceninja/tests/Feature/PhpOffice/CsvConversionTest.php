@@ -37,7 +37,7 @@ class CsvConversionTest extends TestCase
 
         /* Load a CSV file and save as a XLS */
 
-        $spreadsheet = $reader->load(base_path().'/tests/Feature/Import/expenses.csv');
+        $spreadsheet = $reader->load(base_path() . '/tests/Feature/Import/expenses.csv');
         $writer = new Xlsx($spreadsheet);
         $writer->save(storage_path('/test.xlsx'));
 

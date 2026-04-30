@@ -457,7 +457,7 @@ class OfficeParseTest extends TestCase
                 'raw' => $rawValue,
                 'formatted' => $cell->getFormattedValue(),
                 'php_date' => $phpDate->format('Y-m-d H:i:s'),
-                'timestamp' => $phpDate->getTimestamp()
+                'timestamp' => $phpDate->getTimestamp(),
             ];
         }
 
@@ -470,7 +470,7 @@ class OfficeParseTest extends TestCase
                 'type' => 'currency',
                 'raw' => (float) $rawValue,
                 'formatted' => $cell->getFormattedValue(),
-                'decimal' => (float) $rawValue
+                'decimal' => (float) $rawValue,
             ];
         }
 
@@ -481,7 +481,7 @@ class OfficeParseTest extends TestCase
                 'raw' => (float) $rawValue,
                 'formatted' => $cell->getFormattedValue(),
                 'decimal' => (float) $rawValue,
-                'percentage' => (float) $rawValue * 100
+                'percentage' => (float) $rawValue * 100,
             ];
         }
 
@@ -490,7 +490,7 @@ class OfficeParseTest extends TestCase
             'type' => 'number',
             'raw' => (float) $rawValue,
             'formatted' => $cell->getFormattedValue(),
-            'decimal' => (float) $rawValue
+            'decimal' => (float) $rawValue,
         ];
     }
 
@@ -511,7 +511,7 @@ class OfficeParseTest extends TestCase
                     'formatted' => $cell->getFormattedValue(),
                     'extracted_decimal' => $extractedValue,
                     'original_string' => (string) $rawValue,
-                    'excel_hint' => $numberFormat
+                    'excel_hint' => $numberFormat,
                 ];
             }
         }
@@ -520,7 +520,7 @@ class OfficeParseTest extends TestCase
             'type' => 'string',
             'raw' => (string) $rawValue,
             'formatted' => $cell->getFormattedValue(),
-            'trimmed' => trim((string) $rawValue)
+            'trimmed' => trim((string) $rawValue),
         ];
     }
 
@@ -536,7 +536,7 @@ class OfficeParseTest extends TestCase
             'raw' => $rawValue,
             'calculated' => $calculatedValue,
             'formatted' => $cell->getFormattedValue(),
-            'processed' => $this->processNumericValue($cell, $calculatedValue, $numberFormat)
+            'processed' => $this->processNumericValue($cell, $calculatedValue, $numberFormat),
         ];
     }
 
@@ -551,7 +551,7 @@ class OfficeParseTest extends TestCase
             'dd/mm', 'mm/dd', 'dd-mm', 'mm-dd', 'dd/mm/yy', 'dd/mm/yyyy',
             'mm/dd/yy', 'mm/dd/yyyy', 'yyyy-mm-dd', 'dd-mm-yyyy',
             'h:mm', 'hh:mm', 'h:mm:ss', 'hh:mm:ss', 'm/d/yy h:mm',
-            'dd/mm/yyyy hh:mm', 'yyyy-mm-dd hh:mm:ss'
+            'dd/mm/yyyy hh:mm', 'yyyy-mm-dd hh:mm:ss',
         ];
 
         $formatCode = strtolower($formatCode);
@@ -740,7 +740,7 @@ class OfficeParseTest extends TestCase
                     'data_type' => $dataType,
                     'number_format' => $numberFormat,
                     'built_in_format' => $builtInFormat,
-                    'data_type_name' => $this->getDataTypeName($dataType)
+                    'data_type_name' => $this->getDataTypeName($dataType),
                 ];
 
                 $currencyData[] = $cellInfo;
@@ -817,7 +817,7 @@ class OfficeParseTest extends TestCase
                     ['John Doe', 1234.56, '2023-12-25', 0.15],
                     ['Jane Smith', -567.89, '2023-12-26', 0.25],
                     ['Bob Wilson', 9999.99, '2023-12-27', 0.75],
-                ]
+                ],
             ],
             'European_Euro' => [
                 'locale' => 'de_DE',
@@ -830,7 +830,7 @@ class OfficeParseTest extends TestCase
                     ['Hans Müller', 1234.56, '2023-12-25', 0.15],
                     ['Anna Schmidt', -567.89, '2023-12-26', 0.25],
                     ['Klaus Weber', 9999.99, '2023-12-27', 0.75],
-                ]
+                ],
             ],
             'UK_Pound' => [
                 'locale' => 'en_GB',
@@ -843,8 +843,8 @@ class OfficeParseTest extends TestCase
                     ['John Smith', 1234.56, '2023-12-25', 0.15],
                     ['Mary Jones', -567.89, '2023-12-26', 0.25],
                     ['David Brown', 9999.99, '2023-12-27', 0.75],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $currentRow = 1;
@@ -954,24 +954,24 @@ class OfficeParseTest extends TestCase
             'USD' => [
                 'en_US' => '$#,##0.00',
                 'en_CA' => '$#,##0.00',
-                'default' => '$#,##0.00'
+                'default' => '$#,##0.00',
             ],
             'EUR' => [
                 'de_DE' => '#,##0.00 €',
                 'fr_FR' => '#,##0.00 €',
                 'it_IT' => '#,##0.00 €',
                 'es_ES' => '#,##0.00 €',
-                'default' => '#,##0.00 €'
+                'default' => '#,##0.00 €',
             ],
             'GBP' => [
                 'en_GB' => '£#,##0.00',
-                'default' => '£#,##0.00'
+                'default' => '£#,##0.00',
             ],
             'JPY' => [
                 'ja_JP' => '¥#,##0',
-                'default' => '¥#,##0'
+                'default' => '¥#,##0',
             ],
-            'default' => '#,##0.00'
+            'default' => '#,##0.00',
         ];
 
         return $formats[$currencyCode][$locale] ??
@@ -992,7 +992,7 @@ class OfficeParseTest extends TestCase
             'it_IT' => 'dd/mm/yyyy',
             'es_ES' => 'dd/mm/yyyy',
             'ja_JP' => 'yyyy/m/d',
-            'default' => 'yyyy-mm-dd'
+            'default' => 'yyyy-mm-dd',
         ];
 
         return $formats[$locale] ?? $formats['default'];
@@ -1139,7 +1139,7 @@ class OfficeParseTest extends TestCase
 
         // Method 2: Using named ranges
         $worksheet->getParent()->addNamedRange(
-            new \PhpOffice\PhpSpreadsheet\NamedRange('EmployeeData', $worksheet, 'A20:D23')
+            new \PhpOffice\PhpSpreadsheet\NamedRange('EmployeeData', $worksheet, 'A20:D23'),
         );
 
         nlog("Range-based injection completed");
@@ -1159,7 +1159,7 @@ class OfficeParseTest extends TestCase
                 'ID-' . $i,
                 'User-' . $i,
                 rand(1000, 9999),
-                date('Y-m-d', strtotime("+{$i} days"))
+                date('Y-m-d', strtotime("+{$i} days")),
             ];
         }
 
@@ -1300,7 +1300,7 @@ class OfficeParseTest extends TestCase
                 'Name-' . $i,
                 rand(1000, 9999),
                 date('Y-m-d', strtotime("+{$i} days")),
-                rand(100, 999) / 100
+                rand(100, 999) / 100,
             ];
         }
 

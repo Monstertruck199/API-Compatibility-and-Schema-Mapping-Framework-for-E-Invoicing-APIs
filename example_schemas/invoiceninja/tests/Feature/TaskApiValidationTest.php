@@ -71,8 +71,8 @@ class TaskApiValidationTest extends TestCase
                     "billable" => true,
                     "date" => "2025-10-31",
                     "end_time" => "16:00:00",
-                    "start_time" => "08:00:00"
-                ]
+                    "start_time" => "08:00:00",
+                ],
             ]),
         ];
 
@@ -83,7 +83,7 @@ class TaskApiValidationTest extends TestCase
 
         $response->assertStatus(422);
         nlog($response->json());
-        
+
     }
     // ==================== VALID PAYLOADS (200 STATUS) ====================
 
@@ -93,7 +93,7 @@ class TaskApiValidationTest extends TestCase
             'client_id' => $this->testClient->hashed_id,
             'description' => 'Test Task Description',
             'time_log' => json_encode([
-                [time() - 3600, time(), 'Working on task', true]
+                [time() - 3600, time(), 'Working on task', true],
             ]),
         ];
 
@@ -109,7 +109,7 @@ class TaskApiValidationTest extends TestCase
                 'description',
                 'client_id',
                 'time_log',
-            ]
+            ],
         ]);
     }
 
@@ -132,7 +132,7 @@ class TaskApiValidationTest extends TestCase
             'data' => [
                 'description' => 'Test Task with Project',
                 'project_id' => $this->testProject->hashed_id,
-            ]
+            ],
         ]);
     }
 
@@ -148,7 +148,7 @@ class TaskApiValidationTest extends TestCase
         $data = [
             'description' => 'Updated Description',
             'time_log' => json_encode([
-                [time() - 1800, time(), 'Updated time log', true]
+                [time() - 1800, time(), 'Updated time log', true],
             ]),
         ];
 
@@ -161,7 +161,7 @@ class TaskApiValidationTest extends TestCase
         $response->assertJson([
             'data' => [
                 'description' => 'Updated Description',
-            ]
+            ],
         ]);
     }
 
@@ -220,7 +220,7 @@ class TaskApiValidationTest extends TestCase
                 'id',
                 'description',
                 'client_id', // Should be null
-            ]
+            ],
         ]);
     }
 
@@ -315,8 +315,8 @@ class TaskApiValidationTest extends TestCase
         // Invalid JSON should be converted to empty array
         $response->assertJson([
             'data' => [
-                'time_log' => '[]'
-            ]
+                'time_log' => '[]',
+            ],
         ]);
     }
 
@@ -326,7 +326,7 @@ class TaskApiValidationTest extends TestCase
             'client_id' => $this->testClient->hashed_id,
             'description' => 'Test Task with Too Many Time Log Elements',
             'time_log' => json_encode([
-                [time() - 3600, time(), 'Working', true, 'extra-element']
+                [time() - 3600, time(), 'Working', true, 'extra-element'],
             ]),
         ];
 
@@ -345,7 +345,7 @@ class TaskApiValidationTest extends TestCase
             'client_id' => $this->testClient->hashed_id,
             'description' => 'Test Task with Non-integer Timestamps',
             'time_log' => json_encode([
-                ['not-a-timestamp', time(), 'Working', true]
+                ['not-a-timestamp', time(), 'Working', true],
             ]),
         ];
 
@@ -358,8 +358,8 @@ class TaskApiValidationTest extends TestCase
         // Non-integer timestamps should be converted to integers
         $response->assertJsonStructure([
             'data' => [
-                'time_log'
-            ]
+                'time_log',
+            ],
         ]);
     }
 
@@ -369,7 +369,7 @@ class TaskApiValidationTest extends TestCase
             'client_id' => $this->testClient->hashed_id,
             'description' => 'Test Task with Non-boolean Billable',
             'time_log' => json_encode([
-                [time() - 3600, time(), 'Working', 'not-a-boolean']
+                [time() - 3600, time(), 'Working', 'not-a-boolean'],
             ]),
         ];
 
@@ -382,8 +382,8 @@ class TaskApiValidationTest extends TestCase
         // Non-boolean billable flag should be converted to true
         $response->assertJsonStructure([
             'data' => [
-                'time_log'
-            ]
+                'time_log',
+            ],
         ]);
     }
 
@@ -418,7 +418,7 @@ class TaskApiValidationTest extends TestCase
             'client_id' => $this->testClient->hashed_id,
             'description' => 'Test Task with Invalid Time Order',
             'time_log' => json_encode([
-                [time(), time() - 3600, 'Start after end', true] // Start time after end time
+                [time(), time() - 3600, 'Start after end', true], // Start time after end time
             ]),
         ];
 
@@ -488,7 +488,7 @@ class TaskApiValidationTest extends TestCase
 
         $data = [
             'time_log' => json_encode([
-                [time() - 3600, time(), 'Working', 'not-a-boolean']
+                [time() - 3600, time(), 'Working', 'not-a-boolean'],
             ]),
         ];
 
@@ -501,8 +501,8 @@ class TaskApiValidationTest extends TestCase
         // Invalid data should be sanitized
         $response->assertJsonStructure([
             'data' => [
-                'time_log'
-            ]
+                'time_log',
+            ],
         ]);
     }
 
@@ -593,7 +593,7 @@ class TaskApiValidationTest extends TestCase
             'client_id' => $this->testClient->hashed_id,
             'description' => 'Test Task with Running Timer',
             'time_log' => json_encode([
-                [time() - 3600, 0, 'Currently running', true] // 0 means timer is running
+                [time() - 3600, 0, 'Currently running', true], // 0 means timer is running
             ]),
         ];
 
@@ -611,7 +611,7 @@ class TaskApiValidationTest extends TestCase
             'client_id' => $this->testClient->hashed_id,
             'description' => 'Test Task with Minimal Time Log',
             'time_log' => json_encode([
-                [time() - 3600, time()] // Only start and end time
+                [time() - 3600, time()], // Only start and end time
             ]),
         ];
 
@@ -629,7 +629,7 @@ class TaskApiValidationTest extends TestCase
             'client_id' => $this->testClient->hashed_id,
             'description' => 'Test Task with Three Element Time Log',
             'time_log' => json_encode([
-                [time() - 3600, time(), 'Working on task'] // Start, end, description
+                [time() - 3600, time(), 'Working on task'], // Start, end, description
             ]),
         ];
 

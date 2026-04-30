@@ -55,8 +55,8 @@ class CompanyTest extends TestCase
                         'direction' => SyncDirection::BIDIRECTIONAL->value,
                     ],
                     'qb_income_account_id' => '123',
-                ]
-            ]
+                ],
+            ],
         ];
 
         $data = array_merge((array) $this->company->settings, $data);
@@ -65,7 +65,7 @@ class CompanyTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/companies/'.$this->encodePrimaryKey($this->company->id), $data);
+        ])->putJson('/api/v1/companies/' . $this->encodePrimaryKey($this->company->id), $data);
 
         $response->assertStatus(200);
 
@@ -84,7 +84,7 @@ class CompanyTest extends TestCase
         $settings->product->direction = SyncDirection::PUSH;
         $this->company->quickbooks->settings = $settings;
         $this->company->save();
-    
+
         $this->assertEquals('push', $this->company->quickbooks->settings->client->direction->value);
     }
 
@@ -111,7 +111,7 @@ class CompanyTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/companies/'.$this->company->hashed_id, $company_update);
+        ])->putJson('/api/v1/companies/' . $this->company->hashed_id, $company_update);
 
         $response->assertStatus(200);
         $arr = $response->json();
@@ -125,7 +125,7 @@ class CompanyTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/companies/'.$this->encodePrimaryKey($this->company->id), $company_update);
+        ])->putJson('/api/v1/companies/' . $this->encodePrimaryKey($this->company->id), $company_update);
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['expense_mailbox']);
@@ -138,7 +138,7 @@ class CompanyTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/companies/'.$this->encodePrimaryKey($this->company->id), $company_update);
+        ])->putJson('/api/v1/companies/' . $this->encodePrimaryKey($this->company->id), $company_update);
 
         $response->assertStatus(200);
         $this->assertEmpty($response->json('data.expense_mailbox'));
@@ -196,13 +196,13 @@ class CompanyTest extends TestCase
     public function testUpdateCompanyPropertyInvoiceTaskHours()
     {
         $company_update = [
-            'invoice_task_hours' => true
+            'invoice_task_hours' => true,
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/companies/'.$this->encodePrimaryKey($this->company->id), $company_update);
+        ])->putJson('/api/v1/companies/' . $this->encodePrimaryKey($this->company->id), $company_update);
 
         $response->assertStatus(200);
 
@@ -212,13 +212,13 @@ class CompanyTest extends TestCase
 
 
         $company_update = [
-            'invoice_task_hours' => false
+            'invoice_task_hours' => false,
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/companies/'.$this->encodePrimaryKey($this->company->id), $company_update)
+        ])->putJson('/api/v1/companies/' . $this->encodePrimaryKey($this->company->id), $company_update)
             ->assertStatus(200);
 
 
@@ -249,7 +249,7 @@ class CompanyTest extends TestCase
             [
                 'name' => 'A New Company',
                 'logo' => UploadedFile::fake()->image('avatar.jpg'),
-            ]
+            ],
         )
         ->assertStatus(200)->decodeResponseJson();
 
@@ -263,7 +263,7 @@ class CompanyTest extends TestCase
             [
                 'name' => 'A New Company',
                 'company_logo' => UploadedFile::fake()->create('avatar.pdf', 100),
-            ]
+            ],
         )
         ->assertStatus(302);
 
@@ -279,7 +279,7 @@ class CompanyTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/companies/'.$this->encodePrimaryKey($company->id), $company_update)
+        ])->putJson('/api/v1/companies/' . $this->encodePrimaryKey($company->id), $company_update)
             ->assertStatus(200);
 
         $settings = CompanySettings::defaults();
@@ -294,20 +294,20 @@ class CompanyTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/companies/'.$this->encodePrimaryKey($company->id), $company->toArray())
+        ])->putJson('/api/v1/companies/' . $this->encodePrimaryKey($company->id), $company->toArray())
         ->assertStatus(200)->decodeResponseJson();
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/companies/'.$this->encodePrimaryKey($company->id))
+        ])->get('/api/v1/companies/' . $this->encodePrimaryKey($company->id))
         ->assertStatus(200)->decodeResponseJson();
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
             'X-API-PASSWORD' => 'ALongAndBriliantPassword',
-        ])->delete('/api/v1/companies/'.$this->encodePrimaryKey($company->id))
+        ])->delete('/api/v1/companies/' . $this->encodePrimaryKey($company->id))
         ->assertStatus(200);
     }
 

@@ -39,7 +39,7 @@ class ScheduleEntityTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 
@@ -63,13 +63,13 @@ class ScheduleEntityTest extends TestCase
 
         $this->assertNotNull($scheduler);
         $this->assertDatabaseHas('schedulers', [
-            'id' => $scheduler->id
+            'id' => $scheduler->id,
         ]);
 
         $scheduler->service()->runTask();
 
         $this->assertDatabaseMissing('schedulers', [
-            'id' => $scheduler->id
+            'id' => $scheduler->id,
         ]);
 
     }
@@ -95,13 +95,13 @@ class ScheduleEntityTest extends TestCase
 
         $this->assertNotNull($scheduler);
         $this->assertDatabaseHas('schedulers', [
-            'id' => $scheduler->id
+            'id' => $scheduler->id,
         ]);
 
         $scheduler->service()->runTask();
 
         $this->assertDatabaseMissing('schedulers', [
-            'id' => $scheduler->id
+            'id' => $scheduler->id,
         ]);
 
     }
@@ -125,13 +125,13 @@ class ScheduleEntityTest extends TestCase
 
         $this->assertNotNull($scheduler);
         $this->assertDatabaseHas('schedulers', [
-            'id' => $scheduler->id
+            'id' => $scheduler->id,
         ]);
 
         $scheduler->service()->runTask();
 
         $this->assertDatabaseMissing('schedulers', [
-            'id' => $scheduler->id
+            'id' => $scheduler->id,
         ]);
 
     }
@@ -156,13 +156,13 @@ class ScheduleEntityTest extends TestCase
 
         $this->assertNotNull($scheduler);
         $this->assertDatabaseHas('schedulers', [
-            'id' => $scheduler->id
+            'id' => $scheduler->id,
         ]);
 
         $scheduler->service()->runTask();
 
         $this->assertDatabaseMissing('schedulers', [
-            'id' => $scheduler->id
+            'id' => $scheduler->id,
         ]);
 
     }
@@ -187,13 +187,13 @@ class ScheduleEntityTest extends TestCase
 
         $this->assertNotNull($scheduler);
         $this->assertDatabaseHas('schedulers', [
-            'id' => $scheduler->id
+            'id' => $scheduler->id,
         ]);
 
         $scheduler->service()->runTask();
 
         $this->assertDatabaseMissing('schedulers', [
-            'id' => $scheduler->id
+            'id' => $scheduler->id,
         ]);
 
     }
@@ -218,13 +218,13 @@ class ScheduleEntityTest extends TestCase
 
         $this->assertNotNull($scheduler);
         $this->assertDatabaseHas('schedulers', [
-            'id' => $scheduler->id
+            'id' => $scheduler->id,
         ]);
 
         $scheduler->service()->runTask();
 
         $this->assertDatabaseMissing('schedulers', [
-            'id' => $scheduler->id
+            'id' => $scheduler->id,
         ]);
 
     }
@@ -249,13 +249,13 @@ class ScheduleEntityTest extends TestCase
 
         $this->assertNotNull($scheduler);
         $this->assertDatabaseHas('schedulers', [
-            'id' => $scheduler->id
+            'id' => $scheduler->id,
         ]);
 
         $scheduler->service()->runTask();
 
         $this->assertDatabaseMissing('schedulers', [
-            'id' => $scheduler->id
+            'id' => $scheduler->id,
         ]);
 
     }
@@ -276,7 +276,7 @@ class ScheduleEntityTest extends TestCase
         ];
 
         $this->assertEquals(5, RecurringInvoice::FREQUENCY_MONTHLY);
-        
+
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,

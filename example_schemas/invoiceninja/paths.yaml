@@ -25,15 +25,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Activity'
+                      $ref: "#/components/schemas/Activity"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -154,19 +154,19 @@ paths:
   /api/v1/login:
     post:
       x-codeSamples:
-      - lang: php
-        label: php
-        source: |
-          $ninja = new InvoiceNinja("your_token");
-          
-      - lang: curl
-        label: curl
-        source: |
-          curl --request POST \
-            --url 'https://demo.invoiceninja.com/api/v1/login?include=company,token' \
-            --header 'X-API-TOKEN: YOUR_API_TOKEN_HERE' \
-            --header 'X-Requested-With: XMLHttpRequest' \
-            --header 'Accept: application/json'
+        - lang: php
+          label: php
+          source: |
+            $ninja = new InvoiceNinja("your_token");
+
+        - lang: curl
+          label: curl
+          source: |
+            curl --request POST \
+              --url 'https://demo.invoiceninja.com/api/v1/login?include=company,token' \
+              --header 'X-API-TOKEN: YOUR_API_TOKEN_HERE' \
+              --header 'X-Requested-With: XMLHttpRequest' \
+              --header 'Accept: application/json'
       tags:
         - auth
       summary: "Login"
@@ -235,7 +235,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/refresh:
@@ -286,7 +286,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/yodlee/refresh:
@@ -322,7 +322,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/bank_integrations:
@@ -357,15 +357,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/BankIntegration'
+                      $ref: "#/components/schemas/BankIntegration"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -375,7 +375,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     post:
@@ -411,7 +411,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   "/api/v1/bank_integrations/{id}":
@@ -456,7 +456,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     put:
@@ -500,7 +500,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     delete:
@@ -540,7 +540,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   "/api/v1/bank_integrations/{id}/edit":
@@ -585,7 +585,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/bank_integrations/create:
@@ -622,7 +622,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/bank_integrations/bulk:
@@ -666,7 +666,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/bank_integrations/refresh_accounts:
@@ -703,7 +703,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/bank_integrations/remove_account/account_id:
@@ -740,7 +740,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/bank_integrations/get_transactions/account_id:
@@ -777,7 +777,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/bank_transactions:
@@ -812,15 +812,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/BankTransaction'
+                      $ref: "#/components/schemas/BankTransaction"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -830,7 +830,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     post:
@@ -866,7 +866,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   "/api/v1/bank_transactions/{id}":
@@ -911,7 +911,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     put:
@@ -955,7 +955,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     delete:
@@ -1036,7 +1036,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/bank_transactions/create:
@@ -1073,7 +1073,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/bank_transactions/bulk:
@@ -1117,7 +1117,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/bank_transactions/match:
@@ -1127,7 +1127,7 @@ paths:
       summary: "Match transactions"
       description: |
         Matching invoices or a payment to a bank transactions.
-        
+
         The API expects the id of the transaction along with either a comma separated list of invoice ids OR the payment id to associate the transaction to.
 
         Example for matching a transaction to two invoices:
@@ -1183,7 +1183,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/bank_transaction_rules:
@@ -1218,15 +1218,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/BankTransactionRule'
+                      $ref: "#/components/schemas/BankTransactionRule"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -1236,7 +1236,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     post:
@@ -1272,7 +1272,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   "/api/v1/bank_transaction_rules/{id}":
@@ -1317,7 +1317,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     put:
@@ -1361,7 +1361,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     delete:
@@ -1401,7 +1401,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   "/api/v1/bank_transaction_rules/{id}/edit":
@@ -1446,7 +1446,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/bank_transaction_rules/create:
@@ -1483,7 +1483,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/bank_transaction_rules/bulk:
@@ -1527,7 +1527,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/charts/totals:
@@ -1565,7 +1565,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/charts/totals_v2:
@@ -1689,15 +1689,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/ClientGatewayToken'
+                      $ref: "#/components/schemas/ClientGatewayToken"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -1707,7 +1707,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     post:
@@ -1743,7 +1743,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   "/api/v1/client_gateway_tokens/{id}":
@@ -1788,7 +1788,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     put:
@@ -1832,7 +1832,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     delete:
@@ -1872,7 +1872,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   "/api/v1/client_gateway_tokens/{id}/edit":
@@ -1917,7 +1917,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/client_gateway_tokens/create:
@@ -1954,7 +1954,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
 
@@ -1981,15 +1981,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Company'
+                      $ref: "#/components/schemas/Company"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -1999,7 +1999,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     post:
@@ -2035,7 +2035,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/companies/create:
@@ -2072,7 +2072,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   "/api/v1/companies/{id}":
@@ -2117,7 +2117,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     put:
@@ -2161,7 +2161,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     delete:
@@ -2201,7 +2201,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   "/api/v1/companies/{id}/edit":
@@ -2246,7 +2246,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   "/api/v1/companies/{id}/upload":
@@ -2308,7 +2308,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   "/api/v1/companies/{company}/default":
@@ -2353,7 +2353,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   "/api/v1/companies/current":
@@ -2390,7 +2390,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/company_gateways:
@@ -2416,15 +2416,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/CompanyGateway'
+                      $ref: "#/components/schemas/CompanyGateway"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -2434,7 +2434,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
     post:
@@ -2470,7 +2470,7 @@ paths:
         429:
           $ref: "#/components/responses/429"
         5XX:
-          description: 'Server error'
+          description: "Server error"
         default:
           $ref: "#/components/responses/default"
   /api/v1/company_gateways/create:
@@ -2737,15 +2737,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/CompanyLedger'
+                      $ref: "#/components/schemas/CompanyLedger"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -2823,7 +2823,7 @@ paths:
           $ref: "#/components/responses/422"
         default:
           $ref: "#/components/responses/default"
-  
+
   /api/v1/designs:
     get:
       tags:
@@ -2848,15 +2848,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Design'
+                      $ref: "#/components/schemas/Design"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -3163,15 +3163,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Document'
+                      $ref: "#/components/schemas/Document"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -3279,15 +3279,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/ExpenseCategory'
+                      $ref: "#/components/schemas/ExpenseCategory"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -3582,15 +3582,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Expense'
+                      $ref: "#/components/schemas/Expense"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -3974,15 +3974,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/GroupSetting'
+                      $ref: "#/components/schemas/GroupSetting"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -4318,32 +4318,32 @@ paths:
         - imports
       summary: "Pre Import CSV data"
       description: |
-          The preimport endpoint is the first step when importing CSV data into Invoice Ninja. It validates your file(s) and returns the column headers found in each CSV, allowing you to map them to system fields before performing the actual import.
+        The preimport endpoint is the first step when importing CSV data into Invoice Ninja. It validates your file(s) and returns the column headers found in each CSV, allowing you to map them to system fields before performing the actual import.
 
-          **How it works**
+        **How it works**
 
-          1. Set `import_type` to indicate the entity type (e.g. `invoice`, `quote`, `client`, `product`, `payment`, `vendor`, `expense`).
-          2. Attach one or more CSV files using the `files[]` parameter, keyed by entity type:
-             - `files[invoice]` — invoice records
-             - `files[client]` — client records
-             - `files[product]` — product records
-             - `files[payment]` — payment records
-             - `files[vendor]` — vendor records
-             - `files[expense]` — expense records
-          3. The response returns the detected column headers for each uploaded file so you can build a field mapping for the subsequent `/api/v1/import` call.
+        1. Set `import_type` to indicate the entity type (e.g. `invoice`, `quote`, `client`, `product`, `payment`, `vendor`, `expense`).
+        2. Attach one or more CSV files using the `files[]` parameter, keyed by entity type:
+           - `files[invoice]` — invoice records
+           - `files[client]` — client records
+           - `files[product]` — product records
+           - `files[payment]` — payment records
+           - `files[vendor]` — vendor records
+           - `files[expense]` — expense records
+        3. The response returns the detected column headers for each uploaded file so you can build a field mapping for the subsequent `/api/v1/import` call.
 
-          You may upload multiple entity files in a single request. Only include the entity types relevant to your import.
+        You may upload multiple entity files in a single request. Only include the entity types relevant to your import.
 
-          **Example**
+        **Example**
 
-          ```bash
-          curl -X POST 'https://invoiceninja.com/api/v1/preimport' \
-            -H 'X-API-TOKEN: YOUR_API_TOKEN_HERE' \
-            -H 'Accept: application/json' \
-            -F 'import_type=invoice' \
-            -F 'files[invoice]=@invoices.csv' \
-            -F 'files[client]=@clients.csv'
-          ```
+        ```bash
+        curl -X POST 'https://invoiceninja.com/api/v1/preimport' \
+          -H 'X-API-TOKEN: YOUR_API_TOKEN_HERE' \
+          -H 'Accept: application/json' \
+          -F 'import_type=invoice' \
+          -F 'files[invoice]=@invoices.csv' \
+          -F 'files[client]=@clients.csv'
+        ```
       operationId: preimport
       parameters:
         - $ref: "#/components/parameters/X-API-TOKEN"
@@ -4424,7 +4424,14 @@ paths:
                           description: "System fields available for mapping."
                           items:
                             type: string
-                          example: ["invoice.number", "invoice.amount", "client.name", "item.quantity", "item.cost"]
+                          example:
+                            [
+                              "invoice.number",
+                              "invoice.amount",
+                              "client.name",
+                              "item.quantity",
+                              "item.cost",
+                            ]
                         headers:
                           type: array
                           description: "A two-element array: the first element is the CSV column headers, the second is a sample data row."
@@ -4432,7 +4439,11 @@ paths:
                             type: array
                             items:
                               type: string
-                          example: [["Client Name", "Invoice Number", "Amount"], ["Acme Corp", "INV-001", "1500.00"]]
+                          example:
+                            [
+                              ["Client Name", "Invoice Number", "Amount"],
+                              ["Acme Corp", "INV-001", "1500.00"],
+                            ]
                         hints:
                           type: array
                           description: "Suggested mapping indices into the `available` array for each CSV column. A value of null indicates no suggested match."
@@ -4454,364 +4465,364 @@ paths:
         - imports
       summary: "Import CSV data"
       description: |
-          The import endpoint executes the actual data import. Call this after `/api/v1/preimport` has returned the file hash, available fields, and column headers.
+        The import endpoint executes the actual data import. Call this after `/api/v1/preimport` has returned the file hash, available fields, and column headers.
 
-          Using the data from the preimport response, construct a `column_map` that tells the system how each CSV column maps to a system field. The import runs asynchronously — you will receive an email notification once it completes.
+        Using the data from the preimport response, construct a `column_map` that tells the system how each CSV column maps to a system field. The import runs asynchronously — you will receive an email notification once it completes.
 
-          **Request body**
+        **Request body**
 
-          - **hash** — The unique file reference returned by `/api/v1/preimport`.
-          - **import_type** — The source format (e.g. `csv`, `freshbooks`, `invoice2go`, `invoicely`).
-          - **skip_header** — Set to `true` to skip the first row of the CSV (the header row).
-          - **column_map** — An object keyed by entity type (e.g. `invoice`, `client`). Each entity contains:
-            - **mapping** — An object where each key is the CSV column index (as a string) and each value is the target system field from the `available` array, or an empty string `""` to skip that column.
+        - **hash** — The unique file reference returned by `/api/v1/preimport`.
+        - **import_type** — The source format (e.g. `csv`, `freshbooks`, `invoice2go`, `invoicely`).
+        - **skip_header** — Set to `true` to skip the first row of the CSV (the header row).
+        - **column_map** — An object keyed by entity type (e.g. `invoice`, `client`). Each entity contains:
+          - **mapping** — An object where each key is the CSV column index (as a string) and each value is the target system field from the `available` array, or an empty string `""` to skip that column.
 
-          ---
+        ---
 
-          ### Available mapping fields
+        ### Available mapping fields
 
-          Each mapping value uses the format `entity.property`. The tables below list every available field per entity type.
+        Each mapping value uses the format `entity.property`. The tables below list every available field per entity type.
 
-          ### Data Matching:
-          
-          #### Client Matching:
-            Matching a record to a client is performed by using the clients email address (first) or the clients (exact) name. If no match is found, a new client is created.
+        ### Data Matching:
 
-          #### Multi line item invoice/quote/credits/recurring invoice Matching:
-            If you need to import multiple line items into an invoice (other other entity) you will want to assign the same (unique) invoice number to each row in the csv file, the system will group together lines where the invoice number is the same and create line items for each row.
+        #### Client Matching:
+          Matching a record to a client is performed by using the clients email address (first) or the clients (exact) name. If no match is found, a new client is created.
 
-          #### Invoice fields (`files[invoice]`)
+        #### Multi line item invoice/quote/credits/recurring invoice Matching:
+          If you need to import multiple line items into an invoice (other other entity) you will want to assign the same (unique) invoice number to each row in the csv file, the system will group together lines where the invoice number is the same and create line items for each row.
 
-          | Field | Description |
-          |---|---|
-          | `invoice.number` | Invoice number |
-          | `invoice.user_id` | Assigned user |
-          | `invoice.amount` | Invoice amount |
-          | `invoice.balance` | Outstanding balance |
-          | `invoice.discount` | Discount value |
-          | `invoice.po_number` | Purchase order number |
-          | `invoice.date` | Invoice date |
-          | `invoice.due_date` | Due date |
-          | `invoice.terms` | Invoice terms |
-          | `invoice.status` | Invoice status |
-          | `invoice.public_notes` | Public notes (visible to client) |
-          | `invoice.is_sent` | Whether the invoice has been sent |
-          | `invoice.private_notes` | Private notes (internal only) |
-          | `invoice.uses_inclusive_taxes` | Whether tax amounts are inclusive |
-          | `invoice.tax_name1` | Tax name (tier 1) |
-          | `invoice.tax_rate1` | Tax rate (tier 1) |
-          | `invoice.tax_name2` | Tax name (tier 2) |
-          | `invoice.tax_rate2` | Tax rate (tier 2) |
-          | `invoice.tax_name3` | Tax name (tier 3) |
-          | `invoice.tax_rate3` | Tax rate (tier 3) |
-          | `invoice.is_amount_discount` | Whether discount is a fixed amount |
-          | `invoice.footer` | Invoice footer |
-          | `invoice.partial` | Partial/deposit amount |
-          | `invoice.partial_due_date` | Partial payment due date |
-          | `invoice.custom_value1` | Custom field 1 |
-          | `invoice.custom_value2` | Custom field 2 |
-          | `invoice.custom_value3` | Custom field 3 |
-          | `invoice.custom_value4` | Custom field 4 |
-          | `invoice.custom_surcharge1` | Custom surcharge 1 |
-          | `invoice.custom_surcharge2` | Custom surcharge 2 |
-          | `invoice.custom_surcharge3` | Custom surcharge 3 |
-          | `invoice.custom_surcharge4` | Custom surcharge 4 |
-          | `invoice.exchange_rate` | Currency exchange rate |
-          | `client.name` | Client name |
-          | `client.email` | Client email |
-          | `payment.date` | Payment date |
-          | `payment.amount` | Payment amount |
-          | `payment.transaction_reference` | Payment transaction reference |
-          | `item.quantity` | Line item quantity |
-          | `item.cost` | Line item unit cost |
-          | `item.product_key` | Line item product key |
-          | `item.notes` | Line item description |
-          | `item.discount` | Line item discount |
-          | `item.is_amount_discount` | Whether line item discount is a fixed amount |
-          | `item.tax_name1` | Line item tax name (tier 1) |
-          | `item.tax_rate1` | Line item tax rate (tier 1) |
-          | `item.tax_name2` | Line item tax name (tier 2) |
-          | `item.tax_rate2` | Line item tax rate (tier 2) |
-          | `item.tax_name3` | Line item tax name (tier 3) |
-          | `item.tax_rate3` | Line item tax rate (tier 3) |
-          | `item.custom_value1` | Line item custom field 1 |
-          | `item.custom_value2` | Line item custom field 2 |
-          | `item.custom_value3` | Line item custom field 3 |
-          | `item.custom_value4` | Line item custom field 4 |
-          | `item.type_id` | Line item type |
+        #### Invoice fields (`files[invoice]`)
 
-          #### Client fields (`files[client]`)
+        | Field | Description |
+        |---|---|
+        | `invoice.number` | Invoice number |
+        | `invoice.user_id` | Assigned user |
+        | `invoice.amount` | Invoice amount |
+        | `invoice.balance` | Outstanding balance |
+        | `invoice.discount` | Discount value |
+        | `invoice.po_number` | Purchase order number |
+        | `invoice.date` | Invoice date |
+        | `invoice.due_date` | Due date |
+        | `invoice.terms` | Invoice terms |
+        | `invoice.status` | Invoice status |
+        | `invoice.public_notes` | Public notes (visible to client) |
+        | `invoice.is_sent` | Whether the invoice has been sent |
+        | `invoice.private_notes` | Private notes (internal only) |
+        | `invoice.uses_inclusive_taxes` | Whether tax amounts are inclusive |
+        | `invoice.tax_name1` | Tax name (tier 1) |
+        | `invoice.tax_rate1` | Tax rate (tier 1) |
+        | `invoice.tax_name2` | Tax name (tier 2) |
+        | `invoice.tax_rate2` | Tax rate (tier 2) |
+        | `invoice.tax_name3` | Tax name (tier 3) |
+        | `invoice.tax_rate3` | Tax rate (tier 3) |
+        | `invoice.is_amount_discount` | Whether discount is a fixed amount |
+        | `invoice.footer` | Invoice footer |
+        | `invoice.partial` | Partial/deposit amount |
+        | `invoice.partial_due_date` | Partial payment due date |
+        | `invoice.custom_value1` | Custom field 1 |
+        | `invoice.custom_value2` | Custom field 2 |
+        | `invoice.custom_value3` | Custom field 3 |
+        | `invoice.custom_value4` | Custom field 4 |
+        | `invoice.custom_surcharge1` | Custom surcharge 1 |
+        | `invoice.custom_surcharge2` | Custom surcharge 2 |
+        | `invoice.custom_surcharge3` | Custom surcharge 3 |
+        | `invoice.custom_surcharge4` | Custom surcharge 4 |
+        | `invoice.exchange_rate` | Currency exchange rate |
+        | `client.name` | Client name |
+        | `client.email` | Client email |
+        | `payment.date` | Payment date |
+        | `payment.amount` | Payment amount |
+        | `payment.transaction_reference` | Payment transaction reference |
+        | `item.quantity` | Line item quantity |
+        | `item.cost` | Line item unit cost |
+        | `item.product_key` | Line item product key |
+        | `item.notes` | Line item description |
+        | `item.discount` | Line item discount |
+        | `item.is_amount_discount` | Whether line item discount is a fixed amount |
+        | `item.tax_name1` | Line item tax name (tier 1) |
+        | `item.tax_rate1` | Line item tax rate (tier 1) |
+        | `item.tax_name2` | Line item tax name (tier 2) |
+        | `item.tax_rate2` | Line item tax rate (tier 2) |
+        | `item.tax_name3` | Line item tax name (tier 3) |
+        | `item.tax_rate3` | Line item tax rate (tier 3) |
+        | `item.custom_value1` | Line item custom field 1 |
+        | `item.custom_value2` | Line item custom field 2 |
+        | `item.custom_value3` | Line item custom field 3 |
+        | `item.custom_value4` | Line item custom field 4 |
+        | `item.type_id` | Line item type |
 
-          | Field | Description |
-          |---|---|
-          | `client.name` | Client name |
-          | `client.user_id` | Assigned user |
-          | `client.balance` | Account balance |
-          | `client.paid_to_date` | Total paid to date |
-          | `client.currency_id` | Currency |
-          | `client.website` | Website URL |
-          | `client.private_notes` | Private notes |
-          | `client.industry_id` | Industry |
-          | `client.size_id` | Company size |
-          | `client.address1` | Address line 1 |
-          | `client.address2` | Address line 2 |
-          | `client.city` | City |
-          | `client.state` | State/province |
-          | `client.postal_code` | Postal code |
-          | `client.country_id` | Country |
-          | `client.custom_value1` | Custom field 1 |
-          | `client.custom_value2` | Custom field 2 |
-          | `client.custom_value3` | Custom field 3 |
-          | `client.custom_value4` | Custom field 4 |
-          | `client.shipping_address1` | Shipping address line 1 |
-          | `client.shipping_address2` | Shipping address line 2 |
-          | `client.shipping_city` | Shipping city |
-          | `client.shipping_state` | Shipping state/province |
-          | `client.shipping_postal_code` | Shipping postal code |
-          | `client.shipping_country_id` | Shipping country |
-          | `client.payment_terms` | Default payment terms |
-          | `client.vat_number` | VAT/tax number |
-          | `client.id_number` | ID number |
-          | `client.public_notes` | Public notes |
-          | `client.phone` | Phone number |
-          | `contact.first_name` | Contact first name |
-          | `contact.last_name` | Contact last name |
-          | `contact.email` | Contact email |
-          | `contact.phone` | Contact phone |
-          | `contact.custom_value1` | Contact custom field 1 |
-          | `contact.custom_value2` | Contact custom field 2 |
-          | `contact.custom_value3` | Contact custom field 3 |
-          | `contact.custom_value4` | Contact custom field 4 |
+        #### Client fields (`files[client]`)
 
-          #### Product fields (`files[product]`)
+        | Field | Description |
+        |---|---|
+        | `client.name` | Client name |
+        | `client.user_id` | Assigned user |
+        | `client.balance` | Account balance |
+        | `client.paid_to_date` | Total paid to date |
+        | `client.currency_id` | Currency |
+        | `client.website` | Website URL |
+        | `client.private_notes` | Private notes |
+        | `client.industry_id` | Industry |
+        | `client.size_id` | Company size |
+        | `client.address1` | Address line 1 |
+        | `client.address2` | Address line 2 |
+        | `client.city` | City |
+        | `client.state` | State/province |
+        | `client.postal_code` | Postal code |
+        | `client.country_id` | Country |
+        | `client.custom_value1` | Custom field 1 |
+        | `client.custom_value2` | Custom field 2 |
+        | `client.custom_value3` | Custom field 3 |
+        | `client.custom_value4` | Custom field 4 |
+        | `client.shipping_address1` | Shipping address line 1 |
+        | `client.shipping_address2` | Shipping address line 2 |
+        | `client.shipping_city` | Shipping city |
+        | `client.shipping_state` | Shipping state/province |
+        | `client.shipping_postal_code` | Shipping postal code |
+        | `client.shipping_country_id` | Shipping country |
+        | `client.payment_terms` | Default payment terms |
+        | `client.vat_number` | VAT/tax number |
+        | `client.id_number` | ID number |
+        | `client.public_notes` | Public notes |
+        | `client.phone` | Phone number |
+        | `contact.first_name` | Contact first name |
+        | `contact.last_name` | Contact last name |
+        | `contact.email` | Contact email |
+        | `contact.phone` | Contact phone |
+        | `contact.custom_value1` | Contact custom field 1 |
+        | `contact.custom_value2` | Contact custom field 2 |
+        | `contact.custom_value3` | Contact custom field 3 |
+        | `contact.custom_value4` | Contact custom field 4 |
 
-          | Field | Description |
-          |---|---|
-          | `product.product_key` | Product key/name |
-          | `product.notes` | Product description |
-          | `product.cost` | Product cost |
-          | `product.price` | Product price |
-          | `product.quantity` | Default quantity |
-          | `product.tax_name1` | Tax name (tier 1) |
-          | `product.tax_rate1` | Tax rate (tier 1) |
-          | `product.tax_name2` | Tax name (tier 2) |
-          | `product.tax_rate2` | Tax rate (tier 2) |
-          | `product.tax_name3` | Tax name (tier 3) |
-          | `product.tax_rate3` | Tax rate (tier 3) |
-          | `product.custom_value1` | Custom field 1 |
-          | `product.custom_value2` | Custom field 2 |
-          | `product.custom_value3` | Custom field 3 |
-          | `product.custom_value4` | Custom field 4 |
-          | `product.image_url` | Product image URL |
-          | `product.in_stock_quantity` | In-stock quantity |
-          | `product.tax_category` | Tax category |
-          | `product.max_quantity` | Maximum quantity |
+        #### Product fields (`files[product]`)
 
-          #### Payment fields (`files[payment]`)
+        | Field | Description |
+        |---|---|
+        | `product.product_key` | Product key/name |
+        | `product.notes` | Product description |
+        | `product.cost` | Product cost |
+        | `product.price` | Product price |
+        | `product.quantity` | Default quantity |
+        | `product.tax_name1` | Tax name (tier 1) |
+        | `product.tax_rate1` | Tax rate (tier 1) |
+        | `product.tax_name2` | Tax name (tier 2) |
+        | `product.tax_rate2` | Tax rate (tier 2) |
+        | `product.tax_name3` | Tax name (tier 3) |
+        | `product.tax_rate3` | Tax rate (tier 3) |
+        | `product.custom_value1` | Custom field 1 |
+        | `product.custom_value2` | Custom field 2 |
+        | `product.custom_value3` | Custom field 3 |
+        | `product.custom_value4` | Custom field 4 |
+        | `product.image_url` | Product image URL |
+        | `product.in_stock_quantity` | In-stock quantity |
+        | `product.tax_category` | Tax category |
+        | `product.max_quantity` | Maximum quantity |
 
-          | Field | Description |
-          |---|---|
-          | `payment.number` | Payment number |
-          | `payment.user_id` | Assigned user |
-          | `payment.amount` | Payment amount |
-          | `payment.refunded` | Refunded amount |
-          | `payment.applied` | Applied amount |
-          | `payment.transaction_reference` | Transaction reference |
-          | `payment.private_notes` | Private notes |
-          | `payment.custom_value1` | Custom field 1 |
-          | `payment.custom_value2` | Custom field 2 |
-          | `payment.custom_value3` | Custom field 3 |
-          | `payment.custom_value4` | Custom field 4 |
-          | `payment.client_id` | Client |
-          | `payment.invoice_number` | Invoice number |
-          | `payment.date` | Payment date |
-          | `payment.method` | Payment method |
+        #### Payment fields (`files[payment]`)
 
-          #### Vendor fields (`files[vendor]`)
+        | Field | Description |
+        |---|---|
+        | `payment.number` | Payment number |
+        | `payment.user_id` | Assigned user |
+        | `payment.amount` | Payment amount |
+        | `payment.refunded` | Refunded amount |
+        | `payment.applied` | Applied amount |
+        | `payment.transaction_reference` | Transaction reference |
+        | `payment.private_notes` | Private notes |
+        | `payment.custom_value1` | Custom field 1 |
+        | `payment.custom_value2` | Custom field 2 |
+        | `payment.custom_value3` | Custom field 3 |
+        | `payment.custom_value4` | Custom field 4 |
+        | `payment.client_id` | Client |
+        | `payment.invoice_number` | Invoice number |
+        | `payment.date` | Payment date |
+        | `payment.method` | Payment method |
 
-          | Field | Description |
-          |---|---|
-          | `vendor.name` | Vendor name |
-          | `vendor.phone` | Phone number |
-          | `vendor.id_number` | ID number |
-          | `vendor.vat_number` | VAT/tax number |
-          | `vendor.website` | Website URL |
-          | `vendor.first_name` | First name |
-          | `vendor.last_name` | Last name |
-          | `vendor.email` | Email address |
-          | `vendor.currency_id` | Currency |
-          | `vendor.public_notes` | Public notes |
-          | `vendor.private_notes` | Private notes |
-          | `vendor.address1` | Address line 1 |
-          | `vendor.address2` | Address line 2 |
-          | `vendor.city` | City |
-          | `vendor.state` | State/province |
-          | `vendor.postal_code` | Postal code |
-          | `vendor.country_id` | Country |
-          | `vendor.custom_value1` | Custom field 1 |
-          | `vendor.custom_value2` | Custom field 2 |
-          | `vendor.custom_value3` | Custom field 3 |
-          | `vendor.custom_value4` | Custom field 4 |
-          | `contact.first_name` | Contact first name |
-          | `contact.last_name` | Contact last name |
-          | `contact.email` | Contact email |
-          | `contact.phone` | Contact phone |
-          | `contact.custom_value1` | Contact custom field 1 |
-          | `contact.custom_value2` | Contact custom field 2 |
-          | `contact.custom_value3` | Contact custom field 3 |
-          | `contact.custom_value4` | Contact custom field 4 |
+        #### Vendor fields (`files[vendor]`)
 
-          #### Expense fields (`files[expense]`)
+        | Field | Description |
+        |---|---|
+        | `vendor.name` | Vendor name |
+        | `vendor.phone` | Phone number |
+        | `vendor.id_number` | ID number |
+        | `vendor.vat_number` | VAT/tax number |
+        | `vendor.website` | Website URL |
+        | `vendor.first_name` | First name |
+        | `vendor.last_name` | Last name |
+        | `vendor.email` | Email address |
+        | `vendor.currency_id` | Currency |
+        | `vendor.public_notes` | Public notes |
+        | `vendor.private_notes` | Private notes |
+        | `vendor.address1` | Address line 1 |
+        | `vendor.address2` | Address line 2 |
+        | `vendor.city` | City |
+        | `vendor.state` | State/province |
+        | `vendor.postal_code` | Postal code |
+        | `vendor.country_id` | Country |
+        | `vendor.custom_value1` | Custom field 1 |
+        | `vendor.custom_value2` | Custom field 2 |
+        | `vendor.custom_value3` | Custom field 3 |
+        | `vendor.custom_value4` | Custom field 4 |
+        | `contact.first_name` | Contact first name |
+        | `contact.last_name` | Contact last name |
+        | `contact.email` | Contact email |
+        | `contact.phone` | Contact phone |
+        | `contact.custom_value1` | Contact custom field 1 |
+        | `contact.custom_value2` | Contact custom field 2 |
+        | `contact.custom_value3` | Contact custom field 3 |
+        | `contact.custom_value4` | Contact custom field 4 |
 
-          | Field | Description |
-          |---|---|
-          | `expense.vendor` | Vendor name |
-          | `expense.client` | Client name |
-          | `expense.project` | Project name |
-          | `expense.category` | Expense category |
-          | `expense.amount` | Expense amount |
-          | `expense.currency` | Currency |
-          | `expense.date` | Expense date |
-          | `expense.payment_type` | Payment type |
-          | `expense.payment_date` | Payment date |
-          | `expense.transaction_reference` | Transaction reference |
-          | `expense.public_notes` | Public notes |
-          | `expense.private_notes` | Private notes |
-          | `expense.tax_name1` | Tax name (tier 1) |
-          | `expense.tax_rate1` | Tax rate (tier 1) |
-          | `expense.tax_name2` | Tax name (tier 2) |
-          | `expense.tax_rate2` | Tax rate (tier 2) |
-          | `expense.tax_name3` | Tax name (tier 3) |
-          | `expense.tax_rate3` | Tax rate (tier 3) |
-          | `expense.uses_inclusive_taxes` | Whether tax amounts are inclusive |
-          | `expense.custom_value1` | Custom field 1 |
-          | `expense.custom_value2` | Custom field 2 |
-          | `expense.custom_value3` | Custom field 3 |
-          | `expense.custom_value4` | Custom field 4 |
+        #### Expense fields (`files[expense]`)
 
-          #### Quote fields (`files[quote]`)
+        | Field | Description |
+        |---|---|
+        | `expense.vendor` | Vendor name |
+        | `expense.client` | Client name |
+        | `expense.project` | Project name |
+        | `expense.category` | Expense category |
+        | `expense.amount` | Expense amount |
+        | `expense.currency` | Currency |
+        | `expense.date` | Expense date |
+        | `expense.payment_type` | Payment type |
+        | `expense.payment_date` | Payment date |
+        | `expense.transaction_reference` | Transaction reference |
+        | `expense.public_notes` | Public notes |
+        | `expense.private_notes` | Private notes |
+        | `expense.tax_name1` | Tax name (tier 1) |
+        | `expense.tax_rate1` | Tax rate (tier 1) |
+        | `expense.tax_name2` | Tax name (tier 2) |
+        | `expense.tax_rate2` | Tax rate (tier 2) |
+        | `expense.tax_name3` | Tax name (tier 3) |
+        | `expense.tax_rate3` | Tax rate (tier 3) |
+        | `expense.uses_inclusive_taxes` | Whether tax amounts are inclusive |
+        | `expense.custom_value1` | Custom field 1 |
+        | `expense.custom_value2` | Custom field 2 |
+        | `expense.custom_value3` | Custom field 3 |
+        | `expense.custom_value4` | Custom field 4 |
 
-          | Field | Description |
-          |---|---|
-          | `quote.number` | Quote number |
-          | `quote.user_id` | Assigned user |
-          | `quote.amount` | Quote amount |
-          | `quote.balance` | Outstanding balance |
-          | `quote.discount` | Discount value |
-          | `quote.po_number` | Purchase order number |
-          | `quote.date` | Quote date |
-          | `quote.due_date` | Valid until date |
-          | `quote.terms` | Quote terms |
-          | `quote.status` | Quote status |
-          | `quote.public_notes` | Public notes |
-          | `quote.is_sent` | Whether the quote has been sent |
-          | `quote.private_notes` | Private notes |
-          | `quote.uses_inclusive_taxes` | Whether tax amounts are inclusive |
-          | `quote.tax_name1` | Tax name (tier 1) |
-          | `quote.tax_rate1` | Tax rate (tier 1) |
-          | `quote.tax_name2` | Tax name (tier 2) |
-          | `quote.tax_rate2` | Tax rate (tier 2) |
-          | `quote.tax_name3` | Tax name (tier 3) |
-          | `quote.tax_rate3` | Tax rate (tier 3) |
-          | `quote.is_amount_discount` | Whether discount is a fixed amount |
-          | `quote.footer` | Quote footer |
-          | `quote.partial` | Partial/deposit amount |
-          | `quote.partial_due_date` | Partial payment due date |
-          | `quote.custom_value1` | Custom field 1 |
-          | `quote.custom_value2` | Custom field 2 |
-          | `quote.custom_value3` | Custom field 3 |
-          | `quote.custom_value4` | Custom field 4 |
-          | `quote.custom_surcharge1` | Custom surcharge 1 |
-          | `quote.custom_surcharge2` | Custom surcharge 2 |
-          | `quote.custom_surcharge3` | Custom surcharge 3 |
-          | `quote.custom_surcharge4` | Custom surcharge 4 |
-          | `quote.exchange_rate` | Currency exchange rate |
-          | `client.name` | Client name |
-          | `client.email` | Client email |
-          | `payment.date` | Payment date |
-          | `payment.amount` | Payment amount |
-          | `payment.transaction_reference` | Transaction reference |
-          | `item.*` | Same line item fields as invoices |
+        #### Quote fields (`files[quote]`)
 
-          #### Recurring invoice fields (`files[recurring_invoice]`)
+        | Field | Description |
+        |---|---|
+        | `quote.number` | Quote number |
+        | `quote.user_id` | Assigned user |
+        | `quote.amount` | Quote amount |
+        | `quote.balance` | Outstanding balance |
+        | `quote.discount` | Discount value |
+        | `quote.po_number` | Purchase order number |
+        | `quote.date` | Quote date |
+        | `quote.due_date` | Valid until date |
+        | `quote.terms` | Quote terms |
+        | `quote.status` | Quote status |
+        | `quote.public_notes` | Public notes |
+        | `quote.is_sent` | Whether the quote has been sent |
+        | `quote.private_notes` | Private notes |
+        | `quote.uses_inclusive_taxes` | Whether tax amounts are inclusive |
+        | `quote.tax_name1` | Tax name (tier 1) |
+        | `quote.tax_rate1` | Tax rate (tier 1) |
+        | `quote.tax_name2` | Tax name (tier 2) |
+        | `quote.tax_rate2` | Tax rate (tier 2) |
+        | `quote.tax_name3` | Tax name (tier 3) |
+        | `quote.tax_rate3` | Tax rate (tier 3) |
+        | `quote.is_amount_discount` | Whether discount is a fixed amount |
+        | `quote.footer` | Quote footer |
+        | `quote.partial` | Partial/deposit amount |
+        | `quote.partial_due_date` | Partial payment due date |
+        | `quote.custom_value1` | Custom field 1 |
+        | `quote.custom_value2` | Custom field 2 |
+        | `quote.custom_value3` | Custom field 3 |
+        | `quote.custom_value4` | Custom field 4 |
+        | `quote.custom_surcharge1` | Custom surcharge 1 |
+        | `quote.custom_surcharge2` | Custom surcharge 2 |
+        | `quote.custom_surcharge3` | Custom surcharge 3 |
+        | `quote.custom_surcharge4` | Custom surcharge 4 |
+        | `quote.exchange_rate` | Currency exchange rate |
+        | `client.name` | Client name |
+        | `client.email` | Client email |
+        | `payment.date` | Payment date |
+        | `payment.amount` | Payment amount |
+        | `payment.transaction_reference` | Transaction reference |
+        | `item.*` | Same line item fields as invoices |
 
-          Supports all invoice fields above, plus:
+        #### Recurring invoice fields (`files[recurring_invoice]`)
 
-          | Field | Description |
-          |---|---|
-          | `invoice.frequency_id` | Recurrence frequency |
-          | `invoice.remaining_cycles` | Remaining billing cycles |
-          | `invoice.auto_bill` | Auto-bill setting |
-          | `invoice.next_send_date` | Next send date (replaces `invoice.date`) |
+        Supports all invoice fields above, plus:
 
-          #### Task fields (`files[task]`)
+        | Field | Description |
+        |---|---|
+        | `invoice.frequency_id` | Recurrence frequency |
+        | `invoice.remaining_cycles` | Remaining billing cycles |
+        | `invoice.auto_bill` | Auto-bill setting |
+        | `invoice.next_send_date` | Next send date (replaces `invoice.date`) |
 
-          | Field | Description |
-          |---|---|
-          | `task.number` | Task number |
-          | `task.user_id` | Assigned user |
-          | `task.rate` | Hourly rate |
-          | `task.description` | Task description |
-          | `task.billable` | Whether the task is billable |
-          | `task.status` | Task status |
-          | `task.start_date` | Start date |
-          | `task.end_date` | End date |
-          | `task.start_time` | Start time |
-          | `task.end_time` | End time |
-          | `task.duration` | Duration |
-          | `task.custom_value1` | Custom field 1 |
-          | `task.custom_value2` | Custom field 2 |
-          | `task.custom_value3` | Custom field 3 |
-          | `task.custom_value4` | Custom field 4 |
-          | `task.notes` | Task notes |
-          | `project.name` | Project name |
-          | `client.name` | Client name |
-          | `client.email` | Client email |
+        #### Task fields (`files[task]`)
 
-          #### Bank transaction fields (`files[bank_transaction]`)
+        | Field | Description |
+        |---|---|
+        | `task.number` | Task number |
+        | `task.user_id` | Assigned user |
+        | `task.rate` | Hourly rate |
+        | `task.description` | Task description |
+        | `task.billable` | Whether the task is billable |
+        | `task.status` | Task status |
+        | `task.start_date` | Start date |
+        | `task.end_date` | End date |
+        | `task.start_time` | Start time |
+        | `task.end_time` | End time |
+        | `task.duration` | Duration |
+        | `task.custom_value1` | Custom field 1 |
+        | `task.custom_value2` | Custom field 2 |
+        | `task.custom_value3` | Custom field 3 |
+        | `task.custom_value4` | Custom field 4 |
+        | `task.notes` | Task notes |
+        | `project.name` | Project name |
+        | `client.name` | Client name |
+        | `client.email` | Client email |
 
-          | Field | Description |
-          |---|---|
-          | `transaction.transaction_id` | Transaction ID |
-          | `transaction.amount` | Transaction amount |
-          | `transaction.currency` | Currency |
-          | `transaction.account_type` | Account type |
-          | `transaction.category` | Category |
-          | `transaction.category_type` | Category type |
-          | `transaction.date` | Transaction date |
-          | `transaction.bank_account` | Bank account |
-          | `transaction.description` | Description |
-          | `transaction.base_type` | Base type |
-          | `transaction.payment_type_Credit` | Credit amount |
-          | `transaction.payment_type_Debit` | Debit amount |
-          | `transaction.participant` | Participant reference |
-          | `transaction.participant_name` | Participant name |
+        #### Bank transaction fields (`files[bank_transaction]`)
 
-          ---
+        | Field | Description |
+        |---|---|
+        | `transaction.transaction_id` | Transaction ID |
+        | `transaction.amount` | Transaction amount |
+        | `transaction.currency` | Currency |
+        | `transaction.account_type` | Account type |
+        | `transaction.category` | Category |
+        | `transaction.category_type` | Category type |
+        | `transaction.date` | Transaction date |
+        | `transaction.bank_account` | Bank account |
+        | `transaction.description` | Description |
+        | `transaction.base_type` | Base type |
+        | `transaction.payment_type_Credit` | Credit amount |
+        | `transaction.payment_type_Debit` | Debit amount |
+        | `transaction.participant` | Participant reference |
+        | `transaction.participant_name` | Participant name |
 
-          **Example**
+        ---
 
-          ```bash
-          curl -X POST 'https://invoiceninja.com/api/v1/import' \
-            -H 'X-API-TOKEN: YOUR_API_TOKEN_HERE' \
-            -H 'Content-Type: application/json' \
-            -d '{
-              "hash": "MvKeSwMnhAfgkzdYKgxM5ummxGbLIdNm",
-              "import_type": "csv",
-              "skip_header": true,
-              "column_map": {
-                "invoice": {
-                  "mapping": {
-                    "0": "client.name",
-                    "1": "client.email",
-                    "2": "",
-                    "3": "invoice.number",
-                    "4": "invoice.amount"
-                  }
+        **Example**
+
+        ```bash
+        curl -X POST 'https://invoiceninja.com/api/v1/import' \
+          -H 'X-API-TOKEN: YOUR_API_TOKEN_HERE' \
+          -H 'Content-Type: application/json' \
+          -d '{
+            "hash": "MvKeSwMnhAfgkzdYKgxM5ummxGbLIdNm",
+            "import_type": "csv",
+            "skip_header": true,
+            "column_map": {
+              "invoice": {
+                "mapping": {
+                  "0": "client.name",
+                  "1": "client.email",
+                  "2": "",
+                  "3": "invoice.number",
+                  "4": "invoice.amount"
                 }
               }
-            }'
-          ```
+            }
+          }'
+        ```
       operationId: postImport
       parameters:
         - $ref: "#/components/parameters/X-API-TOKEN"
@@ -4970,7 +4981,7 @@ paths:
           $ref: "#/components/responses/422"
         default:
           $ref: "#/components/responses/default"
-  
+
   /api/v1/claim_license:
     get:
       tags:
@@ -5179,7 +5190,7 @@ paths:
           $ref: "#/components/responses/422"
         default:
           $ref: "#/components/responses/default"
-  
+
   /api/v1/payment_terms:
     get:
       tags:
@@ -5204,15 +5215,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/PaymentTerm'
+                      $ref: "#/components/schemas/PaymentTerm"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -5675,15 +5686,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/RecurringExpense'
+                      $ref: "#/components/schemas/RecurringExpense"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -6017,7 +6028,7 @@ paths:
           $ref: "#/components/responses/422"
         default:
           $ref: "#/components/responses/default"
-  
+
   /api/v1/recurring_quotes:
     get:
       tags:
@@ -6041,15 +6052,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/RecurringQuote'
+                      $ref: "#/components/schemas/RecurringQuote"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -7380,15 +7391,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Subscription'
+                      $ref: "#/components/schemas/Subscription"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -7758,15 +7769,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/SystemLog'
+                      $ref: "#/components/schemas/SystemLog"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -7816,7 +7827,7 @@ paths:
           $ref: "#/components/responses/422"
         default:
           $ref: "#/components/responses/default"
-  
+
   /api/v1/task_schedulers:
     get:
       tags:
@@ -8076,15 +8087,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/TaskStatus'
+                      $ref: "#/components/schemas/TaskStatus"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -8388,15 +8399,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/TaxRate'
+                      $ref: "#/components/schemas/TaxRate"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -8778,15 +8789,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/CompanyToken'
+                      $ref: "#/components/schemas/CompanyToken"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -9085,15 +9096,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/User'
+                      $ref: "#/components/schemas/User"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:
@@ -9488,7 +9499,7 @@ paths:
           $ref: "#/components/responses/422"
         default:
           $ref: "#/components/responses/default"
-  
+
   /api/v1/webcron:
     get:
       tags:
@@ -9540,15 +9551,15 @@ paths:
               $ref: "#/components/headers/X-RateLimit-Limit"
           content:
             application/json:
-              schema:  
+              schema:
                 type: object
                 properties:
-                  data: 
+                  data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Webhook'
+                      $ref: "#/components/schemas/Webhook"
                   meta:
-                    $ref: '#/components/schemas/Meta'
+                    $ref: "#/components/schemas/Meta"
         401:
           $ref: "#/components/responses/401"
         403:

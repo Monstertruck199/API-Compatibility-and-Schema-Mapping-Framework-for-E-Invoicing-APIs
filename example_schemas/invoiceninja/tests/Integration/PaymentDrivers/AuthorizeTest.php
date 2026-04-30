@@ -92,7 +92,7 @@ class AuthorizeTest extends TestCase
         $merchantAuthentication->setTransactionKey($vars->transactionKey);
 
         // Set the transaction's refId
-        $refId = 'ref'.time();
+        $refId = 'ref' . time();
 
         // Get all existing customer profile ID's
         $request = new GetCustomerProfileIdsRequest();
@@ -139,7 +139,7 @@ class AuthorizeTest extends TestCase
         $customerShippingAddress->setFirstName('James');
         $customerShippingAddress->setLastName('White');
         $customerShippingAddress->setCompany('Addresses R Us');
-        $customerShippingAddress->setAddress(rand().' North Spring Street');
+        $customerShippingAddress->setAddress(rand() . ' North Spring Street');
         $customerShippingAddress->setCity('Toms River');
         $customerShippingAddress->setState('NJ');
         $customerShippingAddress->setZip('08753');
@@ -149,13 +149,13 @@ class AuthorizeTest extends TestCase
 
         // Create an array of any shipping addresses
         $shippingProfiles[] = $customerShippingAddress;
-        $refId = 'ref'.time();
+        $refId = 'ref' . time();
         $email = 'test12@gmail.com';
 
         // Create a new CustomerProfileType and add the payment profile object
         $customerProfile = new CustomerProfileType();
         $customerProfile->setDescription('Customer 2 Test PHP');
-        $customerProfile->setMerchantCustomerId('M_'.time());
+        $customerProfile->setMerchantCustomerId('M_' . time());
         $customerProfile->setEmail($email);
         //$customerProfile->setpaymentProfiles($paymentProfiles);
         $customerProfile->setShipToList($shippingProfiles);
@@ -224,7 +224,7 @@ class AuthorizeTest extends TestCase
         $merchantAuthentication->setTransactionKey($vars->transactionKey);
 
         // Set the transaction's refId
-        $refId = 'ref'.time();
+        $refId = 'ref' . time();
 
         // Set credit card information for payment profile
         $creditCard = new CreditCardType();
@@ -291,7 +291,7 @@ class AuthorizeTest extends TestCase
         $merchantAuthentication->setTransactionKey($vars->transactionKey);
 
         // Set the transaction's refId
-        $refId = 'ref'.time();
+        $refId = 'ref' . time();
 
         $profileToCharge = new CustomerProfilePaymentType();
         $profileToCharge->setCustomerProfileId($this->customer_profile_id);

@@ -97,9 +97,9 @@ class CloneQuoteToInvoiceFactoryTest extends TestCase
         $this->assertCount(2, $data['data']['line_items']);
 
         $response = $this->withHeaders([
-                    'X-API-SECRET' => config('ninja.api_secret'),
-                    'X-API-TOKEN' => $this->token,
-                ])->postJson('/api/v1/quotes?mark_sent=true', $dataX);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/quotes?mark_sent=true', $dataX);
 
         $response->assertStatus(200);
 
@@ -110,9 +110,9 @@ class CloneQuoteToInvoiceFactoryTest extends TestCase
 
 
         $response = $this->withHeaders([
-                    'X-API-SECRET' => config('ninja.api_secret'),
-                    'X-API-TOKEN' => $this->token,
-                ])->postJson('/api/v1/credits?mark_sent=true', $dataX);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/credits?mark_sent=true', $dataX);
 
         $response->assertStatus(200);
 
@@ -124,9 +124,9 @@ class CloneQuoteToInvoiceFactoryTest extends TestCase
         $dataX['frequency_id'] = 1;
 
         $response = $this->withHeaders([
-                    'X-API-SECRET' => config('ninja.api_secret'),
-                    'X-API-TOKEN' => $this->token,
-                ])->postJson('/api/v1/recurring_invoices?mark_sent=true', $dataX);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/recurring_invoices?mark_sent=true', $dataX);
 
         $response->assertStatus(200);
 
@@ -138,9 +138,9 @@ class CloneQuoteToInvoiceFactoryTest extends TestCase
         $dataX['vendor_id'] = $this->vendor->hashed_id;
 
         $response = $this->withHeaders([
-                    'X-API-SECRET' => config('ninja.api_secret'),
-                    'X-API-TOKEN' => $this->token,
-                ])->postJson('/api/v1/purchase_orders?mark_sent=true', $dataX);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/purchase_orders?mark_sent=true', $dataX);
 
         $response->assertStatus(200);
 

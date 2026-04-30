@@ -190,12 +190,12 @@ class ImportUnicodeEncodingTest extends TestCase
                 $this->assertEquals(
                     $content,
                     $result,
-                    "Unicode preservation failed for {$name} with {$encoding} encoding"
+                    "Unicode preservation failed for {$name} with {$encoding} encoding",
                 );
 
                 $this->assertTrue(
                     $this->isValidConversionMethod->invoke($this->controller, $result),
-                    "Validation failed for {$name} with {$encoding} encoding"
+                    "Validation failed for {$name} with {$encoding} encoding",
                 );
 
                 unlink($tempFile);
@@ -228,12 +228,12 @@ class ImportUnicodeEncodingTest extends TestCase
             $this->assertEquals(
                 $testContent,
                 $fileResult,
-                "File processing with BOM failed for {$encoding}"
+                "File processing with BOM failed for {$encoding}",
             );
 
             $this->assertTrue(
                 $this->isValidConversionMethod->invoke($this->controller, $fileResult),
-                "BOM file validation failed for {$encoding}"
+                "BOM file validation failed for {$encoding}",
             );
 
             unlink($tempFile);
@@ -246,7 +246,7 @@ class ImportUnicodeEncodingTest extends TestCase
         $this->assertEquals(
             $testContent,
             $result,
-            "UTF-8 BOM removal failed"
+            "UTF-8 BOM removal failed",
         );
     }
 
@@ -270,18 +270,18 @@ class ImportUnicodeEncodingTest extends TestCase
             // Result should always be valid UTF-8
             $this->assertTrue(
                 mb_check_encoding($result, 'UTF-8'),
-                "Result should be valid UTF-8 for encoding: {$encoding}"
+                "Result should be valid UTF-8 for encoding: {$encoding}",
             );
 
             // Should not contain replacement characters
             $this->assertFalse(
                 str_contains($result, '�'),
-                "Result should not contain replacement characters for encoding: {$encoding}"
+                "Result should not contain replacement characters for encoding: {$encoding}",
             );
 
             $this->assertTrue(
                 $this->isValidConversionMethod->invoke($this->controller, $result),
-                "Validation failed for encoding: {$encoding}"
+                "Validation failed for encoding: {$encoding}",
             );
 
             unlink($tempFile);
@@ -307,7 +307,7 @@ class ImportUnicodeEncodingTest extends TestCase
             $this->assertEquals($content, $result, "RTL test failed for: {$name}");
             $this->assertTrue(
                 $this->isValidConversionMethod->invoke($this->controller, $result),
-                "RTL validation failed for: {$name}"
+                "RTL validation failed for: {$name}",
             );
 
             unlink($tempFile);
@@ -337,7 +337,7 @@ class ImportUnicodeEncodingTest extends TestCase
             $this->assertEquals($content, $result, "CJK test failed for: {$name}");
             $this->assertTrue(
                 $this->isValidConversionMethod->invoke($this->controller, $result),
-                "CJK validation failed for: {$name}"
+                "CJK validation failed for: {$name}",
             );
 
             unlink($tempFile);
@@ -366,7 +366,7 @@ class ImportUnicodeEncodingTest extends TestCase
             $this->assertEquals($content, $result, "Symbol test failed for: {$name}");
             $this->assertTrue(
                 $this->isValidConversionMethod->invoke($this->controller, $result),
-                "Symbol validation failed for: {$name}"
+                "Symbol validation failed for: {$name}",
             );
 
             unlink($tempFile);
@@ -392,11 +392,11 @@ class ImportUnicodeEncodingTest extends TestCase
             // Content should be preserved (normalization might occur but content should be valid)
             $this->assertTrue(
                 mb_check_encoding($result, 'UTF-8'),
-                "Combining character result should be valid UTF-8 for: {$name}"
+                "Combining character result should be valid UTF-8 for: {$name}",
             );
             $this->assertTrue(
                 $this->isValidConversionMethod->invoke($this->controller, $result),
-                "Combining character validation failed for: {$name}"
+                "Combining character validation failed for: {$name}",
             );
 
             unlink($tempFile);
@@ -423,7 +423,7 @@ class ImportUnicodeEncodingTest extends TestCase
         $this->assertEquals($largeContent, $result, "Large Unicode content should be preserved");
         $this->assertTrue(
             $this->isValidConversionMethod->invoke($this->controller, $result),
-            "Large Unicode content validation failed"
+            "Large Unicode content validation failed",
         );
 
         unlink($tempFile);
@@ -452,11 +452,11 @@ class ImportUnicodeEncodingTest extends TestCase
 
                 $this->assertTrue(
                     mb_check_encoding($result, 'UTF-8'),
-                    "Mixed encoding result should be valid UTF-8 for {$name} with {$encoding}"
+                    "Mixed encoding result should be valid UTF-8 for {$name} with {$encoding}",
                 );
                 $this->assertTrue(
                     $this->isValidConversionMethod->invoke($this->controller, $result),
-                    "Mixed encoding validation failed for {$name} with {$encoding}"
+                    "Mixed encoding validation failed for {$name} with {$encoding}",
                 );
 
                 unlink($tempFile);
@@ -494,7 +494,7 @@ class ImportUnicodeEncodingTest extends TestCase
 
             $this->assertTrue(
                 mb_check_encoding($result, 'UTF-8'),
-                "CSV result should be valid UTF-8 for encoding: {$encoding}"
+                "CSV result should be valid UTF-8 for encoding: {$encoding}",
             );
 
             // Check that it contains expected international content

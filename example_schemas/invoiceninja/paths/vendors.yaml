@@ -1,11 +1,11 @@
-  /api/v1/vendors:
-    get:
-      tags:
-        - vendors
-      summary: "List vendors"
-      description: "Lists vendors, search and filters allow fine grained lists to be generated.\n\n    Query parameters can be added to performed more fine grained filtering of the vendors, these are handled by the VendorFilters class which defines the methods available"
-      operationId: getVendors
-      x-codeSamples:
+/api/v1/vendors:
+  get:
+    tags:
+      - vendors
+    summary: "List vendors"
+    description: "Lists vendors, search and filters allow fine grained lists to be generated.\n\n    Query parameters can be added to performed more fine grained filtering of the vendors, these are handled by the VendorFilters class which defines the methods available"
+    operationId: getVendors
+    x-codeSamples:
       - lang: php
         label: php
         source: |
@@ -20,70 +20,70 @@
           curl -X GET https://demo.invoiceninja.com/api/v1/vendors \
             -H "X-API-TOKEN: YOUR-TOKEN" \
             -H "X-Requested-With: XMLHttpRequest"
-      parameters:
-        - $ref: "#/components/parameters/X-API-TOKEN"
-        - $ref: "#/components/parameters/X-Requested-With"
-        - $ref: "#/components/parameters/include"
-        - $ref: "#/components/parameters/index"
-        - $ref: "#/components/parameters/per_page_meta"
-        - $ref: "#/components/parameters/page_meta"
-      responses:
-        200:
-          description: "A list of vendors"
-          headers:
-            X-MINIMUM-CLIENT-VERSION:
-              $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
-            X-RateLimit-Remaining:
-              $ref: "#/components/headers/X-RateLimit-Remaining"
-            X-RateLimit-Limit:
-              $ref: "#/components/headers/X-RateLimit-Limit"
-          content:
-            application/json:
-              schema:  
-                type: object
-                properties:
-                  data: 
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Vendor'
-                  meta:
-                    type: object
-                    $ref: '#/components/schemas/Meta'
-        401:
-          $ref: "#/components/responses/401"
-        403:
-          $ref: "#/components/responses/403"
-        422:
-          $ref: '#/components/responses/422'
-        429:
-          $ref: '#/components/responses/429'
-        5XX:
-          description: 'Server error'
-        default:
-          $ref: "#/components/responses/default"
-    post:
-      tags:
-        - vendors
-      summary: "Create vendor"
-      description: "Adds a vendor to a company"
-      operationId: storeVendor
-      parameters:
-        - $ref: "#/components/parameters/X-API-TOKEN"
-        - $ref: "#/components/parameters/X-Requested-With"
-        - $ref: "#/components/parameters/include"
-      requestBody:
-        description: Vendor object that needs to be added to the company
-        required: true
+    parameters:
+      - $ref: "#/components/parameters/X-API-TOKEN"
+      - $ref: "#/components/parameters/X-Requested-With"
+      - $ref: "#/components/parameters/include"
+      - $ref: "#/components/parameters/index"
+      - $ref: "#/components/parameters/per_page_meta"
+      - $ref: "#/components/parameters/page_meta"
+    responses:
+      200:
+        description: "A list of vendors"
+        headers:
+          X-MINIMUM-CLIENT-VERSION:
+            $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
+          X-RateLimit-Remaining:
+            $ref: "#/components/headers/X-RateLimit-Remaining"
+          X-RateLimit-Limit:
+            $ref: "#/components/headers/X-RateLimit-Limit"
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VendorRequest'
-      x-codeSamples:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Vendor"
+                meta:
+                  type: object
+                  $ref: "#/components/schemas/Meta"
+      401:
+        $ref: "#/components/responses/401"
+      403:
+        $ref: "#/components/responses/403"
+      422:
+        $ref: "#/components/responses/422"
+      429:
+        $ref: "#/components/responses/429"
+      5XX:
+        description: "Server error"
+      default:
+        $ref: "#/components/responses/default"
+  post:
+    tags:
+      - vendors
+    summary: "Create vendor"
+    description: "Adds a vendor to a company"
+    operationId: storeVendor
+    parameters:
+      - $ref: "#/components/parameters/X-API-TOKEN"
+      - $ref: "#/components/parameters/X-Requested-With"
+      - $ref: "#/components/parameters/include"
+    requestBody:
+      description: Vendor object that needs to be added to the company
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/VendorRequest"
+    x-codeSamples:
       - lang: php
         label: php
         source: |
           $ninja = new InvoiceNinja("YOUR-TOKEN");
-          
+
           $vendor = $ninja->vendors->create([
               'name' => 'ABC Supply Company',
               'address1' => '123 Main Street',
@@ -133,40 +133,40 @@
                 }
               ]
             }'
-      responses:
-        200:
-          description: "Returns the saved vendor object"
-          headers:
-            X-MINIMUM-CLIENT-VERSION:
-              $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
-            X-RateLimit-Remaining:
-              $ref: "#/components/headers/X-RateLimit-Remaining"
-            X-RateLimit-Limit:
-              $ref: "#/components/headers/X-RateLimit-Limit"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Vendor"
-        401:
-          $ref: "#/components/responses/401"
-        403:
-          $ref: "#/components/responses/403"
-        422:
-          $ref: '#/components/responses/422'
-        429:
-          $ref: '#/components/responses/429'
-        5XX:
-          description: 'Server error'
-        default:
-          $ref: "#/components/responses/default"
-  "/api/v1/vendors/{id}":
-    get:
-      tags:
-        - vendors
-      summary: "Show vendor"
-      description: "Displays a vendor by id"
-      operationId: showVendor
-      x-codeSamples:
+    responses:
+      200:
+        description: "Returns the saved vendor object"
+        headers:
+          X-MINIMUM-CLIENT-VERSION:
+            $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
+          X-RateLimit-Remaining:
+            $ref: "#/components/headers/X-RateLimit-Remaining"
+          X-RateLimit-Limit:
+            $ref: "#/components/headers/X-RateLimit-Limit"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Vendor"
+      401:
+        $ref: "#/components/responses/401"
+      403:
+        $ref: "#/components/responses/403"
+      422:
+        $ref: "#/components/responses/422"
+      429:
+        $ref: "#/components/responses/429"
+      5XX:
+        description: "Server error"
+      default:
+        $ref: "#/components/responses/default"
+"/api/v1/vendors/{id}":
+  get:
+    tags:
+      - vendors
+    summary: "Show vendor"
+    description: "Displays a vendor by id"
+    operationId: showVendor
+    x-codeSamples:
       - lang: php
         label: php
         source: |
@@ -178,70 +178,70 @@
           curl -X GET https://demo.invoiceninja.com/api/v1/vendors/D2J234DFA \
             -H "X-API-TOKEN: YOUR-TOKEN" \
             -H "X-Requested-With: XMLHttpRequest"
-      parameters:
-        - $ref: "#/components/parameters/X-API-TOKEN"
-        - $ref: "#/components/parameters/X-Requested-With"
-        - $ref: "#/components/parameters/include"
-        - name: id
-          in: path
-          description: "The vendor Hashed ID"
-          required: true
-          schema:
-            type: string
-            format: string
-          example: D2J234DFA
-      responses:
-        200:
-          description: "Returns the vendor object"
-          headers:
-            X-MINIMUM-CLIENT-VERSION:
-              $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
-            X-RateLimit-Remaining:
-              $ref: "#/components/headers/X-RateLimit-Remaining"
-            X-RateLimit-Limit:
-              $ref: "#/components/headers/X-RateLimit-Limit"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Vendor"
-        401:
-          $ref: "#/components/responses/401"
-        403:
-          $ref: "#/components/responses/403"
-        422:
-          $ref: '#/components/responses/422'
-        429:
-          $ref: '#/components/responses/429'
-        5XX:
-          description: 'Server error'
-        default:
-          $ref: "#/components/responses/default"
-    put:
-      tags:
-        - vendors
-      summary: "Update vendor"
-      description: "Handles the updating of a vendor by id"
-      operationId: updateVendor
-      parameters:
-        - $ref: "#/components/parameters/X-API-TOKEN"
-        - $ref: "#/components/parameters/X-Requested-With"
-        - $ref: "#/components/parameters/include"
-        - name: id
-          in: path
-          description: "The Vendor Hashed ID"
-          required: true
-          schema:
-            type: string
-            format: string
-          example: D2J234DFA
-      requestBody:
-        description: Vendor object that needs to be updated
+    parameters:
+      - $ref: "#/components/parameters/X-API-TOKEN"
+      - $ref: "#/components/parameters/X-Requested-With"
+      - $ref: "#/components/parameters/include"
+      - name: id
+        in: path
+        description: "The vendor Hashed ID"
         required: true
+        schema:
+          type: string
+          format: string
+        example: D2J234DFA
+    responses:
+      200:
+        description: "Returns the vendor object"
+        headers:
+          X-MINIMUM-CLIENT-VERSION:
+            $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
+          X-RateLimit-Remaining:
+            $ref: "#/components/headers/X-RateLimit-Remaining"
+          X-RateLimit-Limit:
+            $ref: "#/components/headers/X-RateLimit-Limit"
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VendorRequest'
-      x-codeSamples:
+              $ref: "#/components/schemas/Vendor"
+      401:
+        $ref: "#/components/responses/401"
+      403:
+        $ref: "#/components/responses/403"
+      422:
+        $ref: "#/components/responses/422"
+      429:
+        $ref: "#/components/responses/429"
+      5XX:
+        description: "Server error"
+      default:
+        $ref: "#/components/responses/default"
+  put:
+    tags:
+      - vendors
+    summary: "Update vendor"
+    description: "Handles the updating of a vendor by id"
+    operationId: updateVendor
+    parameters:
+      - $ref: "#/components/parameters/X-API-TOKEN"
+      - $ref: "#/components/parameters/X-Requested-With"
+      - $ref: "#/components/parameters/include"
+      - name: id
+        in: path
+        description: "The Vendor Hashed ID"
+        required: true
+        schema:
+          type: string
+          format: string
+        example: D2J234DFA
+    requestBody:
+      description: Vendor object that needs to be updated
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/VendorRequest"
+    x-codeSamples:
       - lang: php
         label: php
         source: |
@@ -267,39 +267,39 @@
               "state": "CA",
               "postal_code": "90210"
             }'
-      responses:
-        200:
-          description: "Returns the vendor object"
-          headers:
-            X-MINIMUM-CLIENT-VERSION:
-              $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
-            X-RateLimit-Remaining:
-              $ref: "#/components/headers/X-RateLimit-Remaining"
-            X-RateLimit-Limit:
-              $ref: "#/components/headers/X-RateLimit-Limit"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Vendor"
-        401:
-          $ref: "#/components/responses/401"
-        403:
-          $ref: "#/components/responses/403"
-        422:
-          $ref: '#/components/responses/422'
-        429:
-          $ref: '#/components/responses/429'
-        5XX:
-          description: 'Server error'
-        default:
-          $ref: "#/components/responses/default"
-    delete:
-      tags:
-        - vendors
-      summary: "Delete vendor"
-      description: "Handles the deletion of a vendor by id"
-      operationId: deleteVendor
-      x-codeSamples:
+    responses:
+      200:
+        description: "Returns the vendor object"
+        headers:
+          X-MINIMUM-CLIENT-VERSION:
+            $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
+          X-RateLimit-Remaining:
+            $ref: "#/components/headers/X-RateLimit-Remaining"
+          X-RateLimit-Limit:
+            $ref: "#/components/headers/X-RateLimit-Limit"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Vendor"
+      401:
+        $ref: "#/components/responses/401"
+      403:
+        $ref: "#/components/responses/403"
+      422:
+        $ref: "#/components/responses/422"
+      429:
+        $ref: "#/components/responses/429"
+      5XX:
+        description: "Server error"
+      default:
+        $ref: "#/components/responses/default"
+  delete:
+    tags:
+      - vendors
+    summary: "Delete vendor"
+    description: "Handles the deletion of a vendor by id"
+    operationId: deleteVendor
+    x-codeSamples:
       - lang: php
         label: php
         source: |
@@ -311,48 +311,48 @@
           curl -X DELETE https://demo.invoiceninja.com/api/v1/vendors/D2J234DFA \
             -H "X-API-TOKEN: YOUR-TOKEN" \
             -H "X-Requested-With: XMLHttpRequest"
-      parameters:
-        - $ref: "#/components/parameters/X-API-TOKEN"
-        - $ref: "#/components/parameters/X-Requested-With"
-        - $ref: "#/components/parameters/include"
-        - name: id
-          in: path
-          description: "The Vendor Hashed ID"
-          required: true
-          schema:
-            type: string
-            format: string
-          example: D2J234DFA
-      responses:
-        200:
-          description: "Returns a HTTP status"
-          headers:
-            X-MINIMUM-CLIENT-VERSION:
-              $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
-            X-RateLimit-Remaining:
-              $ref: "#/components/headers/X-RateLimit-Remaining"
-            X-RateLimit-Limit:
-              $ref: "#/components/headers/X-RateLimit-Limit"
-        401:
-          $ref: "#/components/responses/401"
-        403:
-          $ref: "#/components/responses/403"
-        422:
-          $ref: '#/components/responses/422'
-        429:
-          $ref: '#/components/responses/429'
-        5XX:
-          description: 'Server error'
-        default:
-          $ref: "#/components/responses/default"
-  "/api/v1/vendors/{id}/edit":
-    get:
-      tags:
-        - vendors
-      summary: "Edit vendor"
-      description: "Displays a vendor by id"
-      operationId: editVendor
-      x-codeSamples:
+    parameters:
+      - $ref: "#/components/parameters/X-API-TOKEN"
+      - $ref: "#/components/parameters/X-Requested-With"
+      - $ref: "#/components/parameters/include"
+      - name: id
+        in: path
+        description: "The Vendor Hashed ID"
+        required: true
+        schema:
+          type: string
+          format: string
+        example: D2J234DFA
+    responses:
+      200:
+        description: "Returns a HTTP status"
+        headers:
+          X-MINIMUM-CLIENT-VERSION:
+            $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
+          X-RateLimit-Remaining:
+            $ref: "#/components/headers/X-RateLimit-Remaining"
+          X-RateLimit-Limit:
+            $ref: "#/components/headers/X-RateLimit-Limit"
+      401:
+        $ref: "#/components/responses/401"
+      403:
+        $ref: "#/components/responses/403"
+      422:
+        $ref: "#/components/responses/422"
+      429:
+        $ref: "#/components/responses/429"
+      5XX:
+        description: "Server error"
+      default:
+        $ref: "#/components/responses/default"
+"/api/v1/vendors/{id}/edit":
+  get:
+    tags:
+      - vendors
+    summary: "Edit vendor"
+    description: "Displays a vendor by id"
+    operationId: editVendor
+    x-codeSamples:
       - lang: php
         label: php
         source: |
@@ -364,52 +364,52 @@
           curl -X GET https://demo.invoiceninja.com/api/v1/vendors/D2J234DFA/edit \
             -H "X-API-TOKEN: YOUR-TOKEN" \
             -H "X-Requested-With: XMLHttpRequest"
-      parameters:
-        - $ref: "#/components/parameters/X-API-TOKEN"
-        - $ref: "#/components/parameters/X-Requested-With"
-        - $ref: "#/components/parameters/include"
-        - name: id
-          in: path
-          description: "The Vendor Hashed ID"
-          required: true
-          schema:
-            type: string
-            format: string
-          example: D2J234DFA
-      responses:
-        200:
-          description: "Returns the vendor object"
-          headers:
-            X-MINIMUM-CLIENT-VERSION:
-              $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
-            X-RateLimit-Remaining:
-              $ref: "#/components/headers/X-RateLimit-Remaining"
-            X-RateLimit-Limit:
-              $ref: "#/components/headers/X-RateLimit-Limit"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Vendor"
-        401:
-          $ref: "#/components/responses/401"
-        403:
-          $ref: "#/components/responses/403"
-        422:
-          $ref: '#/components/responses/422'
-        429:
-          $ref: '#/components/responses/429'
-        5XX:
-          description: 'Server error'
-        default:
-          $ref: "#/components/responses/default"
-  /api/v1/vendors/create:
-    get:
-      tags:
-        - vendors
-      summary: "Blank vendor"
-      description: "Returns a blank vendor with default values"
-      operationId: getVendorsCreate
-      x-codeSamples:
+    parameters:
+      - $ref: "#/components/parameters/X-API-TOKEN"
+      - $ref: "#/components/parameters/X-Requested-With"
+      - $ref: "#/components/parameters/include"
+      - name: id
+        in: path
+        description: "The Vendor Hashed ID"
+        required: true
+        schema:
+          type: string
+          format: string
+        example: D2J234DFA
+    responses:
+      200:
+        description: "Returns the vendor object"
+        headers:
+          X-MINIMUM-CLIENT-VERSION:
+            $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
+          X-RateLimit-Remaining:
+            $ref: "#/components/headers/X-RateLimit-Remaining"
+          X-RateLimit-Limit:
+            $ref: "#/components/headers/X-RateLimit-Limit"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Vendor"
+      401:
+        $ref: "#/components/responses/401"
+      403:
+        $ref: "#/components/responses/403"
+      422:
+        $ref: "#/components/responses/422"
+      429:
+        $ref: "#/components/responses/429"
+      5XX:
+        description: "Server error"
+      default:
+        $ref: "#/components/responses/default"
+/api/v1/vendors/create:
+  get:
+    tags:
+      - vendors
+    summary: "Blank vendor"
+    description: "Returns a blank vendor with default values"
+    operationId: getVendorsCreate
+    x-codeSamples:
       - lang: php
         label: php
         source: |
@@ -421,143 +421,143 @@
           curl -X GET https://demo.invoiceninja.com/api/v1/vendors/create \
             -H "X-API-TOKEN: YOUR-TOKEN" \
             -H "X-Requested-With: XMLHttpRequest"
-      parameters:
-        - $ref: "#/components/parameters/X-API-TOKEN"
-        - $ref: "#/components/parameters/X-Requested-With"
-        - $ref: "#/components/parameters/include"
-      responses:
-        200:
-          description: "A blank vendor object"
-          headers:
-            X-MINIMUM-CLIENT-VERSION:
-              $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
-            X-RateLimit-Remaining:
-              $ref: "#/components/headers/X-RateLimit-Remaining"
-            X-RateLimit-Limit:
-              $ref: "#/components/headers/X-RateLimit-Limit"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Vendor"
-        401:
-          $ref: "#/components/responses/401"
-        403:
-          $ref: "#/components/responses/403"
-        422:
-          $ref: '#/components/responses/422'
-        429:
-          $ref: '#/components/responses/429'
-        5XX:
-          description: 'Server error'
-        default:
-          $ref: "#/components/responses/default"
-  /api/v1/vendors/bulk:
-    post:
-      tags:
-        - vendors
-      summary: "Bulk vendor actions"
-      description: ""
-      operationId: bulkVendors
-      parameters:
-        - $ref: "#/components/parameters/X-API-TOKEN"
-        - $ref: "#/components/parameters/X-Requested-With"
-        - $ref: "#/components/parameters/index"
-      requestBody:
-        description: "User credentials"
-        required: true
+    parameters:
+      - $ref: "#/components/parameters/X-API-TOKEN"
+      - $ref: "#/components/parameters/X-Requested-With"
+      - $ref: "#/components/parameters/include"
+    responses:
+      200:
+        description: "A blank vendor object"
+        headers:
+          X-MINIMUM-CLIENT-VERSION:
+            $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
+          X-RateLimit-Remaining:
+            $ref: "#/components/headers/X-RateLimit-Remaining"
+          X-RateLimit-Limit:
+            $ref: "#/components/headers/X-RateLimit-Limit"
         content:
           application/json:
             schema:
-              type: array
-              items:
-                description: "Array of hashed IDs to be bulk 'actioned"
-                type: integer
-                example: 0
-      responses:
-        200:
-          description: "The Vendor User response"
-          headers:
-            X-MINIMUM-CLIENT-VERSION:
-              $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
-            X-RateLimit-Remaining:
-              $ref: "#/components/headers/X-RateLimit-Remaining"
-            X-RateLimit-Limit:
-              $ref: "#/components/headers/X-RateLimit-Limit"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Vendor"
-        401:
-          $ref: "#/components/responses/401"
-        403:
-          $ref: "#/components/responses/403"
-        422:
-          $ref: '#/components/responses/422'
-        429:
-          $ref: '#/components/responses/429'
-        5XX:
-          description: 'Server error'
-        default:
-          $ref: "#/components/responses/default"
-  "/api/v1/vendors/{id}/upload":
-    post:
-      tags:
-        - vendors
-      summary: "Uploads a vendor document"
-      description: "Handles the uploading of a document to a vendor"
-      operationId: uploadVendor
-      parameters:
-        - $ref: "#/components/parameters/X-API-TOKEN"
-        - $ref: "#/components/parameters/X-Requested-With"
-        - $ref: "#/components/parameters/include"
-        - name: id
-          in: path
-          description: "The Vendor Hashed ID"
-          required: true
+              $ref: "#/components/schemas/Vendor"
+      401:
+        $ref: "#/components/responses/401"
+      403:
+        $ref: "#/components/responses/403"
+      422:
+        $ref: "#/components/responses/422"
+      429:
+        $ref: "#/components/responses/429"
+      5XX:
+        description: "Server error"
+      default:
+        $ref: "#/components/responses/default"
+/api/v1/vendors/bulk:
+  post:
+    tags:
+      - vendors
+    summary: "Bulk vendor actions"
+    description: ""
+    operationId: bulkVendors
+    parameters:
+      - $ref: "#/components/parameters/X-API-TOKEN"
+      - $ref: "#/components/parameters/X-Requested-With"
+      - $ref: "#/components/parameters/index"
+    requestBody:
+      description: "User credentials"
+      required: true
+      content:
+        application/json:
           schema:
-            type: string
-            format: string
-          example: D2J234DFA
-      requestBody:
-        description: "File Upload Body"
-        required: true
+            type: array
+            items:
+              description: "Array of hashed IDs to be bulk 'actioned"
+              type: integer
+              example: 0
+    responses:
+      200:
+        description: "The Vendor User response"
+        headers:
+          X-MINIMUM-CLIENT-VERSION:
+            $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
+          X-RateLimit-Remaining:
+            $ref: "#/components/headers/X-RateLimit-Remaining"
+          X-RateLimit-Limit:
+            $ref: "#/components/headers/X-RateLimit-Limit"
         content:
-          multipart/form-data:
+          application/json:
             schema:
-              type: object
-              properties:
-                _method:
+              $ref: "#/components/schemas/Vendor"
+      401:
+        $ref: "#/components/responses/401"
+      403:
+        $ref: "#/components/responses/403"
+      422:
+        $ref: "#/components/responses/422"
+      429:
+        $ref: "#/components/responses/429"
+      5XX:
+        description: "Server error"
+      default:
+        $ref: "#/components/responses/default"
+"/api/v1/vendors/{id}/upload":
+  post:
+    tags:
+      - vendors
+    summary: "Uploads a vendor document"
+    description: "Handles the uploading of a document to a vendor"
+    operationId: uploadVendor
+    parameters:
+      - $ref: "#/components/parameters/X-API-TOKEN"
+      - $ref: "#/components/parameters/X-Requested-With"
+      - $ref: "#/components/parameters/include"
+      - name: id
+        in: path
+        description: "The Vendor Hashed ID"
+        required: true
+        schema:
+          type: string
+          format: string
+        example: D2J234DFA
+    requestBody:
+      description: "File Upload Body"
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              _method:
+                type: string
+                example: PUT
+              documents:
+                type: array
+                items:
+                  description: "Array of binary documents for upload"
                   type: string
-                  example: PUT
-                documents:
-                  type: array
-                  items:
-                    description: "Array of binary documents for upload"
-                    type: string
-                    format: binary
-      responses:
-        200:
-          description: "Returns the Vendor object"
-          headers:
-            X-MINIMUM-CLIENT-VERSION:
-              $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
-            X-RateLimit-Remaining:
-              $ref: "#/components/headers/X-RateLimit-Remaining"
-            X-RateLimit-Limit:
-              $ref: "#/components/headers/X-RateLimit-Limit"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Vendor"
-        401:
-          $ref: "#/components/responses/401"
-        403:
-          $ref: "#/components/responses/403"
-        422:
-          $ref: '#/components/responses/422'
-        429:
-          $ref: '#/components/responses/429'
-        5XX:
-          description: 'Server error'
-        default:
-          $ref: "#/components/responses/default"
+                  format: binary
+    responses:
+      200:
+        description: "Returns the Vendor object"
+        headers:
+          X-MINIMUM-CLIENT-VERSION:
+            $ref: "#/components/headers/X-MINIMUM-CLIENT-VERSION"
+          X-RateLimit-Remaining:
+            $ref: "#/components/headers/X-RateLimit-Remaining"
+          X-RateLimit-Limit:
+            $ref: "#/components/headers/X-RateLimit-Limit"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Vendor"
+      401:
+        $ref: "#/components/responses/401"
+      403:
+        $ref: "#/components/responses/403"
+      422:
+        $ref: "#/components/responses/422"
+      429:
+        $ref: "#/components/responses/429"
+      5XX:
+        description: "Server error"
+      default:
+        $ref: "#/components/responses/default"
