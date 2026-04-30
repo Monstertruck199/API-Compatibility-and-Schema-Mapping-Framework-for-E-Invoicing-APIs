@@ -497,6 +497,8 @@ http://localhost:5050/api/health
 Frontend tests can be run with:
 
 ```bash
+npm install
+
 npm test
 ```
 
