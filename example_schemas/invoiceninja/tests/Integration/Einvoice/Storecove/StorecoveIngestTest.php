@@ -82,7 +82,7 @@ class StorecoveIngestTest extends TestCase
         }
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
     }
@@ -118,8 +118,8 @@ class StorecoveIngestTest extends TestCase
                 $classMetadataFactory,
                 null,
                 null,
-                $propertyInfo
-            )
+                $propertyInfo,
+            ),
         ];
 
         $context = [
@@ -144,7 +144,7 @@ class StorecoveIngestTest extends TestCase
             $x,
             StorecoveInvoice::class,
             'json',
-            $context
+            $context,
         );
 
         return $storecove_invoice;
@@ -224,7 +224,7 @@ class StorecoveIngestTest extends TestCase
 
         foreach ($storecove_invoice->getTaxSubtotals() as $tdf) {
 
-            $tax_totals[] = (array)$tdf;
+            $tax_totals[] = (array) $tdf;
         }
 
         $totals = collect($tax_totals);
@@ -259,7 +259,7 @@ class StorecoveIngestTest extends TestCase
                     'category' => $group->first()['category'],
                     'percentage' => $group->first()['percentage'],
                     'country' => $group->first()['country'],
-                    'total_tax_amount' => $group->sum('tax_amount')
+                    'total_tax_amount' => $group->sum('tax_amount'),
                 ];
             })->toArray();
 
@@ -318,7 +318,7 @@ class StorecoveIngestTest extends TestCase
                     'last_name' => $party->getContact()->getFirstName() ?? '',
                     'email' => $party->getContact()->getEmail() ?? '',
                     'phone' => $party->getContact()->getPhone() ?? '',
-                ]
+                ],
             ],
         ];
 

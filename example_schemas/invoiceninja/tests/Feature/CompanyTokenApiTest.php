@@ -102,7 +102,7 @@ class CompanyTokenApiTest extends TestCase
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-PASSWORD' => 'ALongAndBriliantPassword',
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/tokens/'.$this->encodePrimaryKey($company_token->id), $data);
+        ])->put('/api/v1/tokens/' . $this->encodePrimaryKey($company_token->id), $data);
 
         $response->assertStatus(200);
         $arr = $response->json();
@@ -120,7 +120,7 @@ class CompanyTokenApiTest extends TestCase
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-PASSWORD' => 'ALongAndBriliantPassword',
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/tokens/'.$this->encodePrimaryKey($company_token->id));
+        ])->get('/api/v1/tokens/' . $this->encodePrimaryKey($company_token->id));
 
         $response->assertStatus(200);
     }
@@ -135,7 +135,7 @@ class CompanyTokenApiTest extends TestCase
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-PASSWORD' => 'ALongAndBriliantPassword',
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/tokens/'.$this->encodePrimaryKey($company_token->id));
+        ])->get('/api/v1/tokens/' . $this->encodePrimaryKey($company_token->id));
 
         $arr = $response->json();
 

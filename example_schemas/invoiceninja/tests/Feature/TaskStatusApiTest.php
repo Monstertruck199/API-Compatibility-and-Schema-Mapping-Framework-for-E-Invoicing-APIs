@@ -50,13 +50,13 @@ class TaskStatusApiTest extends TestCase
         $this->assertNull($t->status_order);
 
         $update = [
-            'description' => 'newdescription'
+            'description' => 'newdescription',
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/tasks/'.$t->hashed_id, $update);
+        ])->put('/api/v1/tasks/' . $t->hashed_id, $update);
 
         $response->assertStatus(200);
 
@@ -88,7 +88,7 @@ class TaskStatusApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/task_statuses/'.$task_status->hashed_id, $data);
+        ])->put('/api/v1/task_statuses/' . $task_status->hashed_id, $data);
 
 
         $t = TaskStatus::where('company_id', $this->company->id)->orderBy('status_order', 'asc')->first();
@@ -130,7 +130,7 @@ class TaskStatusApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/task_statuses/'.$this->encodePrimaryKey($this->task_status->id), $data);
+        ])->put('/api/v1/task_statuses/' . $this->encodePrimaryKey($this->task_status->id), $data);
 
         $response->assertStatus(200);
     }
@@ -140,7 +140,7 @@ class TaskStatusApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/task_statuses/'.$this->encodePrimaryKey($this->task_status->id));
+        ])->get('/api/v1/task_statuses/' . $this->encodePrimaryKey($this->task_status->id));
 
         $response->assertStatus(200);
     }
@@ -150,7 +150,7 @@ class TaskStatusApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/task_statuses/'.$this->encodePrimaryKey($this->task_status->id));
+        ])->get('/api/v1/task_statuses/' . $this->encodePrimaryKey($this->task_status->id));
 
         $arr = $response->json();
 
@@ -198,7 +198,7 @@ class TaskStatusApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->delete('/api/v1/task_statuses/'.$this->encodePrimaryKey($this->task_status->id));
+        ])->delete('/api/v1/task_statuses/' . $this->encodePrimaryKey($this->task_status->id));
 
         $arr = $response->json();
         // nlog($arr);

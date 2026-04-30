@@ -3,7 +3,7 @@ tags:
     x-displayName: Authentication
     description: |
       Attempts to authenticate with the API using a email/password combination.
-    
+
       After authenticating with the API, the returned object is a CompanyUser object which is a bridge linking the user to the company. 
 
       The company user object contains the users permissions (admin/owner or fine grained permissions) You will most likely want to 
@@ -49,11 +49,11 @@ tags:
       Endpoint definitions for interacting with products.
   - name: invoices
     x-displayName: Invoices
-  
+
     description: |
 
       ## Invoice Statuses
-      
+
       - STATUS_DRAFT = 1
         - Draft invoices are not visible in the client portal, are not active and they do not impact the client balance
       - STATUS_SENT = 2
@@ -70,7 +70,7 @@ tags:
         - An invoice which is still payable past its due date
       - STATUS_UNPAID = -2
         - An invoice which is not yet due, but also, not paid
-        
+
   - name: Recurring Invoices
     x-displayName: Recurring Invoices
     description: |
@@ -85,7 +85,7 @@ tags:
     x-displayName: Payments
     description: |
       Endpoint definitions for interacting with payments.
-  
+
   - name: quotes
     x-displayName: Quotes
     description: |
@@ -398,7 +398,7 @@ tags:
 
 externalDocs:
   description: "Client Libraries"
-  url: 'https://invoiceninja.github.io'
+  url: "https://invoiceninja.github.io"
   x-libraries:
     - name: PHP SDK
       description: Official PHP client library
@@ -411,4 +411,3 @@ externalDocs:
 
 security:
   - ApiKeyAuth: []
-    

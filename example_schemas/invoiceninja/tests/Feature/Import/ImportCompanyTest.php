@@ -76,7 +76,7 @@ class ImportCompanyTest extends TestCase
         Artisan::call('db:seed');
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->withoutExceptionHandling();
@@ -92,7 +92,7 @@ class ImportCompanyTest extends TestCase
         $this->account = Account::factory()->create();
         $this->company = Company::factory()->create(['account_id' => $this->account->id]);
 
-        $backup_json_file_zip = base_path().'/tests/Feature/Import/backup.zip';
+        $backup_json_file_zip = base_path() . '/tests/Feature/Import/backup.zip';
 
         $zip = new \ZipArchive();
         $res = $zip->open($backup_json_file_zip);
@@ -101,7 +101,7 @@ class ImportCompanyTest extends TestCase
             $zip->close();
         }
 
-        $backup_json_file = sys_get_temp_dir().'/backup/backup.json';
+        $backup_json_file = sys_get_temp_dir() . '/backup/backup.json';
 
         $this->backup_json_object = json_decode(file_get_contents($backup_json_file));
 
@@ -116,7 +116,7 @@ class ImportCompanyTest extends TestCase
 
     public function testBackupJsonRead()
     {
-        $backup_json_file_zip = base_path().'/tests/Feature/Import/backup.zip';
+        $backup_json_file_zip = base_path() . '/tests/Feature/Import/backup.zip';
 
         $zip = new \ZipArchive();
         $res = $zip->open($backup_json_file_zip);
@@ -126,7 +126,7 @@ class ImportCompanyTest extends TestCase
             $zip->close();
         }
 
-        $backup_json_file = sys_get_temp_dir().'/backup/backup.json';
+        $backup_json_file = sys_get_temp_dir() . '/backup/backup.json';
 
         $this->assertTrue(is_array(json_decode(file_get_contents($backup_json_file), 1)));
 
@@ -426,7 +426,7 @@ class ImportCompanyTest extends TestCase
             ['user_id', 'assigned_user_id', 'company_id', 'id', 'hashed_id'],
             [['users' => 'user_id'], ['users' => 'assigned_user_id']],
             'vendors',
-            'number'
+            'number',
         );
 
         $this->assertEquals(1, Vendor::count());
@@ -440,7 +440,7 @@ class ImportCompanyTest extends TestCase
             ['user_id', 'assigned_user_id', 'company_id', 'id', 'hashed_id', 'client_id'],
             [['users' => 'user_id'], ['users' => 'assigned_user_id'], ['clients' => 'client_id']],
             'projects',
-            'number'
+            'number',
         );
 
         $this->assertEquals(1, Project::count());
@@ -455,7 +455,7 @@ class ImportCompanyTest extends TestCase
             Product::class,
             ['user_id', 'company_id', 'hashed_id', 'id'],
             [['users' => 'user_id'], ['users' => 'assigned_user_id'], ['vendors' => 'vendor_id'], ['projects' => 'project_id']],
-            'products'
+            'products',
         );
         $this->assertEquals(1, Product::count());
 
@@ -467,7 +467,7 @@ class ImportCompanyTest extends TestCase
             CompanyGateway::class,
             ['user_id', 'company_id', 'hashed_id', 'id'],
             [['users' => 'user_id']],
-            'company_gateways'
+            'company_gateways',
         );
 
         $this->assertEquals(1, CompanyGateway::count());
@@ -480,7 +480,7 @@ class ImportCompanyTest extends TestCase
             ClientGatewayToken::class,
             ['company_id', 'id', 'hashed_id', 'client_id'],
             [['clients' => 'client_id']],
-            'client_gateway_tokens'
+            'client_gateway_tokens',
         );
 
         //client gateway tokens
@@ -491,7 +491,7 @@ class ImportCompanyTest extends TestCase
             ['user_id', 'company_id', 'id', 'hashed_id'],
             [['users' => 'user_id']],
             'group_settings',
-            'name'
+            'name',
         );
         //Group Settings
 
@@ -503,7 +503,7 @@ class ImportCompanyTest extends TestCase
             ['user_id', 'assigned_user_id', 'company_id', 'id', 'hashed_id'],
             [['group_settings' => 'group_id'], ['users' => 'user_id'], ['users' => 'assigned_user_id']],
             'subscriptions',
-            'name'
+            'name',
         );
 
         $this->assertEquals(1, Subscription::count());
@@ -527,7 +527,7 @@ class ImportCompanyTest extends TestCase
                 ['clients' => 'client_id'],
             ],
             'recurring_invoices',
-            'number'
+            'number',
         );
 
         $this->assertEquals(2, RecurringInvoice::count());
@@ -547,7 +547,7 @@ class ImportCompanyTest extends TestCase
                 ['client_contacts' => 'client_contact_id'],
             ],
             'recurring_invoice_invitations',
-            'key'
+            'key',
         );
 
         $this->assertEquals(2, RecurringInvoiceInvitation::count());
@@ -571,7 +571,7 @@ class ImportCompanyTest extends TestCase
                 ['vendors' => 'vendor_id'],
             ],
             'invoices',
-            'number'
+            'number',
         );
 
         $this->assertEquals(2, Invoice::count());
@@ -591,7 +591,7 @@ class ImportCompanyTest extends TestCase
                 ['client_contacts' => 'client_contact_id'],
             ],
             'invoice_invitations',
-            'key'
+            'key',
         );
 
         $this->assertEquals(2, InvoiceInvitation::count());
@@ -614,7 +614,7 @@ class ImportCompanyTest extends TestCase
                 ['vendors' => 'vendor_id'],
             ],
             'quotes',
-            'number'
+            'number',
         );
 
         $this->assertEquals(2, Quote::count());
@@ -634,7 +634,7 @@ class ImportCompanyTest extends TestCase
                 ['client_contacts' => 'client_contact_id'],
             ],
             'quote_invitations',
-            'key'
+            'key',
         );
 
         $this->assertEquals(2, QuoteInvitation::count());
@@ -657,7 +657,7 @@ class ImportCompanyTest extends TestCase
                 ['vendors' => 'vendor_id'],
             ],
             'credits',
-            'number'
+            'number',
         );
 
         $this->assertEquals(2, Credit::count());
@@ -677,7 +677,7 @@ class ImportCompanyTest extends TestCase
                 ['client_contacts' => 'client_contact_id'],
             ],
             'credit_invitations',
-            'key'
+            'key',
         );
 
         $this->assertEquals(2, CreditInvitation::count());
@@ -699,7 +699,7 @@ class ImportCompanyTest extends TestCase
                 ['vendors' => 'vendor_id'],
             ],
             'expenses',
-            'number'
+            'number',
         );
 
         $this->assertEquals(2, Expense::count());
@@ -721,7 +721,7 @@ class ImportCompanyTest extends TestCase
                 ['invoices' => 'invoice_id'],
             ],
             'tasks',
-            'number'
+            'number',
         );
 
         $this->assertEquals(3, Task::count());
@@ -745,7 +745,7 @@ class ImportCompanyTest extends TestCase
                 ['company_gateways' => 'company_gateway_id'],
             ],
             'payments',
-            'number'
+            'number',
         );
 
         $this->assertEquals(2, Payment::count());
@@ -810,7 +810,7 @@ class ImportCompanyTest extends TestCase
                 ['recurring_invoices' => 'recurring_invoice_id'],
                 ['invitations' => 'invitation_id'],
             ],
-            'activities'
+            'activities',
         );
 
         $this->assertEquals(25, Activity::count());
@@ -828,7 +828,7 @@ class ImportCompanyTest extends TestCase
                 ['activities' => 'activity_id'],
             ],
             'backups',
-            'created_at'
+            'created_at',
         );
 
         $this->assertEquals(25, Backup::count());
@@ -847,7 +847,7 @@ class ImportCompanyTest extends TestCase
                 ['activities' => 'activity_id'],
             ],
             'company_ledger',
-            'created_at'
+            'created_at',
         );
 
         $this->assertEquals(3, CompanyLedger::count());
@@ -863,7 +863,7 @@ class ImportCompanyTest extends TestCase
                 ['users' => 'user_id'],
             ],
             'designs',
-            'name'
+            'name',
         );
 
         //  Designs
@@ -1154,7 +1154,7 @@ class ImportCompanyTest extends TestCase
     {
         parent::tearDown();
 
-        $backup_json_file = sys_get_temp_dir().'/backup/backup.json';
+        $backup_json_file = sys_get_temp_dir() . '/backup/backup.json';
 
         //   unlink($backup_json_file);
     }

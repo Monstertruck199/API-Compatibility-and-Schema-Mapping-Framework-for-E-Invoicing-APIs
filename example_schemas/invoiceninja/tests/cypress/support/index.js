@@ -15,23 +15,23 @@
 
 /// <reference types="./" />
 
-import './laravel-commands';
-import './laravel-routes';
-import './assertions';
+import './laravel-commands'
+import './laravel-routes'
+import './assertions'
 
 before(() => {
-    cy.task('activateCypressEnvFile', {}, { log: false });
-    cy.artisan('config:clear', {}, { log: false });
-    cy.refreshRoutes();
-    cy.artisan("migrate:fresh", {
-        '--seed': true,
-    });
-    cy.artisan("db:seed", {
-        '--class': 'RandomDataSeeder',
-    });
-});
+  cy.task('activateCypressEnvFile', {}, { log: false })
+  cy.artisan('config:clear', {}, { log: false })
+  cy.refreshRoutes()
+  cy.artisan('migrate:fresh', {
+    '--seed': true
+  })
+  cy.artisan('db:seed', {
+    '--class': 'RandomDataSeeder'
+  })
+})
 
 after(() => {
-    cy.task('activateLocalEnvFile', {}, { log: false });
-    cy.artisan('config:clear', {}, { log: false });
-});
+  cy.task('activateLocalEnvFile', {}, { log: false })
+  cy.artisan('config:clear', {}, { log: false })
+})

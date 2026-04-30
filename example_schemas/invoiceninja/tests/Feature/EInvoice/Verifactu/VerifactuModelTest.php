@@ -68,7 +68,7 @@ class VerifactuModelTest extends TestCase
             'CalificacionOperacion' => 'S1',
             'BaseImponibleOimporteNoSujeto' => 1000.00,
             'TipoImpositivo' => 21,
-            'CuotaRepercutida' => 210.00
+            'CuotaRepercutida' => 210.00,
         ]);
         $invoice->setDesglose($desglose);
 
@@ -161,7 +161,7 @@ class VerifactuModelTest extends TestCase
             'CalificacionOperacion' => 'S1',
             'BaseImponibleOimporteNoSujeto' => 1000.00,
             'TipoImpositivo' => 21,
-            'CuotaRepercutida' => 210.00
+            'CuotaRepercutida' => 210.00,
         ]);
         $invoice->setDesglose($desglose);
 
@@ -244,7 +244,7 @@ class VerifactuModelTest extends TestCase
             'CalificacionOperacion' => 'S2',
             'BaseImponibleOimporteNoSujeto' => 100.00,
             'TipoImpositivo' => 21,
-            'CuotaRepercutida' => 21.00
+            'CuotaRepercutida' => 21.00,
         ]);
         $invoice->setDesglose($desglose);
 
@@ -327,7 +327,7 @@ class VerifactuModelTest extends TestCase
             'CalificacionOperacion' => 'S2',
             'BaseImponibleOimporteNoSujeto' => 100.00,
             'TipoImpositivo' => 21.00,
-            'CuotaRepercutida' => 21.00
+            'CuotaRepercutida' => 21.00,
         ]);
         $invoice->setDesglose($desglose);
 
@@ -424,7 +424,7 @@ class VerifactuModelTest extends TestCase
             'CalificacionOperacion' => 'S1',
             'BaseImponibleOimporteNoSujeto' => 200.00,
             'TipoImpositivo' => 21.00,
-            'CuotaRepercutida' => 42.00
+            'CuotaRepercutida' => 42.00,
         ]);
         $invoice->setDesglose($desglose);
 
@@ -500,7 +500,7 @@ class VerifactuModelTest extends TestCase
             'CalificacionOperacion' => 'N1',
             'BaseImponibleOimporteNoSujeto' => 100.00,
             'TipoImpositivo' => 0,
-            'CuotaRepercutida' => 0.00
+            'CuotaRepercutida' => 0.00,
         ]);
         $invoice->setDesglose($desglose);
 
@@ -579,7 +579,7 @@ class VerifactuModelTest extends TestCase
                 'CalificacionOperacion' => 'S1',
                 'BaseImponibleOimporteNoSujeto' => 100.00,
                 'TipoImpositivo' => 21.00,
-                'CuotaRepercutida' => 21.00
+                'CuotaRepercutida' => 21.00,
             ],
             [
                 'Impuesto' => '01',
@@ -587,8 +587,8 @@ class VerifactuModelTest extends TestCase
                 'CalificacionOperacion' => 'S1',
                 'BaseImponibleOimporteNoSujeto' => 150.00,
                 'TipoImpositivo' => 7.00,
-                'CuotaRepercutida' => 10.50
-            ]
+                'CuotaRepercutida' => 10.50,
+            ],
         ]);
         $invoice->setDesglose($desglose);
 
@@ -664,7 +664,7 @@ class VerifactuModelTest extends TestCase
             'CalificacionOperacion' => 'S1',
             'BaseImponible' => 100.00,
             'TipoImpositivo' => 21,
-            'Cuota' => 21.00
+            'Cuota' => 21.00,
         ]);
         $invoice->setDesglose($desglose);
 
@@ -878,7 +878,7 @@ class VerifactuModelTest extends TestCase
             'ClaveRegimen' => '01',
             'BaseImponible' => 100.00,
             'TipoImpositivo' => 21.00,
-            'Cuota' => 21.00
+            'Cuota' => 21.00,
         ]);
         $desglose->setDetalleDesglose($detalleDesglose);
         $invoice->setDesglose($desglose);
@@ -915,7 +915,7 @@ class VerifactuModelTest extends TestCase
     {
         $this->assertEquals(
             $this->normalizeXml($expectedXml),
-            $this->normalizeXml($actualXml)
+            $this->normalizeXml($actualXml),
         );
     }
 
@@ -950,7 +950,7 @@ class VerifactuModelTest extends TestCase
 
             $this->assertTrue(
                 $result,
-                'XML does not validate against XSD schema'
+                'XML does not validate against XSD schema',
             );
         } catch (\Exception $e) {
             throw $e;

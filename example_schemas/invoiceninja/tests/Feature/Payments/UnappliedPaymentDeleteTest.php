@@ -39,7 +39,7 @@ class UnappliedPaymentDeleteTest extends TestCase
         $this->withoutExceptionHandling();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 
@@ -80,7 +80,7 @@ class UnappliedPaymentDeleteTest extends TestCase
                 $response = $this->withHeaders([
                     'X-API-SECRET' => config('ninja.api_secret'),
                     'X-API-TOKEN' => $this->token,
-                ])->delete('/api/v1/payments/'.$payment_id);
+                ])->delete('/api/v1/payments/' . $payment_id);
             } catch (ValidationException $e) {
                 $message = json_decode($e->validator->getMessageBag(), 1);
                 $this->assertNotNull($message);

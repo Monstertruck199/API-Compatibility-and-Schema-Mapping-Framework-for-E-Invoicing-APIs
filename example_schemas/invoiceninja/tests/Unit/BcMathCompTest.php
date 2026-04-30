@@ -297,7 +297,7 @@ class BcMathCompTest extends TestCase
             $this->assertEquals(
                 0,
                 BcMath::comp($float, $string),
-                "BcMath::comp({$float}, '{$string}') should be 0"
+                "BcMath::comp({$float}, '{$string}') should be 0",
             );
         }
     }
@@ -323,7 +323,7 @@ class BcMathCompTest extends TestCase
             $this->assertEquals(
                 0,
                 BcMath::comp($float, $dbString),
-                "BcMath::comp({$float}, '{$dbString}') should be 0"
+                "BcMath::comp({$float}, '{$dbString}') should be 0",
             );
         }
     }

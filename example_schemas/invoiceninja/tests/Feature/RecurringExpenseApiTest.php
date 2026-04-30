@@ -85,7 +85,7 @@ class RecurringExpenseApiTest extends TestCase
             'currency_id' => 1,
             'next_send_date' => now(),
             'next_send_date_client' => now(),
-            'invoice_currency_id' => null
+            'invoice_currency_id' => null,
         ]);
 
         (new RecurringExpensesCron())->handle();
@@ -131,7 +131,7 @@ class RecurringExpenseApiTest extends TestCase
             'number' => '123321',
             'frequency_id' => 5,
             'remaining_cycles' => 5,
-            'currency_id' => 34545435425
+            'currency_id' => 34545435425,
         ];
 
         $response = $this->withHeaders([
@@ -151,7 +151,7 @@ class RecurringExpenseApiTest extends TestCase
             'number' => '123321',
             'frequency_id' => 5,
             'remaining_cycles' => 5,
-            'currency_id' => 1
+            'currency_id' => 1,
         ];
 
         $response = $this->withHeaders([
@@ -171,7 +171,7 @@ class RecurringExpenseApiTest extends TestCase
             'number' => '123321',
             'frequency_id' => 5,
             'remaining_cycles' => 5,
-            'currency_id' => null
+            'currency_id' => null,
         ];
 
         $response = $this->withHeaders([
@@ -195,7 +195,7 @@ class RecurringExpenseApiTest extends TestCase
             'number' => '123321',
             'frequency_id' => 5,
             'remaining_cycles' => 5,
-            'currency_id' => ""
+            'currency_id' => "",
         ];
 
         $response = $this->withHeaders([
@@ -236,7 +236,7 @@ class RecurringExpenseApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/recurring_expenses/'.$this->recurring_expense->hashed_id);
+        ])->get('/api/v1/recurring_expenses/' . $this->recurring_expense->hashed_id);
 
         $response->assertStatus(200);
     }
@@ -262,7 +262,7 @@ class RecurringExpenseApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/recurring_expenses/'.$arr['data']['id'], $data)->assertStatus(200);
+        ])->put('/api/v1/recurring_expenses/' . $arr['data']['id'], $data)->assertStatus(200);
 
         try {
             $response = $this->withHeaders([
@@ -284,7 +284,7 @@ class RecurringExpenseApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/recurring_expenses/'.$this->encodePrimaryKey($this->recurring_expense->id), $data);
+        ])->put('/api/v1/recurring_expenses/' . $this->encodePrimaryKey($this->recurring_expense->id), $data);
 
         $response->assertStatus(200);
     }
@@ -294,7 +294,7 @@ class RecurringExpenseApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/recurring_expenses/'.$this->encodePrimaryKey($this->recurring_expense->id));
+        ])->get('/api/v1/recurring_expenses/' . $this->encodePrimaryKey($this->recurring_expense->id));
 
         $arr = $response->json();
 
@@ -395,7 +395,7 @@ class RecurringExpenseApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/recurring_expenses/'.$this->recurring_expense->hashed_id.'?start=true', []);
+        ])->put('/api/v1/recurring_expenses/' . $this->recurring_expense->hashed_id . '?start=true', []);
 
         $arr = $response->json();
 
@@ -404,7 +404,7 @@ class RecurringExpenseApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/recurring_expenses/'.$this->recurring_expense->hashed_id.'?stop=true', []);
+        ])->put('/api/v1/recurring_expenses/' . $this->recurring_expense->hashed_id . '?stop=true', []);
 
         $arr = $response->json();
 

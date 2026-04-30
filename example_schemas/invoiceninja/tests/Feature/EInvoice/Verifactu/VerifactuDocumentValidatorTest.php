@@ -79,7 +79,7 @@ class VerifactuDocumentValidatorTest extends TestCase
         $errorsProperty = $reflection->getProperty('errors');
         $errorsProperty->setValue($validator, [
             'xsd' => ['Error 1', 'Error 2'],
-            'structure' => ['Error 3']
+            'structure' => ['Error 3'],
         ]);
 
         $summary = $validator->getErrorSummary();
@@ -100,7 +100,7 @@ class VerifactuDocumentValidatorTest extends TestCase
         $errorsProperty = $reflection->getProperty('errors');
         $errorsProperty->setValue($validator, [
             'xsd' => ['Error 1', 'Error 2'],
-            'business' => ['Error 3']
+            'business' => ['Error 3'],
         ]);
 
         $formatted = $validator->getFormattedErrors();

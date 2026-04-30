@@ -50,7 +50,7 @@ class InvoicelyTest extends TestCase
     public function testClientInvoicelyImport()
     {
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/invoicely_clients.csv'
+            base_path() . '/tests/Feature/Import/invoicely_clients.csv',
         );
         $hash = Str::random(32);
 
@@ -68,7 +68,7 @@ class InvoicelyTest extends TestCase
             'import_type' => 'invoicely',
         ];
 
-        Cache::put($hash.'-client', base64_encode($csv), 360);
+        Cache::put($hash . '-client', base64_encode($csv), 360);
 
         $csv_importer = new Invoicely($data, $this->company);
 
@@ -90,7 +90,7 @@ class InvoicelyTest extends TestCase
     public function testInvoiceInvoicelyImport()
     {
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/invoicely_clients.csv'
+            base_path() . '/tests/Feature/Import/invoicely_clients.csv',
         );
         $hash = Str::random(32);
 
@@ -108,7 +108,7 @@ class InvoicelyTest extends TestCase
             'import_type' => 'invoicely',
         ];
 
-        Cache::put($hash.'-client', base64_encode($csv), 360);
+        Cache::put($hash . '-client', base64_encode($csv), 360);
 
         $csv_importer = new Invoicely($data, $this->company);
 
@@ -128,7 +128,7 @@ class InvoicelyTest extends TestCase
         //now import the invoices
 
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/invoicely_invoices.csv'
+            base_path() . '/tests/Feature/Import/invoicely_invoices.csv',
         );
         $hash = Str::random(32);
 
@@ -148,7 +148,7 @@ class InvoicelyTest extends TestCase
             'import_type' => 'invoicely',
         ];
 
-        Cache::put($hash.'-invoice', base64_encode($csv), 360);
+        Cache::put($hash . '-invoice', base64_encode($csv), 360);
 
         $csv_importer = new Invoicely($data, $this->company);
 

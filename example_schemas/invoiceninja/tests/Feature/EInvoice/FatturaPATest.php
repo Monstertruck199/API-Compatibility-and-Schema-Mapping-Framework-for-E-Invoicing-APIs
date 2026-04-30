@@ -47,7 +47,7 @@ class FatturaPATest extends TestCase
         // $this->markTestSkipped('prevent running in CI');
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 
@@ -111,7 +111,7 @@ class FatturaPATest extends TestCase
             'tax_name2' => '',
             'tax_name3' => '',
             'line_items' => [$item],
-            'number' => 'ITA-'.rand(1000, 100000)
+            'number' => 'ITA-' . rand(1000, 100000),
         ]);
 
         $invoice->service()->markSent()->save();

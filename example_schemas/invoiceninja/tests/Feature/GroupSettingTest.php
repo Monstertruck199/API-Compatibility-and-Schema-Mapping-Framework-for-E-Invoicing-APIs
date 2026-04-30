@@ -63,7 +63,7 @@ class GroupSettingTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/group_settings/'.$arr['data']['id'], $data);
+        ])->putJson('/api/v1/group_settings/' . $arr['data']['id'], $data);
 
         $response->assertStatus(200);
 
@@ -148,7 +148,7 @@ class GroupSettingTest extends TestCase
 
         $arr = $response->json();
 
-        $this->assertEquals("", (string)null);
+        $this->assertEquals("", (string) null);
         $this->assertNotNull($arr['data']['settings']['tax_name1']);
     }
 

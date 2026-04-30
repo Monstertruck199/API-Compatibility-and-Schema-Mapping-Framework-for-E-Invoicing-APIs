@@ -20,7 +20,7 @@ class QuickBooksServiceTest extends TestCase
         $this->markTestSkipped("no bueno");
         $data = json_decode(
             file_get_contents(base_path('tests/Mock/Quickbooks/Data/customers.json')),
-            true
+            true,
         );
         $count = count($data);
         $sdkMock = Mockery::mock(\stdClass::class);
@@ -31,7 +31,7 @@ class QuickBooksServiceTest extends TestCase
 
             return Arr::take($data, 4);
         });
-        app()->singleton(QuickbooksInterface::class, fn () => new QuickbooksSDK($sdkMock));
+        app()->singleton(QuickbooksInterface::class, fn() => new QuickbooksSDK($sdkMock));
 
         $this->service = app(QuickbooksService::class);
 

@@ -103,7 +103,7 @@ class ClientApiTest extends TestCase
 
         $response = $this->withHeaders([
             'X-API-TOKEN' => $this->token,
-        ])->putJson("/api/v1/clients/".$this->client->hashed_id, $data)
+        ])->putJson("/api/v1/clients/" . $this->client->hashed_id, $data)
         ->assertStatus(422);
 
     }
@@ -132,14 +132,14 @@ class ClientApiTest extends TestCase
             'name' => 'name of client',
             'settings' => [
                 'pdf_variables' => 'xx',
-                'currency_id' => '2'
+                'currency_id' => '2',
             ],
         ];
 
 
         $response = $this->withHeaders([
             'X-API-TOKEN' => $this->token,
-        ])->putJson("/api/v1/clients/".$this->client->hashed_id, $data)
+        ])->putJson("/api/v1/clients/" . $this->client->hashed_id, $data)
         ->assertStatus(200);
 
         $arr = $response->json();
@@ -163,12 +163,12 @@ class ClientApiTest extends TestCase
             "column" => "public_notes",
             "new_value" => "THISISABULKUPDATE",
             "action" => "bulk_update",
-            "ids" => Client::where('company_id', $this->company->id)->get()->pluck("hashed_id")
+            "ids" => Client::where('company_id', $this->company->id)->get()->pluck("hashed_id"),
         ];
 
         $response = $this->withHeaders([
             'X-API-TOKEN' => $this->token,
-            ])->postJson("/api/v1/clients/bulk", $data);
+        ])->postJson("/api/v1/clients/bulk", $data);
 
 
         $response->assertStatus(200);
@@ -183,12 +183,12 @@ class ClientApiTest extends TestCase
         $data = [
             'name' => 'name of client',
             'country_code' => 'USA',
-            'id_number' => 'x-1-11a'
+            'id_number' => 'x-1-11a',
         ];
 
         $response = $this->withHeaders([
             'X-API-TOKEN' => $this->token,
-            ])->postJson("/api/v1/clients/", $data)
+        ])->postJson("/api/v1/clients/", $data)
             ->assertStatus(200);
 
         $arr = $response->json();
@@ -198,25 +198,25 @@ class ClientApiTest extends TestCase
         $data = [
             'name' => 'name of client',
             'country_code' => 'aaaaaaaaaa',
-            'id_number' => 'x-1-11a'
+            'id_number' => 'x-1-11a',
         ];
 
         $response = $this->withHeaders([
             'X-API-TOKEN' => $this->token,
-            ])->postJson("/api/v1/clients/", $data)
+        ])->postJson("/api/v1/clients/", $data)
             ->assertStatus(422);
 
         $this->assertEquals($this->company->settings->country_id, $arr['data']['country_id']);
 
 
         $data = [
-                'name' => 'name of client',
-                'country_code' => 'aaaaaaaaaa',
-            ];
+            'name' => 'name of client',
+            'country_code' => 'aaaaaaaaaa',
+        ];
 
         $response = $this->withHeaders([
             'X-API-TOKEN' => $this->token,
-            ])->putJson("/api/v1/clients/".$this->client->hashed_id, $data)
+        ])->putJson("/api/v1/clients/" . $this->client->hashed_id, $data)
             ->assertStatus(200);
 
 
@@ -230,12 +230,12 @@ class ClientApiTest extends TestCase
         $data = [
             'name' => 'name of client',
             'country_id' => '840',
-            'id_number' => 'x-1-11a'
+            'id_number' => 'x-1-11a',
         ];
 
         $response = $this->withHeaders([
-        'X-API-TOKEN' => $this->token,
-        ])->putJson("/api/v1/clients/".$this->client->hashed_id, $data)
+            'X-API-TOKEN' => $this->token,
+        ])->putJson("/api/v1/clients/" . $this->client->hashed_id, $data)
         ->assertStatus(200);
 
 
@@ -245,7 +245,7 @@ class ClientApiTest extends TestCase
         ];
 
         $response = $this->withHeaders([
-        'X-API-TOKEN' => $this->token,
+            'X-API-TOKEN' => $this->token,
         ])->postJson("/api/v1/clients/", $data)
         ->assertStatus(200);
 
@@ -254,12 +254,12 @@ class ClientApiTest extends TestCase
         $data = [
             'name' => 'name of client',
             'country_id' => '840',
-            'id_number' => 'x-1-11a'
+            'id_number' => 'x-1-11a',
         ];
 
         $response = $this->withHeaders([
-        'X-API-TOKEN' => $this->token,
-        ])->putJson("/api/v1/clients/".$arr['data']['id'], $data)
+            'X-API-TOKEN' => $this->token,
+        ])->putJson("/api/v1/clients/" . $arr['data']['id'], $data)
         ->assertStatus(422);
 
     }
@@ -270,12 +270,12 @@ class ClientApiTest extends TestCase
         $data = [
             'name' => 'name of client',
             'country_id' => '840',
-            'number' => 'x-1-11a'
+            'number' => 'x-1-11a',
         ];
 
         $response = $this->withHeaders([
-        'X-API-TOKEN' => $this->token,
-        ])->putJson("/api/v1/clients/".$this->client->hashed_id, $data)
+            'X-API-TOKEN' => $this->token,
+        ])->putJson("/api/v1/clients/" . $this->client->hashed_id, $data)
         ->assertStatus(200);
 
 
@@ -285,7 +285,7 @@ class ClientApiTest extends TestCase
         ];
 
         $response = $this->withHeaders([
-        'X-API-TOKEN' => $this->token,
+            'X-API-TOKEN' => $this->token,
         ])->postJson("/api/v1/clients/", $data)
         ->assertStatus(200);
 
@@ -294,12 +294,12 @@ class ClientApiTest extends TestCase
         $data = [
             'name' => 'name of client',
             'country_id' => '840',
-            'number' => 'x-1-11a'
+            'number' => 'x-1-11a',
         ];
 
         $response = $this->withHeaders([
-        'X-API-TOKEN' => $this->token,
-        ])->putJson("/api/v1/clients/".$arr['data']['id'], $data)
+            'X-API-TOKEN' => $this->token,
+        ])->putJson("/api/v1/clients/" . $arr['data']['id'], $data)
         ->assertStatus(422);
 
     }
@@ -309,11 +309,11 @@ class ClientApiTest extends TestCase
         $data = [
             'name' => 'name of client',
             'country_id' => '840',
-            'number' => 'x-1-11'
+            'number' => 'x-1-11',
         ];
 
         $response = $this->withHeaders([
-          'X-API-TOKEN' => $this->token,
+            'X-API-TOKEN' => $this->token,
         ])->postJson("/api/v1/clients/", $data)
         ->assertStatus(200);
 
@@ -322,35 +322,35 @@ class ClientApiTest extends TestCase
         $this->assertEquals("x-1-11", $arr['data']['number']);
 
         $data = [
-                    'name' => 'name of client',
-                    'country_id' => '840',
-                    'number' => 'x-1-11'
-                ];
+            'name' => 'name of client',
+            'country_id' => '840',
+            'number' => 'x-1-11',
+        ];
 
         $response = $this->withHeaders([
-        'X-API-TOKEN' => $this->token,
+            'X-API-TOKEN' => $this->token,
         ])->postJson("/api/v1/clients/", $data)
         ->assertStatus(422);
 
         $data = [
-                    'name' => 'name of client',
-                    'country_id' => '840',
-                    'number' => ''
-                ];
+            'name' => 'name of client',
+            'country_id' => '840',
+            'number' => '',
+        ];
 
         $response = $this->withHeaders([
-        'X-API-TOKEN' => $this->token,
+            'X-API-TOKEN' => $this->token,
         ])->postJson("/api/v1/clients/", $data)
         ->assertStatus(200);
 
         $data = [
-                    'name' => 'name of client',
-                    'country_id' => '840',
-                    'number' => null
-                ];
+            'name' => 'name of client',
+            'country_id' => '840',
+            'number' => null,
+        ];
 
         $response = $this->withHeaders([
-        'X-API-TOKEN' => $this->token,
+            'X-API-TOKEN' => $this->token,
         ])->postJson("/api/v1/clients/", $data)
         ->assertStatus(200);
 
@@ -364,8 +364,8 @@ class ClientApiTest extends TestCase
         ];
 
         $response = $this->withHeaders([
-          'X-API-TOKEN' => $this->token,
-      ])->putJson("/api/v1/clients/".$this->client->hashed_id, $data)
+            'X-API-TOKEN' => $this->token,
+        ])->putJson("/api/v1/clients/" . $this->client->hashed_id, $data)
       ->assertStatus(200);
 
         $arr = $response->json();
@@ -382,8 +382,8 @@ class ClientApiTest extends TestCase
         ];
 
         $response = $this->withHeaders([
-          'X-API-TOKEN' => $this->token,
-      ])->putJson("/api/v1/clients/".$this->client->hashed_id, $data)
+            'X-API-TOKEN' => $this->token,
+        ])->putJson("/api/v1/clients/" . $this->client->hashed_id, $data)
       ->assertStatus(422);
 
     }
@@ -397,8 +397,8 @@ class ClientApiTest extends TestCase
         ];
 
         $response = $this->withHeaders([
-          'X-API-TOKEN' => $this->token,
-      ])->postJson("/api/v1/clients/", $data)
+            'X-API-TOKEN' => $this->token,
+        ])->postJson("/api/v1/clients/", $data)
       ->assertStatus(422);
 
     }
@@ -412,8 +412,8 @@ class ClientApiTest extends TestCase
         ];
 
         $response = $this->withHeaders([
-          'X-API-TOKEN' => $this->token,
-      ])->postJson("/api/v1/clients/", $data)
+            'X-API-TOKEN' => $this->token,
+        ])->postJson("/api/v1/clients/", $data)
       ->assertStatus(200);
 
         $arr = $response->json();
@@ -427,13 +427,13 @@ class ClientApiTest extends TestCase
         $data = [
             'name' => 'name of client',
             'settings' => [
-                'currency_id' => '2'
+                'currency_id' => '2',
             ],
         ];
 
         $response = $this->withHeaders([
-          'X-API-TOKEN' => $this->token,
-      ])->postJson("/api/v1/clients/", $data)
+            'X-API-TOKEN' => $this->token,
+        ])->postJson("/api/v1/clients/", $data)
       ->assertStatus(200);
 
         $arr = $response->json();
@@ -447,13 +447,13 @@ class ClientApiTest extends TestCase
         $data = [
             'name' => 'name of client',
             'settings' => [
-                'currency_id' => '2'
+                'currency_id' => '2',
             ],
         ];
 
         $response = $this->withHeaders([
-          'X-API-TOKEN' => $this->token,
-      ])->putJson("/api/v1/clients/".$this->client->hashed_id, $data)
+            'X-API-TOKEN' => $this->token,
+        ])->putJson("/api/v1/clients/" . $this->client->hashed_id, $data)
       ->assertStatus(200);
 
         $arr = $response->json();
@@ -467,13 +467,13 @@ class ClientApiTest extends TestCase
         $data = [
             'name' => 'name of client',
             'settings' => [
-                'currency_id' => '1'
+                'currency_id' => '1',
             ],
         ];
 
         $response = $this->withHeaders([
-          'X-API-TOKEN' => $this->token,
-      ])->putJson("/api/v1/clients/".$this->client->hashed_id, $data)
+            'X-API-TOKEN' => $this->token,
+        ])->putJson("/api/v1/clients/" . $this->client->hashed_id, $data)
       ->assertStatus(200);
 
         $arr = $response->json();
@@ -487,13 +487,13 @@ class ClientApiTest extends TestCase
         $data = [
             'name' => 'name of client',
             'settings' => [
-                'currency_id' => ''
+                'currency_id' => '',
             ],
         ];
 
         $response = $this->withHeaders([
-          'X-API-TOKEN' => $this->token,
-      ])->putJson("/api/v1/clients/".$this->client->hashed_id, $data)
+            'X-API-TOKEN' => $this->token,
+        ])->putJson("/api/v1/clients/" . $this->client->hashed_id, $data)
       ->assertStatus(200);
 
         $arr = $response->json();
@@ -507,13 +507,13 @@ class ClientApiTest extends TestCase
         $data = [
             'name' => 'name of client',
             'settings' => [
-                'currency_id' => 'A'
+                'currency_id' => 'A',
             ],
         ];
 
         $response = $this->withHeaders([
-          'X-API-TOKEN' => $this->token,
-      ])->putJson("/api/v1/clients/".$this->client->hashed_id, $data)
+            'X-API-TOKEN' => $this->token,
+        ])->putJson("/api/v1/clients/" . $this->client->hashed_id, $data)
       ->assertStatus(422);
 
         $arr = $response->json();
@@ -527,13 +527,13 @@ class ClientApiTest extends TestCase
         $data = [
             'name' => 'name of client',
             'settings' => [
-                'currency_id' => 'A'
+                'currency_id' => 'A',
             ],
         ];
 
         $response = $this->withHeaders([
-          'X-API-TOKEN' => $this->token,
-      ])->postJson("/api/v1/clients", $data)
+            'X-API-TOKEN' => $this->token,
+        ])->postJson("/api/v1/clients", $data)
       ->assertStatus(422);
 
         $arr = $response->json();
@@ -547,13 +547,13 @@ class ClientApiTest extends TestCase
         $data = [
             'name' => 'name of client',
             'settings' => [
-                'currency_id' => ''
+                'currency_id' => '',
             ],
         ];
 
         $response = $this->withHeaders([
-          'X-API-TOKEN' => $this->token,
-      ])->postJson("/api/v1/clients", $data)
+            'X-API-TOKEN' => $this->token,
+        ])->postJson("/api/v1/clients", $data)
       ->assertStatus(200);
 
         $arr = $response->json();
@@ -570,8 +570,8 @@ class ClientApiTest extends TestCase
         ];
 
         $response = $this->withHeaders([
-          'X-API-TOKEN' => $this->token,
-      ])->postJson("/api/v1/clients", $data)
+            'X-API-TOKEN' => $this->token,
+        ])->postJson("/api/v1/clients", $data)
       ->assertStatus(200);
 
         $arr = $response->json();
@@ -588,8 +588,8 @@ class ClientApiTest extends TestCase
         ];
 
         $response = $this->withHeaders([
-          'X-API-TOKEN' => $this->token,
-      ])->postJson("/api/v1/clients", $data)
+            'X-API-TOKEN' => $this->token,
+        ])->postJson("/api/v1/clients", $data)
       ->assertStatus(200);
 
     }
@@ -602,7 +602,7 @@ class ClientApiTest extends TestCase
         ];
 
         $response = $this->withHeaders([
-          'X-API-TOKEN' => $this->token,
+            'X-API-TOKEN' => $this->token,
         ])->postJson("/api/v1/clients", $data)
         ->assertStatus(422);
 
@@ -612,7 +612,7 @@ class ClientApiTest extends TestCase
         ];
 
         $response = $this->withHeaders([
-        'X-API-TOKEN' => $this->token,
+            'X-API-TOKEN' => $this->token,
         ])->postJson("/api/v1/clients", $data)
         ->assertStatus(422);
 
@@ -627,17 +627,17 @@ class ClientApiTest extends TestCase
         ];
 
         $response = $this->withHeaders([
-        'X-API-TOKEN' => $this->token,
+            'X-API-TOKEN' => $this->token,
         ])->putJson("/api/v1/clients/{$this->client->hashed_id}", $data)
         ->assertStatus(422);
 
         $data = [
-                'name' => 'name of client',
-                'documents' => [],
-            ];
+            'name' => 'name of client',
+            'documents' => [],
+        ];
 
         $response = $this->withHeaders([
-        'X-API-TOKEN' => $this->token,
+            'X-API-TOKEN' => $this->token,
         ])->putJson("/api/v1/clients/{$this->client->hashed_id}", $data)
         ->assertStatus(200);
 
@@ -647,9 +647,9 @@ class ClientApiTest extends TestCase
     {
 
         $d = \App\Models\Document::factory()->create([
-           'company_id' => $this->company->id,
-           'user_id' => $this->user->id,
-       ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+        ]);
 
         $this->invoice->documents()->save($d);
 
@@ -663,9 +663,9 @@ class ClientApiTest extends TestCase
         $this->assertCount(1, $arr['data']);
 
         $d = \App\Models\Document::factory()->create([
-        'company_id' => $this->company->id,
-        'user_id' => $this->user->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+        ]);
 
         $this->client->documents()->save($d);
 
@@ -680,9 +680,9 @@ class ClientApiTest extends TestCase
 
 
         $d = \App\Models\Document::factory()->create([
-        'company_id' => $this->company->id,
-        'user_id' => $this->user->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+        ]);
 
         $this->client->documents()->save($d);
 
@@ -696,9 +696,9 @@ class ClientApiTest extends TestCase
         $this->assertCount(3, $arr['data']);
 
         $d = \App\Models\Document::factory()->create([
-        'company_id' => $this->company->id,
-        'user_id' => $this->user->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+        ]);
 
         $this->quote->documents()->save($d);
 
@@ -714,9 +714,9 @@ class ClientApiTest extends TestCase
 
 
         $d = \App\Models\Document::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                    ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+        ]);
 
         $this->credit->documents()->save($d);
 
@@ -732,16 +732,16 @@ class ClientApiTest extends TestCase
 
 
         $d = \App\Models\Document::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
         ]);
 
 
         $e = \App\Models\Expense::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                'client_id' => $this->client->id,
-                'amount' => 100
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'client_id' => $this->client->id,
+            'amount' => 100,
         ]);
 
 
@@ -758,15 +758,15 @@ class ClientApiTest extends TestCase
 
 
         $d = \App\Models\Document::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
         ]);
 
 
         $t = \App\Models\Task::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                'client_id' => $this->client->id,
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'client_id' => $this->client->id,
         ]);
 
 
@@ -827,8 +827,8 @@ class ClientApiTest extends TestCase
         $data = [
             'action' => 'archive',
             'ids' => [
-                $this->client->id
-            ]
+                $this->client->id,
+            ],
         ];
 
         $response = $this->withHeaders([
@@ -841,8 +841,8 @@ class ClientApiTest extends TestCase
         $this->assertNull($this->client->deleted_at);
 
         $rules = [
-            'ids' => 'required|bail|array|exists:clients,id,company_id,'.$company->id,
-            'action' => 'in:archive,restore,delete'
+            'ids' => 'required|bail|array|exists:clients,id,company_id,' . $company->id,
+            'action' => 'in:archive,restore,delete',
         ];
 
         $v = $this->app['validator']->make($data, $rules);
@@ -856,13 +856,13 @@ class ClientApiTest extends TestCase
         $data = [
             'action' => 'muppet',
             'ids' => [
-                $this->client->hashed_id
-            ]
+                $this->client->hashed_id,
+            ],
         ];
 
         $rules = [
             'ids' => 'required|bail|array',
-            'action' => 'in:archive,restore,delete'
+            'action' => 'in:archive,restore,delete',
         ];
 
         $v = $this->app['validator']->make($data, $rules);
@@ -871,8 +871,8 @@ class ClientApiTest extends TestCase
         $data = [
             'action' => 'archive',
             'ids' => [
-                $this->client->hashed_id
-            ]
+                $this->client->hashed_id,
+            ],
         ];
 
         $v = $this->app['validator']->make($data, $rules);
@@ -882,7 +882,7 @@ class ClientApiTest extends TestCase
         $data = [
             'action' => 'archive',
             'ids' =>
-                $this->client->hashed_id
+                $this->client->hashed_id,
 
         ];
 
@@ -948,52 +948,52 @@ class ClientApiTest extends TestCase
         Client::unguard();
 
         $data = [
-          'company_id' => $this->company->id,
-          'name' => 'Christian xx',
-          'phone' => '',
-          'address1' => '',
-          'address2' => '',
-          'postal_code' => '',
-          'city' => '',
-          'state' => '',
-          'shipping_address1' => '',
-          'shipping_address2' => '',
-          'shipping_city' => '',
-          'shipping_state' => '',
-          'shipping_postal_code' => '',
-          'public_notes' => '',
-          'private_notes' => '',
-          'website' => '',
-          'vat_number' => '',
-          'id_number' => '',
-          'custom_value1' => '',
-          'custom_value2' => '',
-          'custom_value3' => '',
-          'custom_value4' => '',
-          'balance' => '0',
-          'paid_to_date' => '0',
-          'credit_balance' => 0,
-          'settings' => [
-             'entity' => 'App\\Models\\Client',
-             'currency_id' => '3',
-          ],
-          'client_hash' => 'xx',
-          'contacts' =>
-          [
+            'company_id' => $this->company->id,
+            'name' => 'Christian xx',
+            'phone' => '',
+            'address1' => '',
+            'address2' => '',
+            'postal_code' => '',
+            'city' => '',
+            'state' => '',
+            'shipping_address1' => '',
+            'shipping_address2' => '',
+            'shipping_city' => '',
+            'shipping_state' => '',
+            'shipping_postal_code' => '',
+            'public_notes' => '',
+            'private_notes' => '',
+            'website' => '',
+            'vat_number' => '',
+            'id_number' => '',
+            'custom_value1' => '',
+            'custom_value2' => '',
+            'custom_value3' => '',
+            'custom_value4' => '',
+            'balance' => '0',
+            'paid_to_date' => '0',
+            'credit_balance' => 0,
+            'settings' => [
+                'entity' => 'App\\Models\\Client',
+                'currency_id' => '3',
+            ],
+            'client_hash' => 'xx',
+            'contacts' =>
             [
-              'first_name' => '',
-              'last_name' => '',
-              'email' => '',
-              'phone' => '',
-              'custom_value1' => '',
-              'custom_value2' => '',
-              'custom_value3' => '',
-              'custom_value4' => '',
-            ]
-          ],
-          'country_id' => null,
-          'shipping_country_id' => null,
-          'user_id' => $this->user->id,
+                [
+                    'first_name' => '',
+                    'last_name' => '',
+                    'email' => '',
+                    'phone' => '',
+                    'custom_value1' => '',
+                    'custom_value2' => '',
+                    'custom_value3' => '',
+                    'custom_value4' => '',
+                ],
+            ],
+            'country_id' => null,
+            'shipping_country_id' => null,
+            'user_id' => $this->user->id,
         ];
 
         $repository_name = ClientRepository::class;
@@ -1046,54 +1046,54 @@ class ClientApiTest extends TestCase
         auth()->user()->setCompany($this->company);
 
         $data = [
-          'company_id' => $this->company->id,
-          'name' => 'Christian xx',
-          'phone' => '',
-          'address1' => '',
-          'address2' => '',
-          'postal_code' => '',
-          'city' => '',
-          'state' => '',
-          'shipping_address1' => '',
-          'shipping_address2' => '',
-          'shipping_city' => '',
-          'shipping_state' => '',
-          'shipping_postal_code' => '',
-          'public_notes' => '',
-          'private_notes' => '',
-          'website' => '',
-          'vat_number' => '',
-          'id_number' => '',
-          'custom_value1' => '',
-          'custom_value2' => '',
-          'custom_value3' => '',
-          'custom_value4' => '',
-          'balance' => '0',
-          'paid_to_date' => '0',
-          'credit_balance' => 0,
-          'settings' =>
-          (object) [
-             'entity' => 'App\\Models\\Client',
-             'currency_id' => '3',
-          ],
-          'client_hash' => 'xx',
-          'contacts' =>
-          [
-            0 =>
-            [
-              'first_name' => '',
-              'last_name' => '',
-              'email' => '',
-              'phone' => '',
-              'custom_value1' => '',
-              'custom_value2' => '',
-              'custom_value3' => '',
-              'custom_value4' => '',
+            'company_id' => $this->company->id,
+            'name' => 'Christian xx',
+            'phone' => '',
+            'address1' => '',
+            'address2' => '',
+            'postal_code' => '',
+            'city' => '',
+            'state' => '',
+            'shipping_address1' => '',
+            'shipping_address2' => '',
+            'shipping_city' => '',
+            'shipping_state' => '',
+            'shipping_postal_code' => '',
+            'public_notes' => '',
+            'private_notes' => '',
+            'website' => '',
+            'vat_number' => '',
+            'id_number' => '',
+            'custom_value1' => '',
+            'custom_value2' => '',
+            'custom_value3' => '',
+            'custom_value4' => '',
+            'balance' => '0',
+            'paid_to_date' => '0',
+            'credit_balance' => 0,
+            'settings' =>
+            (object) [
+                'entity' => 'App\\Models\\Client',
+                'currency_id' => '3',
             ],
-          ],
-          'country_id' => null,
-          'shipping_country_id' => null,
-          'user_id' => $this->user->id,
+            'client_hash' => 'xx',
+            'contacts' =>
+            [
+                0 =>
+                [
+                    'first_name' => '',
+                    'last_name' => '',
+                    'email' => '',
+                    'phone' => '',
+                    'custom_value1' => '',
+                    'custom_value2' => '',
+                    'custom_value3' => '',
+                    'custom_value4' => '',
+                ],
+            ],
+            'country_id' => null,
+            'shipping_country_id' => null,
+            'user_id' => $this->user->id,
         ];
 
 
@@ -1121,54 +1121,54 @@ class ClientApiTest extends TestCase
     public function testClientImportDataStructure()
     {
         $data = [
-          'company_id' => $this->company->id,
-          'name' => 'Christian xx',
-          'phone' => '',
-          'address1' => '',
-          'address2' => '',
-          'postal_code' => '',
-          'city' => '',
-          'state' => '',
-          'shipping_address1' => '',
-          'shipping_address2' => '',
-          'shipping_city' => '',
-          'shipping_state' => '',
-          'shipping_postal_code' => '',
-          'public_notes' => '',
-          'private_notes' => '',
-          'website' => '',
-          'vat_number' => '',
-          'id_number' => '',
-          'custom_value1' => '',
-          'custom_value2' => '',
-          'custom_value3' => '',
-          'custom_value4' => '',
-          'balance' => '0',
-          'paid_to_date' => '0',
-          'credit_balance' => 0,
-          'settings' =>
-          (object) [
-             'entity' => 'App\\Models\\Client',
-             'currency_id' => '3',
-          ],
-          'client_hash' => 'xx',
-          'contacts' =>
-          [
-            0 =>
-            [
-              'first_name' => '',
-              'last_name' => '',
-              'email' => '',
-              'phone' => '',
-              'custom_value1' => '',
-              'custom_value2' => '',
-              'custom_value3' => '',
-              'custom_value4' => '',
+            'company_id' => $this->company->id,
+            'name' => 'Christian xx',
+            'phone' => '',
+            'address1' => '',
+            'address2' => '',
+            'postal_code' => '',
+            'city' => '',
+            'state' => '',
+            'shipping_address1' => '',
+            'shipping_address2' => '',
+            'shipping_city' => '',
+            'shipping_state' => '',
+            'shipping_postal_code' => '',
+            'public_notes' => '',
+            'private_notes' => '',
+            'website' => '',
+            'vat_number' => '',
+            'id_number' => '',
+            'custom_value1' => '',
+            'custom_value2' => '',
+            'custom_value3' => '',
+            'custom_value4' => '',
+            'balance' => '0',
+            'paid_to_date' => '0',
+            'credit_balance' => 0,
+            'settings' =>
+            (object) [
+                'entity' => 'App\\Models\\Client',
+                'currency_id' => '3',
             ],
-          ],
-          'country_id' => null,
-          'shipping_country_id' => null,
-          'user_id' => $this->user->id,
+            'client_hash' => 'xx',
+            'contacts' =>
+            [
+                0 =>
+                [
+                    'first_name' => '',
+                    'last_name' => '',
+                    'email' => '',
+                    'phone' => '',
+                    'custom_value1' => '',
+                    'custom_value2' => '',
+                    'custom_value3' => '',
+                    'custom_value4' => '',
+                ],
+            ],
+            'country_id' => null,
+            'shipping_country_id' => null,
+            'user_id' => $this->user->id,
         ];
 
         $crepo = new ClientRepository(new ClientContactRepository());
@@ -1188,19 +1188,19 @@ class ClientApiTest extends TestCase
         $data = [
             'name' => $this->faker->firstName(),
             'id_number' => 'Coolio',
-            'settings' => (array)$settings,
+            'settings' => (array) $settings,
             'contacts' => [
                 [
-                  'first_name' => '',
-                  'last_name' => '',
-                  'email' => '',
-                  'phone' => '',
-                  'custom_value1' => '',
-                  'custom_value2' => '',
-                  'custom_value3' => '',
-                  'custom_value4' => '',
-              ]
-            ]
+                    'first_name' => '',
+                    'last_name' => '',
+                    'email' => '',
+                    'phone' => '',
+                    'custom_value1' => '',
+                    'custom_value2' => '',
+                    'custom_value3' => '',
+                    'custom_value4' => '',
+                ],
+            ],
         ];
 
         $response = false;
@@ -1292,7 +1292,7 @@ class ClientApiTest extends TestCase
         $response->assertStatus(200);
 
         $arr = $response->json();
-        
+
         $this->assertEquals('3', $arr['data']['settings']['language_id']);
     }
 
@@ -1429,14 +1429,14 @@ class ClientApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/clients/'.$this->encodePrimaryKey($this->client->id), $data);
+        ])->put('/api/v1/clients/' . $this->encodePrimaryKey($this->client->id), $data);
 
         $response->assertStatus(200);
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/clients/'.$this->encodePrimaryKey($this->client->id), $data);
+        ])->put('/api/v1/clients/' . $this->encodePrimaryKey($this->client->id), $data);
 
         $response->assertStatus(200);
 
@@ -1453,7 +1453,7 @@ class ClientApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/clients/'.$this->encodePrimaryKey($this->client->id));
+        ])->get('/api/v1/clients/' . $this->encodePrimaryKey($this->client->id));
 
         $response->assertStatus(200);
     }
@@ -1463,7 +1463,7 @@ class ClientApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/clients/'.$this->encodePrimaryKey($this->client->id));
+        ])->get('/api/v1/clients/' . $this->encodePrimaryKey($this->client->id));
 
         $arr = $response->json();
 

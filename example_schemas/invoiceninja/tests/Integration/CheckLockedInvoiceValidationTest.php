@@ -43,7 +43,7 @@ class CheckLockedInvoiceValidationTest extends TestCase
             $response = $this->withHeaders([
                 'X-API-SECRET' => config('ninja.api_secret'),
                 'X-API-TOKEN' => $this->token,
-            ])->put('/api/v1/invoices/'.$this->encodePrimaryKey($this->invoice->id), $invoice_update)
+            ])->put('/api/v1/invoices/' . $this->encodePrimaryKey($this->invoice->id), $invoice_update)
                 ->assertStatus(200);
         } catch (ValidationException $e) {
             $message = json_decode($e->validator->getMessageBag(), 1);

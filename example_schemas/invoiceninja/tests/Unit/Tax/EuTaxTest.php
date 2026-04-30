@@ -38,7 +38,7 @@ class EuTaxTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->withoutExceptionHandling();
@@ -493,7 +493,7 @@ class EuTaxTest extends TestCase
             'country_id' => 56,
             'shipping_country_id' => 56,
             'has_valid_vat_number' => false,
-            'vat_number' => ''
+            'vat_number' => '',
         ]);
 
         $invoice = Invoice::factory()->create([
@@ -516,7 +516,7 @@ class EuTaxTest extends TestCase
                     'tax_name3' => '',
                     'tax_rate3' => 0,
                     'type_id' => '1',
-                    'tax_id' => 1
+                    'tax_id' => 1,
                 ],
             ],
             'tax_rate1' => 0,
@@ -689,13 +689,13 @@ class EuTaxTest extends TestCase
         ]);
 
         $invoice = Invoice::factory()->create([
-        'company_id' => $company->id,
-        'client_id' => $client->id,
-        'user_id' => $this->user->id,
-        'status_id' => Invoice::STATUS_SENT,
-        'tax_data' => new Response([
-                    'geoState' => 'CA',
-        ]),
+            'company_id' => $company->id,
+            'client_id' => $client->id,
+            'user_id' => $this->user->id,
+            'status_id' => Invoice::STATUS_SENT,
+            'tax_data' => new Response([
+                'geoState' => 'CA',
+            ]),
         ]);
 
         $process = new Rule();
@@ -740,16 +740,16 @@ class EuTaxTest extends TestCase
             'country_id' => 56,
             'shipping_country_id' => 56,
             'has_valid_vat_number' => false,
-            'vat_number' => ''
+            'vat_number' => '',
         ]);
 
         $invoice = Invoice::factory()->create([
-        'company_id' => $company->id,
-        'client_id' => $client->id,
-        'user_id' => $this->user->id,
-        'status_id' => Invoice::STATUS_SENT,
-        'tax_data' => new Response([
-                    'geoState' => 'CA',
+            'company_id' => $company->id,
+            'client_id' => $client->id,
+            'user_id' => $this->user->id,
+            'status_id' => Invoice::STATUS_SENT,
+            'tax_data' => new Response([
+                'geoState' => 'CA',
             ]),
         ]);
 
@@ -802,13 +802,13 @@ class EuTaxTest extends TestCase
         ]);
 
         $invoice = Invoice::factory()->create([
-           'company_id' => $company->id,
-           'client_id' => $client->id,
-           'user_id' => $this->user->id,
-           'status_id' => Invoice::STATUS_SENT,
-           'tax_data' => new Response([
-           'geoState' => 'CA',
-           ]),
+            'company_id' => $company->id,
+            'client_id' => $client->id,
+            'user_id' => $this->user->id,
+            'status_id' => Invoice::STATUS_SENT,
+            'tax_data' => new Response([
+                'geoState' => 'CA',
+            ]),
         ]);
 
         $process = new Rule();
@@ -854,17 +854,17 @@ class EuTaxTest extends TestCase
             'country_id' => 56,
             'shipping_country_id' => 56,
             'has_valid_vat_number' => false,
-            'vat_number' => ''
+            'vat_number' => '',
         ]);
 
         $invoice = Invoice::factory()->create([
-        'company_id' => $company->id,
-        'client_id' => $client->id,
-        'user_id' => $this->user->id,
-        'status_id' => Invoice::STATUS_SENT,
-        'tax_data' => new Response([
-                    'geoState' => 'CA',
-        ]),
+            'company_id' => $company->id,
+            'client_id' => $client->id,
+            'user_id' => $this->user->id,
+            'status_id' => Invoice::STATUS_SENT,
+            'tax_data' => new Response([
+                'geoState' => 'CA',
+            ]),
         ]);
 
         $process = new Rule();
@@ -909,13 +909,13 @@ class EuTaxTest extends TestCase
         ]);
 
         $invoice = Invoice::factory()->create([
-           'company_id' => $company->id,
-           'client_id' => $client->id,
-           'user_id' => $this->user->id,
-           'status_id' => Invoice::STATUS_SENT,
-           'tax_data' => new Response([
-           'geoState' => 'CA',
-           ]),
+            'company_id' => $company->id,
+            'client_id' => $client->id,
+            'user_id' => $this->user->id,
+            'status_id' => Invoice::STATUS_SENT,
+            'tax_data' => new Response([
+                'geoState' => 'CA',
+            ]),
         ]);
 
         $process = new Rule();
@@ -960,13 +960,13 @@ class EuTaxTest extends TestCase
         ]);
 
         $invoice = Invoice::factory()->create([
-           'company_id' => $company->id,
-           'client_id' => $client->id,
-           'user_id' => $this->user->id,
-           'status_id' => Invoice::STATUS_SENT,
-           'tax_data' => new Response([
-                    'geoState' => 'CA',
-           ]),
+            'company_id' => $company->id,
+            'client_id' => $client->id,
+            'user_id' => $this->user->id,
+            'status_id' => Invoice::STATUS_SENT,
+            'tax_data' => new Response([
+                'geoState' => 'CA',
+            ]),
         ]);
 
         $process = new Rule();
@@ -1011,13 +1011,13 @@ class EuTaxTest extends TestCase
         ]);
 
         $invoice = Invoice::factory()->create([
-           'company_id' => $company->id,
-           'client_id' => $client->id,
-           'user_id' => $this->user->id,
-           'status_id' => Invoice::STATUS_SENT,
-           'tax_data' => new Response([
-                    'geoState' => 'CA',
-           ]),
+            'company_id' => $company->id,
+            'client_id' => $client->id,
+            'user_id' => $this->user->id,
+            'status_id' => Invoice::STATUS_SENT,
+            'tax_data' => new Response([
+                'geoState' => 'CA',
+            ]),
         ]);
 
         $process = new Rule();
@@ -1062,13 +1062,13 @@ class EuTaxTest extends TestCase
         ]);
 
         $invoice = Invoice::factory()->create([
-           'company_id' => $company->id,
-           'client_id' => $client->id,
-           'user_id' => $this->user->id,
-           'status_id' => Invoice::STATUS_SENT,
-           'tax_data' => new Response([
-                    'geoState' => 'CA',
-           ]),
+            'company_id' => $company->id,
+            'client_id' => $client->id,
+            'user_id' => $this->user->id,
+            'status_id' => Invoice::STATUS_SENT,
+            'tax_data' => new Response([
+                'geoState' => 'CA',
+            ]),
         ]);
 
         $process = new Rule();
@@ -1113,13 +1113,13 @@ class EuTaxTest extends TestCase
         ]);
 
         $invoice = Invoice::factory()->create([
-           'company_id' => $company->id,
-           'client_id' => $client->id,
-           'user_id' => $this->user->id,
-           'status_id' => Invoice::STATUS_SENT,
-           'tax_data' => new Response([
+            'company_id' => $company->id,
+            'client_id' => $client->id,
+            'user_id' => $this->user->id,
+            'status_id' => Invoice::STATUS_SENT,
+            'tax_data' => new Response([
                 'geoState' => 'CA',
-           ]),
+            ]),
         ]);
 
         $process = new Rule();

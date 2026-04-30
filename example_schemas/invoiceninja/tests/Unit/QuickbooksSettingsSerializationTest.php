@@ -25,10 +25,9 @@ use Tests\TestCase;
  */
 class QuickbooksSettingsSerializationTest extends TestCase
 {
-
     /**
      * Test that demonstrates toArray() provides explicit control over enum serialization.
-     * 
+     *
      * While get_object_vars() + json_encode() works (json_encode handles enums),
      * toArray() provides explicit, controlled serialization that's more maintainable.
      */
@@ -46,10 +45,12 @@ class QuickbooksSettingsSerializationTest extends TestCase
         // Verify explicit serialization works correctly
         $this->assertIsString($decoded['direction']);
         $this->assertEquals('pull', $decoded['direction']);
-        
+
         // toArray() explicitly converts enum to string value
-        $this->assertIsString($array['direction'], 
-            'toArray() explicitly returns enum as string value');
+        $this->assertIsString(
+            $array['direction'],
+            'toArray() explicitly returns enum as string value',
+        );
     }
 
     /**
@@ -85,10 +86,10 @@ class QuickbooksSettingsSerializationTest extends TestCase
         // Verify enum values are properly serialized as strings
         $this->assertIsString($decoded['settings']['client']['direction']);
         $this->assertEquals('pull', $decoded['settings']['client']['direction']);
-        
+
         $this->assertIsString($decoded['settings']['invoice']['direction']);
         $this->assertEquals('push', $decoded['settings']['invoice']['direction']);
-        
+
         $this->assertIsString($decoded['settings']['product']['direction']);
         $this->assertEquals('bidirectional', $decoded['settings']['product']['direction']);
     }
@@ -109,7 +110,7 @@ class QuickbooksSettingsSerializationTest extends TestCase
                 'client' => [
                     'direction' => SyncDirection::PULL->value,
                 ],
-               
+
             ],
         ]);
 
@@ -160,7 +161,7 @@ class QuickbooksSettingsSerializationTest extends TestCase
 
         // Serialize (set)
         $serialized = $cast->set($model, 'quickbooks', $originalSettings, []);
-        
+
         $this->assertNotNull($serialized);
         $this->assertIsString($serialized);
 
@@ -168,7 +169,7 @@ class QuickbooksSettingsSerializationTest extends TestCase
         $deserialized = $cast->get($model, 'quickbooks', $serialized, []);
 
         $this->assertInstanceOf(QuickbooksSettings::class, $deserialized);
-        
+
         // Verify all properties are preserved
         $this->assertEquals($originalSettings->accessTokenKey, $deserialized->accessTokenKey);
         $this->assertEquals($originalSettings->refresh_token, $deserialized->refresh_token);
@@ -183,10 +184,10 @@ class QuickbooksSettingsSerializationTest extends TestCase
         // Verify enum values are preserved correctly
         $this->assertInstanceOf(QuickbooksSyncMap::class, $deserialized->settings->client);
         $this->assertEquals(SyncDirection::PULL, $deserialized->settings->client->direction);
-        
+
         $this->assertInstanceOf(QuickbooksSyncMap::class, $deserialized->settings->invoice);
         $this->assertEquals(SyncDirection::PUSH, $deserialized->settings->invoice->direction);
-        
+
         $this->assertInstanceOf(QuickbooksSyncMap::class, $deserialized->settings->product);
         $this->assertEquals(SyncDirection::BIDIRECTIONAL, $deserialized->settings->product->direction);
     }
@@ -213,7 +214,7 @@ class QuickbooksSettingsSerializationTest extends TestCase
         $array = $settings->toArray();
 
         $entities = ['client', 'vendor', 'invoice', 'sales', 'quote', 'purchase_order', 'product', 'payment', 'expense'];
-        
+
         foreach ($entities as $entity) {
             $this->assertArrayHasKey($entity, $array['settings'], "Entity {$entity} should be in serialized array");
             $this->assertArrayHasKey('direction', $array['settings'][$entity], "Entity {$entity} should have direction");
@@ -241,7 +242,7 @@ class QuickbooksSettingsSerializationTest extends TestCase
         // Verify settings structure exists
         $this->assertIsArray($array['settings']);
         $this->assertArrayHasKey('client', $array['settings']);
-        
+
         // Verify default direction is BIDIRECTIONAL
         $this->assertEquals('none', $array['settings']['client']['direction']);
     }

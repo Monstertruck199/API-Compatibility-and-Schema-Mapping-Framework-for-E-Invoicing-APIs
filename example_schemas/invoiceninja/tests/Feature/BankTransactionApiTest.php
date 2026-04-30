@@ -54,7 +54,7 @@ class BankTransactionApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/bank_transactions?client_status=unmatched'.$this->encodePrimaryKey($this->bank_transaction->id));
+        ])->get('/api/v1/bank_transactions?client_status=unmatched' . $this->encodePrimaryKey($this->bank_transaction->id));
 
         $response->assertStatus(200);
     }
@@ -64,7 +64,7 @@ class BankTransactionApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/bank_transactions/'.$this->encodePrimaryKey($this->bank_transaction->id));
+        ])->get('/api/v1/bank_transactions/' . $this->encodePrimaryKey($this->bank_transaction->id));
 
         $response->assertStatus(200);
     }

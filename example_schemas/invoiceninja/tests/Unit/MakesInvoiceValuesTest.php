@@ -33,7 +33,7 @@ class MakesInvoiceValuesTest extends TestCase
                 'custom_invoice_value2',
                 'custom_invoice_value3',
                 'custom_invoice_value4', ],
-            $columns
+            $columns,
         );
 
         $this->assertTrue(in_array('custom_invoice_value3', $columns));
@@ -47,17 +47,17 @@ class MakesInvoiceValuesTest extends TestCase
         $tax_name = 'GST';
         $tax_rate = '10.00';
 
-        $key = str_replace(' ', '', $tax_name.$tax_rate);
+        $key = str_replace(' ', '', $tax_name . $tax_rate);
 
-        $group_tax = collect(['key' => $key, 'total' => 20, 'tax_name' => $tax_name.' '.$tax_rate.'%']);
+        $group_tax = collect(['key' => $key, 'total' => 20, 'tax_name' => $tax_name . ' ' . $tax_rate . '%']);
         $taxes->push($group_tax);
-        $group_tax = collect(['key' => $key, 'total' => 30, 'tax_name' => $tax_name.' '.$tax_rate.'%']);
+        $group_tax = collect(['key' => $key, 'total' => 30, 'tax_name' => $tax_name . ' ' . $tax_rate . '%']);
         $taxes->push($group_tax);
-        $group_tax = collect(['key' => $key, 'total' => 30, 'tax_name' => $tax_name.' '.$tax_rate.'%']);
+        $group_tax = collect(['key' => $key, 'total' => 30, 'tax_name' => $tax_name . ' ' . $tax_rate . '%']);
         $taxes->push($group_tax);
-        $group_tax = collect(['key' => $key, 'total' => 20, 'tax_name' => $tax_name.' '.$tax_rate.'%']);
+        $group_tax = collect(['key' => $key, 'total' => 20, 'tax_name' => $tax_name . ' ' . $tax_rate . '%']);
         $taxes->push($group_tax);
-        $group_tax = collect(['key' => 'VAT', 'total' => 20, 'tax_name' => 'VAT'.' '.'17.5%']);
+        $group_tax = collect(['key' => 'VAT', 'total' => 20, 'tax_name' => 'VAT' . ' ' . '17.5%']);
         $taxes->push($group_tax);
 
         $this->assertEquals(5, $taxes->count());

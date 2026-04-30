@@ -47,7 +47,7 @@ class PaymentV2Test extends TestCase
         $this->withoutExceptionHandling();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 
@@ -64,7 +64,7 @@ class PaymentV2Test extends TestCase
             'balance' => 20,
             'discount' => 0,
             'number' => uniqid("st", true),
-            'line_items' => []
+            'line_items' => [],
         ]);
 
         $item = InvoiceItemFactory::generateCredit();
@@ -82,27 +82,27 @@ class PaymentV2Test extends TestCase
             'discount' => 0,
             'number' => uniqid("st", true),
             'line_items' => [
-                $item
-            ]
+                $item,
+            ],
         ]);
 
         $data = [
-                    'client_id' => $this->client->hashed_id,
-                    'invoices' => [
-                        [
-                            'invoice_id' => $invoice->hashed_id,
-                            'amount' => 20,
-                        ],
-                    ],
-                    'credits' => [
-                        [
-                            'credit_id' => $credit->hashed_id,
-                            'amount' => 20,
-                        ],
-                    ],
-                    'date' => '2020/12/12',
+            'client_id' => $this->client->hashed_id,
+            'invoices' => [
+                [
+                    'invoice_id' => $invoice->hashed_id,
+                    'amount' => 20,
+                ],
+            ],
+            'credits' => [
+                [
+                    'credit_id' => $credit->hashed_id,
+                    'amount' => 20,
+                ],
+            ],
+            'date' => '2020/12/12',
 
-                ];
+        ];
 
         $response = null;
 
@@ -143,7 +143,7 @@ class PaymentV2Test extends TestCase
             'balance' => 20,
             'discount' => 0,
             'number' => uniqid("st", true),
-            'line_items' => []
+            'line_items' => [],
         ]);
 
         $this->assertEquals(20, $client->balance);
@@ -161,7 +161,7 @@ class PaymentV2Test extends TestCase
             'balance' => 20,
             'discount' => 0,
             'number' => uniqid("st", true),
-            'line_items' => []
+            'line_items' => [],
         ]);
 
         $this->assertEquals(20, $credit->amount);
@@ -280,7 +280,7 @@ class PaymentV2Test extends TestCase
             'balance' => 100,
             'discount' => 0,
             'number' => uniqid("st", true),
-            'line_items' => $line_items
+            'line_items' => $line_items,
         ]);
 
         $this->assertEquals(100, $client->balance);
@@ -298,7 +298,7 @@ class PaymentV2Test extends TestCase
             'balance' => 20,
             'discount' => 0,
             'number' => uniqid("st", true),
-            'line_items' => []
+            'line_items' => [],
         ]);
 
         $this->assertEquals(20, $credit->amount);

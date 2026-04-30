@@ -55,20 +55,20 @@ class BankTransactionRuleApiTest extends TestCase
     public function testBankRuleCategoryIdValidation()
     {
         $data = [
-           'name' => 'The First Rule',
-           'rules' => [
-            [
-                "operator" => "contains",
-                "search_key" => "description",
-                "value" => "mobile"
+            'name' => 'The First Rule',
+            'rules' => [
+                [
+                    "operator" => "contains",
+                    "search_key" => "description",
+                    "value" => "mobile",
+                ],
             ],
-           ],
-           'assigned_user_id' => null,
-           'auto_convert' => false,
-           'matches_on_all' => true,
-           'applies_to' => 'DEBIT',
-           'category_id' => $this->expense_category->hashed_id,
-           'vendor_id' => $this->vendor->hashed_id
+            'assigned_user_id' => null,
+            'auto_convert' => false,
+            'matches_on_all' => true,
+            'applies_to' => 'DEBIT',
+            'category_id' => $this->expense_category->hashed_id,
+            'vendor_id' => $this->vendor->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -86,7 +86,7 @@ class BankTransactionRuleApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/bank_transaction_rules/'. $arr['data']['id'], $data);
+        ])->putJson('/api/v1/bank_transaction_rules/' . $arr['data']['id'], $data);
 
         $arr = $response->json();
 
@@ -98,11 +98,11 @@ class BankTransactionRuleApiTest extends TestCase
     public function testBankRulePost()
     {
         $data = [
-           'name' => 'The First Rule',
-           'rules' => [],
-           'auto_convert' => false,
-           'matches_on_all' => false,
-           'applies_to' => 'CREDIT',
+            'name' => 'The First Rule',
+            'rules' => [],
+            'auto_convert' => false,
+            'matches_on_all' => false,
+            'applies_to' => 'CREDIT',
         ];
 
         $response = $this->withHeaders([
@@ -120,11 +120,11 @@ class BankTransactionRuleApiTest extends TestCase
     public function testBankRulePut()
     {
         $data = [
-           'name' => 'The First Rule',
-           'rules' => [],
-           'auto_convert' => false,
-           'matches_on_all' => false,
-           'applies_to' => 'CREDIT',
+            'name' => 'The First Rule',
+            'rules' => [],
+            'auto_convert' => false,
+            'matches_on_all' => false,
+            'applies_to' => 'CREDIT',
         ];
 
         $response = $this->withHeaders([
@@ -139,17 +139,17 @@ class BankTransactionRuleApiTest extends TestCase
         $this->assertEquals('The First Rule', $arr['data']['name']);
 
         $data = [
-           'name' => 'A New Name For The First Rule',
-           'rules' => [],
-           'auto_convert' => false,
-           'matches_on_all' => false,
-           'applies_to' => 'CREDIT',
+            'name' => 'A New Name For The First Rule',
+            'rules' => [],
+            'auto_convert' => false,
+            'matches_on_all' => false,
+            'applies_to' => 'CREDIT',
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/bank_transaction_rules/'. $arr['data']['id'], $data);
+        ])->putJson('/api/v1/bank_transaction_rules/' . $arr['data']['id'], $data);
 
         $arr = $response->json();
 
@@ -163,7 +163,7 @@ class BankTransactionRuleApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/bank_transaction_rules/'.$this->encodePrimaryKey($this->bank_transaction_rule->id));
+        ])->get('/api/v1/bank_transaction_rules/' . $this->encodePrimaryKey($this->bank_transaction_rule->id));
 
         $response->assertStatus(200);
     }

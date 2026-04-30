@@ -25,7 +25,7 @@ class AddTaxIdentifierRequestTest extends TestCase
 
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->makeTestData();

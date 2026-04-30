@@ -230,15 +230,15 @@ class JsonDesignServiceTest extends TestCase
     public function test_json_design_service()
     {
         $this->assertNotNull($this->invoice->invitations()->first());
-        
+
         $designjson = file_get_contents(base_path('tests/Feature/Design/stubs/test_design_1.json'));
         $design = json_decode($designjson, true);
-        
+
         $pdfService = new PdfService($this->invoice->invitations()->first(), 'product');
         $service = new JsonDesignService($pdfService, $design);
-        
+
         $html = $service->build();
-        
+
         $this->assertNotNull($html);
         file_put_contents(base_path('tests/artifacts/json_service_output.html'), $html);
     }

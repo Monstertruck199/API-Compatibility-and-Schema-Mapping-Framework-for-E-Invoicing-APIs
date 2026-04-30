@@ -1,70 +1,70 @@
-let svFmt     = 'json';
-let svSchemas = [];
-let svActive  = null;
+let svFmt = 'json'
+let svSchemas = []
+let svActive = null
 
-function setFmt(f) {
-  svFmt = f;
-  document.getElementById('fj').classList.toggle('on', f === 'json');
-  document.getElementById('fx').classList.toggle('on', f === 'xml');
+function setFmt (f) {
+  svFmt = f
+  document.getElementById('fj').classList.toggle('on', f === 'json')
+  document.getElementById('fx').classList.toggle('on', f === 'xml')
 }
 
-function inferSchemaCategory(name, schema) {
-  const lowerName = (name || '').toLowerCase();
+function inferSchemaCategory (name, schema) {
+  const lowerName = (name || '').toLowerCase()
 
   const matchesSchemaValue = (node, needle) => {
-    if (!node || typeof node !== 'object') return false;
+    if (!node || typeof node !== 'object') return false
 
     if (Array.isArray(node.enum) && node.enum.some(value => String(value).toLowerCase() === needle)) {
-      return true;
+      return true
     }
 
     if (typeof node.const === 'string' && node.const.toLowerCase() === needle) {
-      return true;
+      return true
     }
 
     if (node.properties) {
-      return Object.values(node.properties).some(child => matchesSchemaValue(child, needle));
+      return Object.values(node.properties).some(child => matchesSchemaValue(child, needle))
     }
 
     if (node.items) {
-      return matchesSchemaValue(node.items, needle);
+      return matchesSchemaValue(node.items, needle)
     }
 
-    return false;
-  };
+    return false
+  }
 
   if (lowerName.includes('communication') || matchesSchemaValue(schema, 'communication')) {
-    return 'communication';
+    return 'communication'
   }
 
   if (lowerName.includes('validation') || matchesSchemaValue(schema, 'validation')) {
-    return 'validation';
+    return 'validation'
   }
 
-  return 'transformation';
+  return 'transformation'
 }
 
-async function svAnalyse() {
-  const url  = document.getElementById('sv-url').value.trim();
-  const name = document.getElementById('sv-name').value.trim();
+async function svAnalyse () {
+  const url = document.getElementById('sv-url').value.trim()
+  const name = document.getElementById('sv-name').value.trim()
 
-  if (!url) { highlightError('sv-url'); return; }
+  if (!url) { highlightError('sv-url'); return }
 
-  let data;
+  let data
   try {
-    const res = await fetch(`${API_BASE_URL}/api/analyze?url=${encodeURIComponent(url)}&format=${svFmt}`);
-    data = await res.json();
+    const res = await fetch(`${API_BASE_URL}/api/analyze?url=${encodeURIComponent(url)}&format=${svFmt}`)
+    data = await res.json()
     if (!res.ok) {
-      alert(data.error || 'Request failed');
-      return;
+      alert(data.error || 'Request failed')
+      return
     }
   } catch (e) {
-    alert('Could not reach backend. Is backend/app.py running?');
-    return;
+    alert('Could not reach backend. Is backend/app.py running?')
+    return
   }
 
-  const useName = name || new URL(url).hostname;
-  const inferredCategory = inferSchemaCategory(useName, data.schema);
+  const useName = name || new URL(url).hostname
+  const inferredCategory = inferSchemaCategory(useName, data.schema)
 
   const entry = {
     name: useName,
@@ -76,28 +76,28 @@ async function svAnalyse() {
     apiId: null,
     outputSchemaId: null,
     inputSchemaId: null,
-    persisted: false,
-  };
+    persisted: false
+  }
 
   try {
     const apiRes = await fetch(`${API_BASE_URL}/api/apis`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: useName, category: inferredCategory, base_url: url }),
-    });
+      body: JSON.stringify({ name: useName, category: inferredCategory, base_url: url })
+    })
     if (apiRes.ok) {
-      const api = await apiRes.json();
-      entry.apiId = api.id;
+      const api = await apiRes.json()
+      entry.apiId = api.id
 
       try {
         const outRes = await fetch(`${API_BASE_URL}/api/apis/${api.id}/schemas`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ direction: 'output', format: svFmt, schema: data.schema }),
-        });
+          body: JSON.stringify({ direction: 'output', format: svFmt, schema: data.schema })
+        })
         if (outRes.ok) {
-          const out = await outRes.json();
-          entry.outputSchemaId = out.id;
+          const out = await outRes.json()
+          entry.outputSchemaId = out.id
         }
       } catch (e) {}
 
@@ -105,84 +105,84 @@ async function svAnalyse() {
         const inRes = await fetch(`${API_BASE_URL}/api/apis/${api.id}/schemas`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ direction: 'input', format: svFmt, schema: data.schema }),
-        });
+          body: JSON.stringify({ direction: 'input', format: svFmt, schema: data.schema })
+        })
         if (inRes.ok) {
-          const inp = await inRes.json();
-          entry.inputSchemaId = inp.id;
+          const inp = await inRes.json()
+          entry.inputSchemaId = inp.id
         }
       } catch (e) {}
 
-      entry.persisted = !!(entry.outputSchemaId || entry.inputSchemaId);
+      entry.persisted = !!(entry.outputSchemaId || entry.inputSchemaId)
     }
   } catch (e) {}
 
-  const existing = svSchemas.findIndex(s => s.name === useName);
+  const existing = svSchemas.findIndex(s => s.name === useName)
   if (existing >= 0) {
-    svSchemas[existing] = entry;
-    svActive = existing;
+    svSchemas[existing] = entry
+    svActive = existing
   } else {
-    svSchemas.push(entry);
-    svActive = svSchemas.length - 1;
+    svSchemas.push(entry)
+    svActive = svSchemas.length - 1
   }
 
-  renderSVList();
-  renderViewer(svActive);
+  renderSVList()
+  renderViewer(svActive)
 
-  document.getElementById('sv-url').value  = '';
-  document.getElementById('sv-name').value = '';
+  document.getElementById('sv-url').value = ''
+  document.getElementById('sv-name').value = ''
 }
 
-async function svDelete(i) {
-  const s = svSchemas[i];
-  if (!s) return;
+async function svDelete (i) {
+  const s = svSchemas[i]
+  if (!s) return
 
   if (s.persisted && s.apiId) {
     try {
-      await fetch(`${API_BASE_URL}/api/apis/${s.apiId}`, { method: 'DELETE' });
+      await fetch(`${API_BASE_URL}/api/apis/${s.apiId}`, { method: 'DELETE' })
     } catch (e) {}
   }
 
-  svSchemas.splice(i, 1);
+  svSchemas.splice(i, 1)
 
   if (svActive === i) {
-    svActive = svSchemas.length ? 0 : null;
+    svActive = svSchemas.length ? 0 : null
   } else if (svActive !== null && svActive > i) {
-    svActive = svActive - 1;
+    svActive = svActive - 1
   }
 
-  renderSVList();
-  const viewer = document.getElementById('sv-viewer');
+  renderSVList()
+  const viewer = document.getElementById('sv-viewer')
   if (svActive !== null) {
-    renderViewer(svActive);
+    renderViewer(svActive)
   } else if (viewer) {
-    viewer.innerHTML = '';
+    viewer.innerHTML = ''
   }
 }
 
-async function loadFromDatabase() {
-  let apis;
+async function loadFromDatabase () {
+  let apis
   try {
-    const res = await fetch(`${API_BASE_URL}/api/apis`);
-    if (!res.ok) return false;
-    apis = await res.json();
+    const res = await fetch(`${API_BASE_URL}/api/apis`)
+    if (!res.ok) return false
+    apis = await res.json()
   } catch (e) {
-    return false;
+    return false
   }
 
-  if (!Array.isArray(apis) || apis.length === 0) return false;
+  if (!Array.isArray(apis) || apis.length === 0) return false
 
   for (const api of apis) {
     try {
-      const schemasRes = await fetch(`${API_BASE_URL}/api/apis/${api.id}/schemas`);
-      if (!schemasRes.ok) continue;
-      const schemas = await schemasRes.json();
-      if (!schemas.length) continue;
+      const schemasRes = await fetch(`${API_BASE_URL}/api/apis/${api.id}/schemas`)
+      if (!schemasRes.ok) continue
+      const schemas = await schemasRes.json()
+      if (!schemas.length) continue
 
-      const outputs = schemas.filter(s => s.direction === 'output');
-      const inputs  = schemas.filter(s => s.direction === 'input');
-      const primary = outputs[0] || inputs[0];
-      if (!primary) continue;
+      const outputs = schemas.filter(s => s.direction === 'output')
+      const inputs = schemas.filter(s => s.direction === 'input')
+      const primary = outputs[0] || inputs[0]
+      if (!primary) continue
 
       svSchemas.push({
         name: api.name,
@@ -194,31 +194,31 @@ async function loadFromDatabase() {
         apiId: api.id,
         outputSchemaId: outputs[0] ? outputs[0].id : null,
         inputSchemaId: inputs[0] ? inputs[0].id : null,
-        persisted: true,
-      });
+        persisted: true
+      })
     } catch (e) {}
   }
 
   if (svSchemas.length) {
-    svActive = 0;
-    renderSVList();
-    renderViewer(svActive);
-    return true;
+    svActive = 0
+    renderSVList()
+    renderViewer(svActive)
+    return true
   }
-  return false;
+  return false
 }
 
-function highlightError(id) {
-  const el = document.getElementById(id);
-  el.style.borderColor = 'var(--red)';
-  setTimeout(() => el.style.borderColor = '', 1300);
+function highlightError (id) {
+  const el = document.getElementById(id)
+  el.style.borderColor = 'var(--red)'
+  setTimeout(() => el.style.borderColor = '', 1300)
 }
 
-function renderSVList() {
-  const el = document.getElementById('sv-list');
+function renderSVList () {
+  const el = document.getElementById('sv-list')
   if (!svSchemas.length) {
-    el.innerHTML = '<div class="empty-hint">No schemas loaded yet</div>';
-    return;
+    el.innerHTML = '<div class="empty-hint">No schemas loaded yet</div>'
+    return
   }
   el.innerHTML = svSchemas.map((s, i) => `
     <div class="sv-item ${i === svActive ? 'on' : ''}" onclick="svPick(${i})">
@@ -226,33 +226,33 @@ function renderSVList() {
       <span class="fmt-pill fp-${s.fmt}">${s.fmt.toUpperCase()}</span>
       <span onclick="event.stopPropagation();svDelete(${i})" style="margin-left:8px;color:var(--text3);cursor:pointer;font-size:14px;padding:0 4px">×</span>
     </div>
-  `).join('');
+  `).join('')
 }
 
-function svPick(i) {
-  svActive = i;
-  renderSVList();
-  renderViewer(i);
+function svPick (i) {
+  svActive = i
+  renderSVList()
+  renderViewer(i)
 }
 
-function cntFields(schema) {
-  let count = 0;
-  function walk(node) {
-    if (!node || typeof node !== 'object') return;
+function cntFields (schema) {
+  let count = 0
+  function walk (node) {
+    if (!node || typeof node !== 'object') return
     if (node.properties) {
-      Object.values(node.properties).forEach(v => { count++; walk(v); });
+      Object.values(node.properties).forEach(v => { count++; walk(v) })
     }
-    if (node.items) walk(node.items);
-    if (node.schema) walk(node.schema);
+    if (node.items) walk(node.items)
+    if (node.schema) walk(node.schema)
   }
-  walk(schema);
-  return count;
+  walk(schema)
+  return count
 }
 
-function renderViewer(i) {
-  if (i === null || !svSchemas[i]) return;
-  const s  = svSchemas[i];
-  const el = document.getElementById('sv-viewer');
+function renderViewer (i) {
+  if (i === null || !svSchemas[i]) return
+  const s = svSchemas[i]
+  const el = document.getElementById('sv-viewer')
   el.innerHTML = `
     <div class="schema-hdr">
       <div>
@@ -263,55 +263,55 @@ function renderViewer(i) {
     </div>
     <hr class="divider" style="margin-top:0">
     <div class="tree" id="sv-tree"></div>
-  `;
-  buildTree(document.getElementById('sv-tree'), s.schema.schema || s.schema, 'root', 0, true);
+  `
+  buildTree(document.getElementById('sv-tree'), s.schema.schema || s.schema, 'root', 0, true)
 }
 
-function typeClass(t) {
-  return 'tt-' + (t || 'unknown');
+function typeClass (t) {
+  return 'tt-' + (t || 'unknown')
 }
 
-function buildTree(container, node, key, depth, isRoot) {
-  const hasChildren = node.properties || (node.items && node.items.properties);
-  const div = document.createElement('div');
-  const row = document.createElement('div');
-  row.className = 'tree-row';
+function buildTree (container, node, key, depth, isRoot) {
+  const hasChildren = node.properties || (node.items && node.items.properties)
+  const div = document.createElement('div')
+  const row = document.createElement('div')
+  row.className = 'tree-row'
 
-  const tog = document.createElement('span');
-  tog.className = 'tree-tog';
-  if (hasChildren) tog.textContent = '▾';
+  const tog = document.createElement('span')
+  tog.className = 'tree-tog'
+  if (hasChildren) tog.textContent = '▾'
 
-  const dot = document.createElement('span');
-  dot.className = 'tree-dot ' + ((node.required && node.required.length) ? 'td-req' : 'td-opt');
+  const dot = document.createElement('span')
+  dot.className = 'tree-dot ' + ((node.required && node.required.length) ? 'td-req' : 'td-opt')
 
-  const keyEl = document.createElement('span');
-  keyEl.className = 'tree-key';
-  keyEl.textContent = isRoot ? '{ root }' : key;
+  const keyEl = document.createElement('span')
+  keyEl.className = 'tree-key'
+  keyEl.textContent = isRoot ? '{ root }' : key
 
-  const typeEl = document.createElement('span');
-  typeEl.className = 'tree-type ' + typeClass(node.type);
-  typeEl.textContent = node.type || 'unknown';
+  const typeEl = document.createElement('span')
+  typeEl.className = 'tree-type ' + typeClass(node.type)
+  typeEl.textContent = node.type || 'unknown'
 
-  row.append(tog, dot, keyEl, typeEl);
+  row.append(tog, dot, keyEl, typeEl)
 
   if (node.enum) {
-    const en = document.createElement('span');
-    en.className = 'tree-enum';
-    en.textContent = 'enum: ' + node.enum.map(v => `'${v}'`).join(', ');
-    row.appendChild(en);
+    const en = document.createElement('span')
+    en.className = 'tree-enum'
+    en.textContent = 'enum: ' + node.enum.map(v => `'${v}'`).join(', ')
+    row.appendChild(en)
   }
 
-  div.appendChild(row);
+  div.appendChild(row)
 
   if (hasChildren) {
-    const kids = document.createElement('div');
-    kids.className = 'tree-kids';
-    const props = node.properties || (node.items && node.items.properties);
-    if (props) Object.entries(props).forEach(([k, v]) => buildTree(kids, v, k, depth + 1, false));
-    div.appendChild(kids);
+    const kids = document.createElement('div')
+    kids.className = 'tree-kids'
+    const props = node.properties || (node.items && node.items.properties)
+    if (props) Object.entries(props).forEach(([k, v]) => buildTree(kids, v, k, depth + 1, false))
+    div.appendChild(kids)
   }
 
-  container.appendChild(div);
+  container.appendChild(div)
 }
 
 if (typeof module !== 'undefined' && module.exports) {
@@ -326,10 +326,10 @@ if (typeof module !== 'undefined' && module.exports) {
     buildTree,
 
     _internal: {
-      get svSchemas() { return svSchemas; },
-      set svSchemas(v) { svSchemas = v; },
-      get svActive() { return svActive; },
-      set svActive(v) { svActive = v; }
+      get svSchemas () { return svSchemas },
+      set svSchemas (v) { svSchemas = v },
+      get svActive () { return svActive },
+      set svActive (v) { svActive = v }
     }
-  };
+  }
 }

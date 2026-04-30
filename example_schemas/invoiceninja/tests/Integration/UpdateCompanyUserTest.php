@@ -47,7 +47,7 @@ class UpdateCompanyUserTest extends TestCase
         $settings = [
             'react_settings' => [
                 'show_pdf_preview' => true,
-                'react_notification_link' => false
+                'react_notification_link' => false,
             ],
         ];
 
@@ -56,7 +56,7 @@ class UpdateCompanyUserTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/company_users/'.$this->encodePrimaryKey($this->user->id).'/preferences?include=company_user', $settings);
+        ])->putJson('/api/v1/company_users/' . $this->encodePrimaryKey($this->user->id) . '/preferences?include=company_user', $settings);
 
 
         $response->assertStatus(200);
@@ -69,7 +69,7 @@ class UpdateCompanyUserTest extends TestCase
         $settings = [
             'react_settings' => [
                 'show_pdf_preview' => false,
-                'react_notification_link' => true
+                'react_notification_link' => true,
             ],
         ];
 
@@ -78,7 +78,7 @@ class UpdateCompanyUserTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/company_users/'.$this->encodePrimaryKey($this->user->id).'/preferences?include=company_user', $settings);
+        ])->putJson('/api/v1/company_users/' . $this->encodePrimaryKey($this->user->id) . '/preferences?include=company_user', $settings);
 
         $response->assertStatus(200);
 

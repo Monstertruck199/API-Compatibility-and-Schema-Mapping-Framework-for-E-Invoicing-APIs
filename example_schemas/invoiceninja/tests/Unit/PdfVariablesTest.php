@@ -21,7 +21,7 @@ use Tests\TestCase;
 class PdfVariablesTest extends TestCase
 {
     public $settings;
-    
+
     protected function setUp(): void
     {
         parent::setUp();

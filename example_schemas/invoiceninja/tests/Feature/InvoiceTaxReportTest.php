@@ -55,25 +55,25 @@ class InvoiceTaxReportTest extends TestCase
         $client->save();
 
         $i = Invoice::factory()->create([
-                'client_id' => $client->id,
-                'user_id' => $this->user->id,
-                'company_id' => $this->company->id,
-                'amount' => 0,
-                'balance' => 0,
-                'status_id' => 2,
-                'total_taxes' => 1,
-                'date' => now()->format('Y-m-d'),
-                'terms' => 'nada',
-                'discount' => 0,
-                'tax_rate1' => 10,
-                'tax_rate2' => 17.5,
-                'tax_rate3' => 5,
-                'tax_name1' => 'GST',
-                'tax_name2' => 'VAT',
-                'tax_name3' => 'CA Sales Tax',
-                'uses_inclusive_taxes' => false,
-                'line_items' => $this->buildLineItems(),
-            ]);
+            'client_id' => $client->id,
+            'user_id' => $this->user->id,
+            'company_id' => $this->company->id,
+            'amount' => 0,
+            'balance' => 0,
+            'status_id' => 2,
+            'total_taxes' => 1,
+            'date' => now()->format('Y-m-d'),
+            'terms' => 'nada',
+            'discount' => 0,
+            'tax_rate1' => 10,
+            'tax_rate2' => 17.5,
+            'tax_rate3' => 5,
+            'tax_name1' => 'GST',
+            'tax_name2' => 'VAT',
+            'tax_name3' => 'CA Sales Tax',
+            'uses_inclusive_taxes' => false,
+            'line_items' => $this->buildLineItems(),
+        ]);
 
         $i = $i->calc()->getInvoice();
 

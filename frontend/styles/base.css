@@ -7,34 +7,26 @@
 :root {
   --mono:     'JetBrains Mono', monospace;
   --sans:     'Syne', sans-serif;
-  
   --r:        8px;
   --rl:       12px;
-  
   --bg:       #0b0e16;
   --bg1:      #111520;
   --bg2:      #181d2c;
   --bg3:      #1e2435;
-
-  --border:   rgba(255,255,255,0.07);
-  --border2:  rgba(255,255,255,0.13);
-
+  --border:   rgb(255 255 255 / 7%);
+  --border2:  rgb(255 255 255 / 13%);
   --text:     #e2e8f0;
   --text2:    #8892a4;
   --text3:    #4a5568;
-
   --accent:   #7f77dd;
   --accent2:  #534ab7;
   --purplefont: #a09ae8;
-
   --green:    #5dcaa5;
   --green-bg: #0a1f16;
   --green-bd: #0f4a30;
-
   --amber:    #ef9f27;
   --amber-bg: #1e1200;
   --amber-bd: #4a2e00;
-
   --red:      #f09595;
   --red-bg:   #1a0808;
   --red-bd:   #4a1515;
@@ -43,29 +35,23 @@
 
 [data-theme="light"] {
   --bg:       #f0f2f7;
-  --bg1:      #ffffff;
+  --bg1:      #fff;
   --bg2:      #f7f8fb;
   --bg3:      #eceef4;
-
-  --border:   rgba(0,0,0,0.08);
-  --border2:  rgba(0,0,0,0.14);
-
+  --border:   rgb(0 0 0 / 8%);
+  --border2:  rgb(0 0 0 / 14%);
   --text:     #1a1f2e;
   --text2:    #5a6478;
   --text3:    #9ba3b4;
-
   --accent:   #6c65cc;
   --accent2:  #a09ae8;
   --purplefont: #674080;
-
   --green:    #1e8a63;
   --green-bg: #edf7f3;
   --green-bd: #b6e2d3;
-
   --amber:    #c47c0a;
   --amber-bg: #fef6e7;
   --amber-bd: #f5d48a;
-
   --red:      #c94040;
   --red-bg:   #fdf0f0;
   --red-bd:   #f0b8b8;
@@ -120,7 +106,7 @@ html, body {
 
 .btn:hover { 
   color: var(--text); 
-  border-color: rgba(255,255,255,0.2); 
+  border-color: rgb(255 255 255 / 20%); 
 }
 
 .btn-primary { 
@@ -209,12 +195,12 @@ html, body {
 }
 
 .fp-json { 
-  background: rgba(127,119,221,0.2); 
+  background: rgb(127 119 221 / 20%); 
   color: #a09ae8; 
 }
 
 .fp-xml  { 
-  background: rgba(93,202,165,0.15); 
+  background: rgb(93 202 165 / 15%); 
   color: var(--green); 
 }
 

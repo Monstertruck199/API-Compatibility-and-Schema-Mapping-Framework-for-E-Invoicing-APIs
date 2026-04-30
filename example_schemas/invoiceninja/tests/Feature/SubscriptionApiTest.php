@@ -60,7 +60,7 @@ class SubscriptionApiTest extends TestCase
 
         $c2 = Company::factory()->create([
             'account_id' => $this->company->account_id,
-            'settings' => $settings
+            'settings' => $settings,
         ]);
 
         $cu = CompanyUserFactory::create($this->user->id, $c2->id, $this->account->id);
@@ -98,7 +98,7 @@ class SubscriptionApiTest extends TestCase
             'subscription_id' => $s->id,
             'due_date' => now()->startOfDay(),
             'client_id' => $client2->id,
-            'status_id' => Invoice::STATUS_SENT
+            'status_id' => Invoice::STATUS_SENT,
         ]);
 
         $settings = CompanySettings::defaults();
@@ -144,7 +144,7 @@ class SubscriptionApiTest extends TestCase
             'subscription_id' => $s1->id,
             'due_date' => now()->startOfDay(),
             'client_id' => $client->id,
-            'status_id' => Invoice::STATUS_SENT
+            'status_id' => Invoice::STATUS_SENT,
         ]);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -176,9 +176,9 @@ class SubscriptionApiTest extends TestCase
             // nlog($i->toArray());
 
             $this->assertCount(0, $i);
-        }
-        else
+        } else {
             $this->assertFalse($i);
+        }
 
         $this->travelTo($timezone_now->copy()->startOfDay());
 
@@ -215,7 +215,7 @@ class SubscriptionApiTest extends TestCase
                     ->whereDate('due_date', '<=', now()->setTimezone($company->timezone()->name)->addDay()->startOfDay())
                     ->get();
 
-                     $this->assertCount(0, $i);
+            $this->assertCount(0, $i);
 
         }
 
@@ -318,7 +318,7 @@ class SubscriptionApiTest extends TestCase
             'ids' => [$s->hashed_id],
             'entity' => 'invoice',
             'entity_id' => $i->hashed_id,
-            'action' => 'assign_invoice'
+            'action' => 'assign_invoice',
         ];
 
 
@@ -356,7 +356,7 @@ class SubscriptionApiTest extends TestCase
             'ids' => [$s->hashed_id],
             'entity' => 'recurring_invoice',
             'entity_id' => $i->hashed_id,
-            'action' => 'assign_invoice'
+            'action' => 'assign_invoice',
         ];
 
 
@@ -398,7 +398,7 @@ class SubscriptionApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/subscriptions/'.$this->encodePrimaryKey($billing_subscription->id));
+        ])->get('/api/v1/subscriptions/' . $this->encodePrimaryKey($billing_subscription->id));
 
         // nlog($response);
 
@@ -438,7 +438,7 @@ class SubscriptionApiTest extends TestCase
         // try {
         $response2 = $this
             ->withHeaders(['X-API-SECRET' => config('ninja.api_secret'), 'X-API-TOKEN' => $this->token])
-            ->put('/api/v1/subscriptions/'.$response1['data']['id'], ['steps' => "cart,auth.login-or-register",'allow_cancellation' => true])
+            ->put('/api/v1/subscriptions/' . $response1['data']['id'], ['steps' => "cart,auth.login-or-register",'allow_cancellation' => true])
             ->assertStatus(200)
             ->json();
         // }catch(ValidationException $e) {
@@ -463,7 +463,7 @@ class SubscriptionApiTest extends TestCase
 
         $response = $this
             ->withHeaders(['X-API-SECRET' => config('ninja.api_secret'), 'X-API-TOKEN' => $this->token])
-            ->delete('/api/v1/subscriptions/'.$this->encodePrimaryKey($billing_subscription->id))
+            ->delete('/api/v1/subscriptions/' . $this->encodePrimaryKey($billing_subscription->id))
             ->assertStatus(200)
             ->json();
     }

@@ -117,7 +117,7 @@ class YodleeApiTest extends TestCase
 
         $data['transactions'][] = [
             'id' => $bt->id,
-            'invoice_ids' => $invoice->hashed_id
+            'invoice_ids' => $invoice->hashed_id,
         ];
 
         MatchBankTransactions::dispatchSync($this->company->id, $this->company->db, $data);
@@ -214,10 +214,10 @@ class YodleeApiTest extends TestCase
     {
         $transaction = collect([
             (object) [
-                'description' => 'tinkertonkton'
+                'description' => 'tinkertonkton',
             ],
             (object) [
-                'description' => 'spud'
+                'description' => 'spud',
             ],
         ]);
 
@@ -238,10 +238,10 @@ class YodleeApiTest extends TestCase
 
         $transaction = collect([
             (object) [
-                'description' => 'tinker and spice'
+                'description' => 'tinker and spice',
             ],
             (object) [
-                'description' => 'spud with water'
+                'description' => 'spud with water',
             ],
         ]);
 

@@ -21,7 +21,7 @@ class RemoveTaxIdentifierRequestTest extends TestCase
         $this->request = new RemoveTaxIdentifierRequest();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->makeTestData();

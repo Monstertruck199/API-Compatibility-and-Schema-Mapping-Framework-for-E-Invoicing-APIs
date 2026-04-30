@@ -108,7 +108,7 @@ class MockAccountDataTest extends TestCase
         $missingProperties = array_diff($expectedProperties, $foundProperties);
         $this->assertEmpty(
             $missingProperties,
-            'Missing property declarations: ' . implode(', ', $missingProperties)
+            'Missing property declarations: ' . implode(', ', $missingProperties),
         );
     }
 
@@ -204,7 +204,7 @@ class MockAccountDataTest extends TestCase
                 // Property should allow null or have a default value of null
                 $this->assertTrue(
                     $property->hasDefaultValue() && $property->getDefaultValue() === null,
-                    "Property {$propertyName} should have a default value of null"
+                    "Property {$propertyName} should have a default value of null",
                 );
             }
         }

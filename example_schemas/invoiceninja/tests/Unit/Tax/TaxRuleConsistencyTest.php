@@ -36,7 +36,7 @@ class TaxRuleConsistencyTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->withoutExceptionHandling();
@@ -52,7 +52,7 @@ class TaxRuleConsistencyTest extends TestCase
 
         $settings = CompanySettings::defaults();
         $settings->vat_number = $params['company_vat'] ?? 'DE123456789';
-        $settings->country_id = (string)Country::where('iso_3166_2', $company_iso)->first()->id;
+        $settings->country_id = (string) Country::where('iso_3166_2', $company_iso)->first()->id;
         $settings->email = $this->faker->safeEmail();
 
         $tax_data = new TaxModel();
@@ -71,7 +71,7 @@ class TaxRuleConsistencyTest extends TestCase
             'vat_number' => $params['client_vat'] ?? '',
             'classification' => $params['classification'] ?? 'individual',
             'has_valid_vat_number' => $params['has_valid_vat'] ?? false,
-            'name' => 'Test Client'
+            'name' => 'Test Client',
         ]);
 
         $contact = ClientContact::factory()->create([
@@ -80,7 +80,7 @@ class TaxRuleConsistencyTest extends TestCase
             'user_id' => $client->user_id,
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
-            'email' => $this->faker->safeEmail()
+            'email' => $this->faker->safeEmail(),
         ]);
 
         $invoice = Invoice::factory()->create([
@@ -180,12 +180,12 @@ class TaxRuleConsistencyTest extends TestCase
             $this->assertEquals(
                 $scenario['expected_rate'],
                 $baseRule->tax_rate1,
-                "{$name} {$scenario['expected_nexus']}"
+                "{$name} {$scenario['expected_nexus']}",
             );
 
             $this->assertEquals(
                 $storecove->adapter->getNexus(),
-                $scenario['expected_nexus']
+                $scenario['expected_nexus'],
             );
 
         }

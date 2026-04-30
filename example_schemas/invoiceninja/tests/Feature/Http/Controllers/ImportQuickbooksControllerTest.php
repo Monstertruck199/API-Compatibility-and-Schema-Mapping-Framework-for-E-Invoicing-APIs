@@ -104,15 +104,15 @@ class ImportQuickbooksControllerTest extends TestCase
                 }
 
                 return Arr::take($data, $max);
-            }
+            },
         );
 
         // Perform the test
         $response = $this->actingAs($this->user)->withHeaders([
-                'X-API-TOKEN' => $this->token,
-            ])->post('/api/v1/import/quickbooks', [
-                'import_types' => ['client']
-            ]);
+            'X-API-TOKEN' => $this->token,
+        ])->post('/api/v1/import/quickbooks', [
+            'import_types' => ['client'],
+        ]);
         $response->assertStatus(200);
 
         //Cache::shouldHaveReceived('has')->once()->with("{$hash}-client");
@@ -123,7 +123,7 @@ class ImportQuickbooksControllerTest extends TestCase
     {
         $data = json_decode(
             file_get_contents(base_path("tests/Mock/Quickbooks/Data/$file.json")),
-            true
+            true,
         );
 
         return $data;

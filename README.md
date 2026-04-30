@@ -161,11 +161,11 @@ docker compose up --build
 
 This starts three services:
 
-| Service | URL / Port |
-|---|---|
-| Frontend | http://localhost:3000 |
-| Backend | http://localhost:5050 |
-| PostgreSQL | localhost:5433 |
+| Service    | URL / Port              |
+|------------|-------------------------|
+| Frontend   | <http://localhost:3000> |
+| Backend    | <http://localhost:5050> |
+| PostgreSQL | localhost:5433          |
 
 Open the frontend in your browser:
 
@@ -357,29 +357,29 @@ Then perform the following checks.
 
 ## Main Backend API Endpoints
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| GET | `/api/health` | Check backend and database status |
-| GET | `/api/analyze` | Extract schema from a URL |
-| POST | `/api/compare` | Compare two provided schemas |
-| POST | `/api/matrix` | Build an in-memory compatibility matrix |
-| POST | `/api/transform` | Transform data using generated mappings |
-| GET | `/api/apis` | List stored APIs |
-| POST | `/api/apis` | Create a stored API |
-| GET | `/api/apis/<api_id>` | Get one stored API |
-| DELETE | `/api/apis/<api_id>` | Delete a stored API |
-| GET | `/api/apis/<api_id>/schemas` | List schemas for an API |
-| POST | `/api/apis/<api_id>/schemas` | Store a schema for an API |
-| GET | `/api/schemas/<schema_id>` | Get one stored schema |
-| GET | `/api/schemas/<schema_id>/fields` | Get extracted fields for a schema |
-| POST | `/api/compatibility/compare` | Compare stored API schemas and save the result |
-| GET | `/api/compatibility/results` | List stored compatibility results |
-| GET | `/api/compatibility/matrix` | Get the stored API compatibility matrix |
-| GET | `/api/mappings/<source_api_id>/<target_api_id>` | Get mapping rules |
-| POST | `/api/mappings/<source_api_id>/<target_api_id>` | Store mapping rules |
-| DELETE | `/api/mappings/<source_api_id>/<target_api_id>` | Delete mapping rules |
-| GET | `/api/transforms` | List transform runs |
-| GET | `/api/transforms/<run_id>` | Get one transform run |
+| Method | Endpoint                                        | Purpose                                        |
+|--------|-------------------------------------------------|------------------------------------------------|
+| GET    | `/api/health`                                   | Check backend and database status              |
+| GET    | `/api/analyze`                                  | Extract schema from a URL                      |
+| POST   | `/api/compare`                                  | Compare two provided schemas                   |
+| POST   | `/api/matrix`                                   | Build an in-memory compatibility matrix        |
+| POST   | `/api/transform`                                | Transform data using generated mappings        |
+| GET    | `/api/apis`                                     | List stored APIs                               |
+| POST   | `/api/apis`                                     | Create a stored API                            |
+| GET    | `/api/apis/<api_id>`                            | Get one stored API                             |
+| DELETE | `/api/apis/<api_id>`                            | Delete a stored API                            |
+| GET    | `/api/apis/<api_id>/schemas`                    | List schemas for an API                        |
+| POST   | `/api/apis/<api_id>/schemas`                    | Store a schema for an API                      |
+| GET    | `/api/schemas/<schema_id>`                      | Get one stored schema                          |
+| GET    | `/api/schemas/<schema_id>/fields`               | Get extracted fields for a schema              |
+| POST   | `/api/compatibility/compare`                    | Compare stored API schemas and save the result |
+| GET    | `/api/compatibility/results`                    | List stored compatibility results              |
+| GET    | `/api/compatibility/matrix`                     | Get the stored API compatibility matrix        |
+| GET    | `/api/mappings/<source_api_id>/<target_api_id>` | Get mapping rules                              |
+| POST   | `/api/mappings/<source_api_id>/<target_api_id>` | Store mapping rules                            |
+| DELETE | `/api/mappings/<source_api_id>/<target_api_id>` | Delete mapping rules                           |
+| GET    | `/api/transforms`                               | List transform runs                            |
+| GET    | `/api/transforms/<run_id>`                      | Get one transform run                          |
 
 ---
 

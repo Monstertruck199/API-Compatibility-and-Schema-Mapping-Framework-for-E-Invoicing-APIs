@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Cache;
 
 class AtomicCacheLockTest extends TestCase
 {
-
     /**
      * Test that Atomic::set() prevents duplicate requests.
      */
@@ -106,7 +105,7 @@ class AtomicCacheLockTest extends TestCase
     {
         // This test validates the fallback mechanism in Atomic class
         // When Redis is unavailable, it should use Cache::add()
-        
+
         $key = 'fallback-test-' . uniqid();
 
         // Clear any existing key
@@ -133,7 +132,7 @@ class AtomicCacheLockTest extends TestCase
         $clientId = 'client_123';
         $ip = '127.0.0.1';
         $companyKey = 'test_company';
-        
+
         $hashKey = implode(',', $invoiceIds);
         $hash = $ip . "|" . $hashKey . "|" . $clientId . "|" . $companyKey;
 
@@ -160,7 +159,7 @@ class AtomicCacheLockTest extends TestCase
 
         // First payment: invoices A and B
         $hash1 = $ip . "|" . implode(',', ['inv_A', 'inv_B']) . "|" . $clientId . "|" . $companyKey;
-        
+
         // Second payment: invoices C and D
         $hash2 = $ip . "|" . implode(',', ['inv_C', 'inv_D']) . "|" . $clientId . "|" . $companyKey;
 

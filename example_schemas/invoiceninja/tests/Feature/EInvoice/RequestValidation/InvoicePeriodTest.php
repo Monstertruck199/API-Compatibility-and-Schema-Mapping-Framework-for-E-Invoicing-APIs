@@ -20,7 +20,7 @@ class InvoicePeriodTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->makeTestData();
@@ -35,19 +35,19 @@ class InvoicePeriodTest extends TestCase
         $data['client_id'] = $this->client->hashed_id;
         $data['e_invoice'] = [
             'Invoice' => [
-             'InvoicePeriod' => [
-                [
-                    'StartDate' => '2025-01-01',
-                    'EndDate' => '2025-01-01',
-                    ]
-             ]
-            ]
+                'InvoicePeriod' => [
+                    [
+                        'StartDate' => '2025-01-01',
+                        'EndDate' => '2025-01-01',
+                    ],
+                ],
+            ],
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/invoices/'.$this->invoice->hashed_id, $data);
+        ])->putJson('/api/v1/invoices/' . $this->invoice->hashed_id, $data);
 
         $response->assertStatus(200);
 
@@ -63,20 +63,20 @@ class InvoicePeriodTest extends TestCase
         $data['client_id'] = $this->client->hashed_id;
         $data['e_invoice'] = [
             'Invoice' => [
-             'InvoicePeriod' => [
-                [
-                    'StartDate' => '2025-01-01',
-                    'EndDate' => '2025-01-01',
-                    'Description' => 'first day of this month|last day of this month'
-                ]
-             ]
-            ]
+                'InvoicePeriod' => [
+                    [
+                        'StartDate' => '2025-01-01',
+                        'EndDate' => '2025-01-01',
+                        'Description' => 'first day of this month|last day of this month',
+                    ],
+                ],
+            ],
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/recurring_invoices/'.$this->recurring_invoice->hashed_id, $data);
+        ])->putJson('/api/v1/recurring_invoices/' . $this->recurring_invoice->hashed_id, $data);
 
         $arr = $response->json();
 
@@ -102,15 +102,15 @@ class InvoicePeriodTest extends TestCase
                 'InvoicePeriod' => [
                     'notarealvar' => '2025-01-01',
                     'worseVar' => '2025-01-01',
-                    'Description' => 'Mustafa'
-                ]
-            ]
+                    'Description' => 'Mustafa',
+                ],
+            ],
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/invoices/'.$this->invoice->hashed_id, $data);
+        ])->putJson('/api/v1/invoices/' . $this->invoice->hashed_id, $data);
 
         $arr = $response->json();
 

@@ -134,20 +134,20 @@ class InvoiceTest extends TestCase
         $this->assertEquals(100000000, $arr['data']['balance']);
 
         $data = [
-                'status_id' => 1,
-                'number' => '',
-                'discount' => 100000000,
-                'is_amount_discount' => 1,
-                'po_number' => '3434343',
-                'public_notes' => 'notes',
-                'is_deleted' => 0,
-                'custom_value1' => 0,
-                'custom_value2' => 0,
-                'custom_value3' => 0,
-                'custom_value4' => 0,
-                'client_id' => $this->client->hashed_id,
-                'line_items' => $line_items,
-            ];
+            'status_id' => 1,
+            'number' => '',
+            'discount' => 100000000,
+            'is_amount_discount' => 1,
+            'po_number' => '3434343',
+            'public_notes' => 'notes',
+            'is_deleted' => 0,
+            'custom_value1' => 0,
+            'custom_value2' => 0,
+            'custom_value3' => 0,
+            'custom_value4' => 0,
+            'client_id' => $this->client->hashed_id,
+            'line_items' => $line_items,
+        ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
@@ -172,20 +172,20 @@ class InvoiceTest extends TestCase
         $line_items[] = $item;
 
         $data = [
-                'status_id' => 1,
-                'number' => '',
-                'discount' => 0,
-                'is_amount_discount' => 1,
-                'po_number' => '3434343',
-                'public_notes' => 'notes',
-                'is_deleted' => 0,
-                'custom_value1' => 0,
-                'custom_value2' => 0,
-                'custom_value3' => 0,
-                'custom_value4' => 0,
-                'client_id' => $this->client->hashed_id,
-                'line_items' => $line_items,
-            ];
+            'status_id' => 1,
+            'number' => '',
+            'discount' => 0,
+            'is_amount_discount' => 1,
+            'po_number' => '3434343',
+            'public_notes' => 'notes',
+            'is_deleted' => 0,
+            'custom_value1' => 0,
+            'custom_value2' => 0,
+            'custom_value3' => 0,
+            'custom_value4' => 0,
+            'client_id' => $this->client->hashed_id,
+            'line_items' => $line_items,
+        ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
@@ -228,9 +228,9 @@ class InvoiceTest extends TestCase
         ];
 
         $response = $this->withHeaders([
-        'X-API-SECRET' => config('ninja.api_secret'),
-        'X-API-TOKEN' => $this->token,
-            ])->postJson('/api/v1/invoices/bulk', $data)
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->postJson('/api/v1/invoices/bulk', $data)
             ->assertStatus(200);
 
         $arr = $response->json();
@@ -266,7 +266,7 @@ class InvoiceTest extends TestCase
             'custom_value3' => 0,
             'custom_value4' => 0,
             'status' => 1,
-            'project_id' => $p->hashed_id
+            'project_id' => $p->hashed_id,
             // 'client_id' => $this->encodePrimaryKey($this->client->id),
         ];
 
@@ -375,7 +375,7 @@ class InvoiceTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/invoices/'.$this->invoice->hashed_id.'/archive', )
+        ])->get('/api/v1/invoices/' . $this->invoice->hashed_id . '/archive', )
         ->assertStatus(200);
     }
 
@@ -467,14 +467,14 @@ class InvoiceTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/invoices/'.$this->encodePrimaryKey($this->invoice->id));
+        ])->get('/api/v1/invoices/' . $this->encodePrimaryKey($this->invoice->id));
 
         $response->assertStatus(200);
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/invoices/'.$this->encodePrimaryKey($this->invoice->id).'/edit');
+        ])->get('/api/v1/invoices/' . $this->encodePrimaryKey($this->invoice->id) . '/edit');
 
         $response->assertStatus(200);
 
@@ -487,7 +487,7 @@ class InvoiceTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/invoices/'.$this->encodePrimaryKey($this->invoice->id), $invoice_update)
+        ])->put('/api/v1/invoices/' . $this->encodePrimaryKey($this->invoice->id), $invoice_update)
             ->assertStatus(200);
     }
 
@@ -520,7 +520,7 @@ class InvoiceTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/invoices/'.$arr['data']['id'], $invoice)
+        ])->put('/api/v1/invoices/' . $arr['data']['id'], $invoice)
             ->assertStatus(200);
 
         $response = $this->withHeaders([
@@ -535,7 +535,7 @@ class InvoiceTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->delete('/api/v1/invoices/'.$this->encodePrimaryKey($this->invoice->id));
+        ])->delete('/api/v1/invoices/' . $this->encodePrimaryKey($this->invoice->id));
 
         $response->assertStatus(200);
     }
@@ -576,7 +576,7 @@ class InvoiceTest extends TestCase
             $response = $this->withHeaders([
                 'X-API-SECRET' => config('ninja.api_secret'),
                 'X-API-TOKEN' => $this->token,
-            ])->put('/api/v1/invoices/'.$arr['data']['id'], $data)
+            ])->put('/api/v1/invoices/' . $arr['data']['id'], $data)
             ->assertStatus(302);
         } catch (ValidationException $e) {
             $message = json_decode($e->validator->getMessageBag(), 1);
@@ -594,7 +594,7 @@ class InvoiceTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/invoices/'.$arr['data']['id'], $data)
+        ])->put('/api/v1/invoices/' . $arr['data']['id'], $data)
             ->assertStatus(200);
 
         $data = [
@@ -606,7 +606,7 @@ class InvoiceTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/invoices/'.$arr['data']['id'], $data)
+        ])->put('/api/v1/invoices/' . $arr['data']['id'], $data)
             ->assertStatus(200);
     }
 

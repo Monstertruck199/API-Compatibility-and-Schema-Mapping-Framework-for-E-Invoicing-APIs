@@ -21,7 +21,6 @@ use Tests\TestCase;
  */
 class BaseSettingsTest extends TestCase
 {
-
     public $settings;
 
     protected function setUp(): void

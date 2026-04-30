@@ -38,7 +38,7 @@ class RecurringQuoteTest extends TestCase
         Model::reguard();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->makeTestData();
@@ -76,14 +76,14 @@ class RecurringQuoteTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/recurring_quotes/'.$this->encodePrimaryKey($RecurringQuote->id));
+        ])->get('/api/v1/recurring_quotes/' . $this->encodePrimaryKey($RecurringQuote->id));
 
         $response->assertStatus(200);
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/recurring_quotes/'.$this->encodePrimaryKey($RecurringQuote->id).'/edit');
+        ])->get('/api/v1/recurring_quotes/' . $this->encodePrimaryKey($RecurringQuote->id) . '/edit');
 
         $response->assertStatus(200);
 
@@ -97,13 +97,13 @@ class RecurringQuoteTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/recurring_quotes/'.$this->encodePrimaryKey($RecurringQuote->id), $RecurringQuote_update)
+        ])->put('/api/v1/recurring_quotes/' . $this->encodePrimaryKey($RecurringQuote->id), $RecurringQuote_update)
             ->assertStatus(200);
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->delete('/api/v1/recurring_quotes/'.$this->encodePrimaryKey($RecurringQuote->id));
+        ])->delete('/api/v1/recurring_quotes/' . $this->encodePrimaryKey($RecurringQuote->id));
 
         $response->assertStatus(200);
     }

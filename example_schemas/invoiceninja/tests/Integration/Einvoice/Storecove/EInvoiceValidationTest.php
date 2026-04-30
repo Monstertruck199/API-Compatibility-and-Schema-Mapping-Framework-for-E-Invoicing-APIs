@@ -84,7 +84,7 @@ class EInvoiceValidationTest extends TestCase
         $el = new EntityLevel();
         $validation = $el->checkCompany($company);
 
-        $this->assertTrue(isset($company->legal_entity_id)); 
+        $this->assertTrue(isset($company->legal_entity_id));
         $this->assertTrue(intval($company->legal_entity_id) > 0);
         $this->assertTrue($validation['passes']);
 

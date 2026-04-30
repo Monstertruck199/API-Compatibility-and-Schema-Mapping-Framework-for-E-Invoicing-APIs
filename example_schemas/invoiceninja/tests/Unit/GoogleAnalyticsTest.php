@@ -62,9 +62,9 @@ class GoogleAnalyticsTest extends TestCase
 
         $base = "v=1&tid={$analytics_id}&cid={$client->id}&cu={$currency_code}&ti={$entity_number}";
 
-        $url = $base."&t=transaction&ta=ninja&tr={$amount}";
+        $url = $base . "&t=transaction&ta=ninja&tr={$amount}";
 
-        $url = $base."&t=item&in={$item}&ip={$amount}&iq=1";
+        $url = $base . "&t=item&in={$item}&ip={$amount}&iq=1";
 
         $this->assertNotNull($url);
     }

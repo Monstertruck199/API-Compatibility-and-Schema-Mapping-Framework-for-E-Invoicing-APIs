@@ -42,7 +42,7 @@ class QuickbooksIngestTest extends TestCase
     {
         $data = (json_decode(file_get_contents(base_path('tests/Feature/Import/customers.json')), true))['Customer'];
         $hash = Str::random(32);
-        Cache::put($hash.'-client', base64_encode(json_encode($data)), 360);
+        Cache::put($hash . '-client', base64_encode(json_encode($data)), 360);
         QuickbooksIngest::dispatch([
             'hash' => $hash,
             'column_map' => ['client' => ['mapping' => []]],

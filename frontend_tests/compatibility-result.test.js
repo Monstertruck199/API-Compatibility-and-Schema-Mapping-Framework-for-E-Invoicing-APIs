@@ -8,16 +8,16 @@ const {
   renderCompatibilityResult,
   runCompatibilityComparison,
   renderCompatibilityOutput
-} = require('../frontend/compatibility-result'); 
+} = require('../frontend/compatibility-result')
 
 beforeEach(() => {
   document.body.innerHTML = `
     <div id="compat-root"></div>
-  `;
+  `
 
-  global.fetch = jest.fn();
-  global.alert = jest.fn();
-  global.API_BASE_URL = 'http://localhost:5000';
+  global.fetch = jest.fn()
+  global.alert = jest.fn()
+  global.API_BASE_URL = 'http://localhost:5000'
 
   global.svSchemas = [
     {
@@ -28,45 +28,45 @@ beforeEach(() => {
       name: 'Target API',
       schema: { properties: { b: { type: 'number' } } }
     }
-  ];
+  ]
 
-  global.lastComparison = null;
-});
+  global.lastComparison = null
+})
 
 afterEach(() => {
-  jest.clearAllMocks();
-});
+  jest.clearAllMocks()
+})
 
 test('schemaOptions renders schema options', () => {
-  const html = schemaOptions();
+  const html = schemaOptions()
 
-  expect(html).toContain('Source API');
-  expect(html).toContain('Target API');
-});
+  expect(html).toContain('Source API')
+  expect(html).toContain('Target API')
+})
 
 test('schemaOptions marks selected schema', () => {
-  const html = schemaOptions('Target API');
+  const html = schemaOptions('Target API')
 
-  expect(html).toContain('selected');
-  expect(html).toContain('Target API');
-});
+  expect(html).toContain('selected')
+  expect(html).toContain('Target API')
+})
 
 test('badgeClass returns correct class', () => {
-  expect(badgeClass('Directly compatible')).toBe('ok');
-  expect(badgeClass('Compatible with mapping')).toBe('warn');
-  expect(badgeClass('Anything else')).toBe('bad');
-});
+  expect(badgeClass('Directly compatible')).toBe('ok')
+  expect(badgeClass('Compatible with mapping')).toBe('warn')
+  expect(badgeClass('Anything else')).toBe('bad')
+})
 
 test('renderCompatibilityResult renders selectors', () => {
-  renderCompatibilityResult();
+  renderCompatibilityResult()
 
-  const root = document.getElementById('compat-root');
+  const root = document.getElementById('compat-root')
 
-  expect(root.innerHTML).toContain('Source schema');
-  expect(root.innerHTML).toContain('Target schema');
-  expect(root.querySelector('#compat-source')).not.toBeNull();
-  expect(root.querySelector('#compat-target')).not.toBeNull();
-});
+  expect(root.innerHTML).toContain('Source schema')
+  expect(root.innerHTML).toContain('Target schema')
+  expect(root.querySelector('#compat-source')).not.toBeNull()
+  expect(root.querySelector('#compat-target')).not.toBeNull()
+})
 
 test('renderCompatibilityResult auto-runs comparison when >= 2 schemas', async () => {
   fetch.mockResolvedValue({
@@ -82,20 +82,20 @@ test('renderCompatibilityResult auto-runs comparison when >= 2 schemas', async (
       },
       issues: []
     })
-  });
+  })
 
-  renderCompatibilityResult();
+  renderCompatibilityResult()
 
-  await Promise.resolve();
+  await Promise.resolve()
 
-  expect(fetch).toHaveBeenCalled();
-});
+  expect(fetch).toHaveBeenCalled()
+})
 
 test('runCompatibilityComparison calls API and updates UI', async () => {
-  renderCompatibilityResult();
+  renderCompatibilityResult()
 
-  document.getElementById('compat-source').value = '0';
-  document.getElementById('compat-target').value = '1';
+  document.getElementById('compat-source').value = '0'
+  document.getElementById('compat-target').value = '1'
 
   fetch.mockResolvedValue({
     ok: true,
@@ -110,62 +110,62 @@ test('runCompatibilityComparison calls API and updates UI', async () => {
       },
       issues: []
     })
-  });
+  })
 
-  await runCompatibilityComparison();
+  await runCompatibilityComparison()
 
   expect(fetch).toHaveBeenCalledWith(
     'http://localhost:5000/api/compare',
     expect.objectContaining({
       method: 'POST'
     })
-  );
+  )
 
-  const output = document.getElementById('compat-result-output');
-  expect(output.innerHTML).toContain('Directly compatible');
-});
+  const output = document.getElementById('compat-result-output')
+  expect(output.innerHTML).toContain('Directly compatible')
+})
 
 test('runCompatibilityComparison handles API failure', async () => {
-  renderCompatibilityResult();
+  renderCompatibilityResult()
 
-  document.getElementById('compat-source').value = '0';
-  document.getElementById('compat-target').value = '1';
+  document.getElementById('compat-source').value = '0'
+  document.getElementById('compat-target').value = '1'
 
   fetch.mockResolvedValue({
     ok: false,
     json: async () => ({ error: 'Comparison failed' })
-  });
+  })
 
-  await runCompatibilityComparison();
+  await runCompatibilityComparison()
 
-  expect(alert).toHaveBeenCalledWith('Comparison failed');
-});
+  expect(alert).toHaveBeenCalledWith('Comparison failed')
+})
 
 test('runCompatibilityComparison handles network error', async () => {
-  renderCompatibilityResult();
+  renderCompatibilityResult()
 
-  document.getElementById('compat-source').value = '0';
-  document.getElementById('compat-target').value = '1';
+  document.getElementById('compat-source').value = '0'
+  document.getElementById('compat-target').value = '1'
 
-  fetch.mockRejectedValue(new Error('Network error'));
+  fetch.mockRejectedValue(new Error('Network error'))
 
-  await runCompatibilityComparison();
+  await runCompatibilityComparison()
 
-  expect(alert).toHaveBeenCalled();
-});
+  expect(alert).toHaveBeenCalled()
+})
 
 test('renderCompatibilityOutput shows empty state', () => {
-  renderCompatibilityResult();
+  renderCompatibilityResult()
 
-  renderCompatibilityOutput();
+  renderCompatibilityOutput()
 
-  const output = document.getElementById('compat-result-output');
+  const output = document.getElementById('compat-result-output')
 
-  expect(output.innerHTML).toContain('No comparison yet');
-});
+  expect(output.innerHTML).toContain('No comparison yet')
+})
 
 test('renderCompatibilityOutput renders comparison result', () => {
-  renderCompatibilityResult();
+  renderCompatibilityResult()
 
   global.lastComparison = {
     source: 'Source API',
@@ -182,20 +182,20 @@ test('renderCompatibilityOutput renders comparison result', () => {
         message: 'Missing required field'
       }
     ]
-  };
+  }
 
-  renderCompatibilityOutput();
+  renderCompatibilityOutput()
 
-  const output = document.getElementById('compat-result-output');
+  const output = document.getElementById('compat-result-output')
 
-  expect(output.innerHTML).toContain('Source API');
-  expect(output.innerHTML).toContain('Target API');
-  expect(output.innerHTML).toContain('Compatible with mapping');
-  expect(output.innerHTML).toContain('Missing required field');
-});
+  expect(output.innerHTML).toContain('Source API')
+  expect(output.innerHTML).toContain('Target API')
+  expect(output.innerHTML).toContain('Compatible with mapping')
+  expect(output.innerHTML).toContain('Missing required field')
+})
 
 test('renderCompatibilityOutput handles no issues', () => {
-  renderCompatibilityResult();
+  renderCompatibilityResult()
 
   global.lastComparison = {
     source: 'Source API',
@@ -207,11 +207,11 @@ test('renderCompatibilityOutput handles no issues', () => {
       informational_issues: 0
     },
     issues: []
-  };
+  }
 
-  renderCompatibilityOutput();
+  renderCompatibilityOutput()
 
-  const output = document.getElementById('compat-result-output');
+  const output = document.getElementById('compat-result-output')
 
-  expect(output.innerHTML).toContain('Schemas align');
-});
+  expect(output.innerHTML).toContain('Schemas align')
+})

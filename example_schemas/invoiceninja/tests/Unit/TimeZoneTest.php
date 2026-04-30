@@ -133,7 +133,7 @@ class TimeZoneTest extends TestCase
         'Asia/Vladivostok' => 'Asia/Vladivostok',
         'Asia/Magadan' => 'Asia/Magadan',
         'Pacific/Auckland' => 'Pacific/Auckland',
-        'Pacific/Fiji' => 'Pacific/Fiji'
+        'Pacific/Fiji' => 'Pacific/Fiji',
     ];
 
     protected function setUp(): void

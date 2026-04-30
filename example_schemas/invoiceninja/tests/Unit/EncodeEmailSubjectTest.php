@@ -52,7 +52,7 @@ class EncodeEmailSubjectTest extends TestCase
 
             // Mixed flags and symbols
             "Conference in Paris 🇫🇷 ✈️" => "Conference in Paris 🇫🇷 ✈️",
-            "Nouvelle facture de Réact" => "Nouvelle facture de Réact"
+            "Nouvelle facture de Réact" => "Nouvelle facture de Réact",
         ];
 
         foreach ($testCases as $input => $expected) {
@@ -83,7 +83,7 @@ class EncodeEmailSubjectTest extends TestCase
 
             // Mixed languages
             "Café & Niño résumé" => "Café & Niño résumé",
-            "Nouvelle facture de Réact" => "Nouvelle facture de Réact"
+            "Nouvelle facture de Réact" => "Nouvelle facture de Réact",
         ];
 
         foreach ($testCases as $input => $expected) {
@@ -114,7 +114,7 @@ class EncodeEmailSubjectTest extends TestCase
 
             // Arrows and symbols
             "Process → Complete ✓" => "Process → Complete ✓",
-            "Nouvelle facture de Réact" => "Nouvelle facture de Réact"
+            "Nouvelle facture de Réact" => "Nouvelle facture de Réact",
         ];
 
         foreach ($testCases as $input => $expected) {
@@ -145,7 +145,7 @@ class EncodeEmailSubjectTest extends TestCase
 
             // Complex business scenario
             "Réunion équipe → 15h30 📊 🎯" => "Réunion équipe → 15h30 📊 🎯",
-            "Nouvelle facture de Réact" => "Nouvelle facture de Réact"
+            "Nouvelle facture de Réact" => "Nouvelle facture de Réact",
         ];
 
         foreach ($testCases as $input => $expected) {
@@ -158,7 +158,7 @@ class EncodeEmailSubjectTest extends TestCase
             $this->assertEquals(
                 mb_strlen($expected, 'UTF-8'),
                 mb_strlen($result, 'UTF-8'),
-                "Character count mismatch for: {$input}"
+                "Character count mismatch for: {$input}",
             );
         }
     }
@@ -193,7 +193,7 @@ class EncodeEmailSubjectTest extends TestCase
 
             // International content
             "国际业务 🌍 Négociation €500K 💼",
-            "Nouvelle facture de Réact" => "Nouvelle facture de Réact"
+            "Nouvelle facture de Réact" => "Nouvelle facture de Réact",
         ];
 
         foreach ($testCases as $input) {
@@ -234,7 +234,7 @@ class EncodeEmailSubjectTest extends TestCase
 
             // Newlines and tabs (should be preserved)
             "Line 1\nLine 2\tTabbed" => "Line 1\nLine 2\tTabbed",
-            "Nouvelle facture de Réact" => "Nouvelle facture de Réact"
+            "Nouvelle facture de Réact" => "Nouvelle facture de Réact",
         ];
 
         foreach ($testCases as $input => $expected) {

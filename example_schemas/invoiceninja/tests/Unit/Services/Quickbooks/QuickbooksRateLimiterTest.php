@@ -12,7 +12,6 @@ use App\Services\Quickbooks\QuickbooksRateLimiter;
  */
 class QuickbooksRateLimiterTest extends TestCase
 {
-
     private QuickbooksRateLimiter $rateLimiter;
     private string $testRealmId = 'test-realm-123';
 
@@ -32,13 +31,13 @@ class QuickbooksRateLimiterTest extends TestCase
         parent::tearDown();
     }
 
-    
+
     public function test_it_allows_requests_when_under_rate_limit()
     {
         $this->assertTrue($this->rateLimiter->canMakeRequest());
     }
 
-    
+
     public function test_it_tracks_requests_correctly()
     {
         // Make 10 requests
@@ -52,7 +51,7 @@ class QuickbooksRateLimiterTest extends TestCase
         $this->assertEquals(400, $status['max_requests']); // 80% of 500
     }
 
-    
+
     public function test_it_blocks_requests_when_at_rate_limit()
     {
         // Simulate hitting the limit (400 = 80% of 500)
@@ -63,7 +62,7 @@ class QuickbooksRateLimiterTest extends TestCase
         $this->assertFalse($this->rateLimiter->canMakeRequest());
     }
 
-    
+
     public function test_it_tracks_concurrent_requests()
     {
         $token1 = $this->rateLimiter->acquireRequest();
@@ -86,7 +85,7 @@ class QuickbooksRateLimiterTest extends TestCase
         $this->assertEquals(0, $status['concurrent']);
     }
 
-    
+
     public function test_it_blocks_requests_when_at_concurrent_limit()
     {
         // Acquire 8 concurrent requests (80% of 10)
@@ -104,7 +103,7 @@ class QuickbooksRateLimiterTest extends TestCase
         $this->assertTrue($this->rateLimiter->canMakeRequest());
     }
 
-    
+
     public function test_it_enters_backoff_mode()
     {
         $this->assertFalse($this->rateLimiter->isInBackoff());
@@ -115,7 +114,7 @@ class QuickbooksRateLimiterTest extends TestCase
         $this->assertFalse($this->rateLimiter->canMakeRequest());
     }
 
-    
+
     public function test_it_calculates_backoff_seconds_correctly()
     {
         $this->rateLimiter->enterBackoff(60);
@@ -126,7 +125,7 @@ class QuickbooksRateLimiterTest extends TestCase
         $this->assertLessThanOrEqual(60, $backoffSeconds);
     }
 
-    
+
     public function test_it_provides_recommended_delay_when_near_limit()
     {
         // Use 75% of limit (should trigger delay calculation)
@@ -144,7 +143,7 @@ class QuickbooksRateLimiterTest extends TestCase
         $this->assertGreaterThanOrEqual(0, $delay);
     }
 
-    
+
     public function test_it_provides_zero_delay_when_well_under_limit()
     {
         // Only use 50% of limit (well under 70% threshold)
@@ -158,7 +157,7 @@ class QuickbooksRateLimiterTest extends TestCase
         $this->assertEquals(0, $delay);
     }
 
-    
+
     public function test_it_blocks_at_exactly_the_safety_limit()
     {
         // Use exactly the safety limit (400 = 80% of 500)
@@ -174,7 +173,7 @@ class QuickbooksRateLimiterTest extends TestCase
         $this->assertEquals(400, $status['max_requests']);
     }
 
-    
+
     public function test_it_resets_correctly()
     {
         // Track some requests
@@ -194,7 +193,7 @@ class QuickbooksRateLimiterTest extends TestCase
         $this->assertFalse($status['in_backoff']);
     }
 
-    
+
     public function test_it_provides_complete_status()
     {
         $this->rateLimiter->trackRequest();
@@ -217,7 +216,7 @@ class QuickbooksRateLimiterTest extends TestCase
         $this->rateLimiter->releaseRequest($token);
     }
 
-    
+
     public function test_different_realms_have_separate_rate_limits()
     {
         $rateLimiter1 = new QuickbooksRateLimiter('realm-1');
@@ -235,7 +234,7 @@ class QuickbooksRateLimiterTest extends TestCase
         $this->assertEquals(0, $status2['requests']); // Separate realm, no requests
     }
 
-    
+
     public function test_it_waits_for_capacity()
     {
         // This test would need to mock Cache TTL behavior

@@ -305,14 +305,14 @@ class LocationApiTest extends TestCase
         $response->assertStatus(422);
 
         $data = [
-           'name' => 'Test Location',
-           'address1' => '123 Test St',
-           'address2' => 'Suite 100',
-           'city' => 'Test City',
-           'state' => 'TS',
-           'postal_code' => '12345',
-           'country_id' => '840', // USA
-           'client_id' => $this->client->id,
+            'name' => 'Test Location',
+            'address1' => '123 Test St',
+            'address2' => 'Suite 100',
+            'city' => 'Test City',
+            'state' => 'TS',
+            'postal_code' => '12345',
+            'country_id' => '840', // USA
+            'client_id' => $this->client->id,
         ];
 
         $response = $this->withHeaders([

@@ -30,7 +30,7 @@ class ArrayFiltersTest extends TestCase
             Payment::class => [
                 'is_deleted',
                 'amount',
-            ]
+            ],
         ],
         '5.7.35' => [
             Payment::class => [
@@ -44,7 +44,7 @@ class ArrayFiltersTest extends TestCase
             ],
             Design::class => [
                 'is_template',
-            ]
+            ],
         ],
         '5.7.36' => [
             Payment::class => [
@@ -80,12 +80,12 @@ class ArrayFiltersTest extends TestCase
                         "href" => "https://uri.paypal.com/v1/customer/partners/QX4A9KG89BHLN/merchant-integrations/Y7MGFXVS8VHYU",
                         "rel" => "self",
                         "method" => "GET",
-                        "description" => "Get the merchant status information of merchants onboarded by this partner"
-                    ]
+                        "description" => "Get the merchant status information of merchants onboarded by this partner",
+                    ],
                 ],
-                "merchant_id" => "ELAMYJUN78D6G"
+                "merchant_id" => "ELAMYJUN78D6G",
             ],
-            "links" => []
+            "links" => [],
         ];
 
 

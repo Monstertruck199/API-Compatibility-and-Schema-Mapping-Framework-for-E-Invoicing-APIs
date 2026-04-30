@@ -32,12 +32,11 @@ import pytest
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 DATA_DIR = Path(__file__).resolve().parent
 
-from compatibility_engine import compare_schemas, DIRECT, MAPPING, INCOMPATIBLE
+from compatibility_engine import DIRECT, INCOMPATIBLE, MAPPING, compare_schemas
 from extract_JSON_schema import infer_schema
 from extract_XML_schema import extract_schema_from_xml
 from mapping_engine import build_mapping
 from schema_transformer import build_transformer, generate_transform_code
-
 
 # ===========================================================================
 # Fixtures – load data files and build schemas once per session

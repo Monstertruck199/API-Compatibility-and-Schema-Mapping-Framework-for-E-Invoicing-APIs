@@ -45,7 +45,7 @@ class RefundTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         Session::start();
@@ -105,16 +105,16 @@ class RefundTest extends TestCase
             'client_id' => $this->client->hashed_id,
             'invoices' => [
                 [
-                'invoice_id' => $i->hashed_id,
-                'amount' => 300
+                    'invoice_id' => $i->hashed_id,
+                    'amount' => 300,
                 ],
-            ]
+            ],
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/payments/'.$payment_id, $data);
+        ])->putJson('/api/v1/payments/' . $payment_id, $data);
 
         $response->assertStatus(200);
 
@@ -159,16 +159,16 @@ class RefundTest extends TestCase
             'client_id' => $this->client->hashed_id,
             'invoices' => [
                 [
-                'invoice_id' => $i->hashed_id,
-                'amount' => 200
+                    'invoice_id' => $i->hashed_id,
+                    'amount' => 200,
                 ],
-            ]
+            ],
         ];
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/payments/'.$payment_id, $data);
+        ])->putJson('/api/v1/payments/' . $payment_id, $data);
 
         $response->assertStatus(200);
 
@@ -865,7 +865,7 @@ class RefundTest extends TestCase
                     'invoice_id' => $i->hashed_id,
                     'amount' => 10,
                 ],
-            ]
+            ],
         ];
 
         $response = $this->withHeaders([
@@ -949,7 +949,7 @@ class RefundTest extends TestCase
                     'invoice_id' => $i->hashed_id,
                     'amount' => 200,
                 ],
-            ]
+            ],
         ];
 
         $response = $this->withHeaders([

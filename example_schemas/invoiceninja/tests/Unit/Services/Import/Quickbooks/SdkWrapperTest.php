@@ -37,7 +37,7 @@ class SdkWrapperTest extends TestCase
     {
         $data = json_decode(
             file_get_contents(base_path('tests/Mock/Quickbooks/Data/customers.json')),
-            true
+            true,
         );
         $count = count($data);
         $this->sdkMock->shouldReceive('Query')->andReturnUsing(function ($val) use ($count, $data) {

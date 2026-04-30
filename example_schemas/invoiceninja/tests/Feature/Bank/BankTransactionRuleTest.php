@@ -36,7 +36,7 @@ class BankTransactionRuleTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->withoutExceptionHandling();
@@ -48,10 +48,10 @@ class BankTransactionRuleTest extends TestCase
     {
 
         $bi = BankIntegration::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                'account_id' => $this->account->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'account_id' => $this->account->id,
+        ]);
 
         $hash = Str::random(32);
         $rand_amount = rand(1000, 10000000);
@@ -62,7 +62,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => $hash,
             'base_type' => 'CREDIT',
-            'amount' => $rand_amount
+            'amount' => $rand_amount,
         ]);
 
         $this->assertNull($bt->payment_id);
@@ -77,8 +77,8 @@ class BankTransactionRuleTest extends TestCase
                 [
                     'search_key' => '$invoice.number',
                     'operator' => 'starts_with',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $i = Invoice::factory()->create([
@@ -89,7 +89,7 @@ class BankTransactionRuleTest extends TestCase
             'balance' => $rand_amount,
             'number' => $hash,
             'status_id' => 2,
-            'custom_value1' => substr($hash, 0, 8)
+            'custom_value1' => substr($hash, 0, 8),
         ]);
 
         $this->assertEquals(BankTransaction::STATUS_UNMATCHED, $bt->status_id);
@@ -108,10 +108,10 @@ class BankTransactionRuleTest extends TestCase
     {
 
         $bi = BankIntegration::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                'account_id' => $this->account->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'account_id' => $this->account->id,
+        ]);
 
         $hash = Str::random(32);
         $rand_amount = rand(1000, 10000000);
@@ -122,7 +122,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => $hash,
             'base_type' => 'CREDIT',
-            'amount' => $rand_amount
+            'amount' => $rand_amount,
         ]);
 
         $this->assertNull($bt->payment_id);
@@ -137,8 +137,8 @@ class BankTransactionRuleTest extends TestCase
                 [
                     'search_key' => '$invoice.number',
                     'operator' => 'contains',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $i = Invoice::factory()->create([
@@ -149,7 +149,7 @@ class BankTransactionRuleTest extends TestCase
             'balance' => $rand_amount,
             'number' => $hash,
             'status_id' => 2,
-            'custom_value1' => substr($hash, 0, 8)
+            'custom_value1' => substr($hash, 0, 8),
         ]);
 
         $this->assertEquals(BankTransaction::STATUS_UNMATCHED, $bt->status_id);
@@ -168,10 +168,10 @@ class BankTransactionRuleTest extends TestCase
     {
 
         $bi = BankIntegration::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                'account_id' => $this->account->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'account_id' => $this->account->id,
+        ]);
 
         $hash = Str::random(32);
         $rand_amount = rand(1000, 10000000);
@@ -182,7 +182,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => $hash,
             'base_type' => 'CREDIT',
-            'amount' => $rand_amount
+            'amount' => $rand_amount,
         ]);
 
         $this->assertNull($bt->payment_id);
@@ -197,8 +197,8 @@ class BankTransactionRuleTest extends TestCase
                 [
                     'search_key' => '$invoice.number',
                     'operator' => 'is',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $i = Invoice::factory()->create([
@@ -209,7 +209,7 @@ class BankTransactionRuleTest extends TestCase
             'balance' => $rand_amount,
             'number' => $hash,
             'status_id' => 2,
-            'custom_value1' => substr($hash, 0, 8)
+            'custom_value1' => substr($hash, 0, 8),
         ]);
 
         $this->assertEquals(BankTransaction::STATUS_UNMATCHED, $bt->status_id);
@@ -229,10 +229,10 @@ class BankTransactionRuleTest extends TestCase
     {
 
         $bi = BankIntegration::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                'account_id' => $this->account->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'account_id' => $this->account->id,
+        ]);
 
         $hash = Str::random(32);
         $rand_amount = rand(1000, 10000000);
@@ -243,7 +243,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => $hash,
             'base_type' => 'CREDIT',
-            'amount' => $rand_amount
+            'amount' => $rand_amount,
         ]);
 
         $this->assertNull($bt->payment_id);
@@ -258,8 +258,8 @@ class BankTransactionRuleTest extends TestCase
                 [
                     'search_key' => '$invoice.amount',
                     'operator' => '=',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $i = Invoice::factory()->create([
@@ -269,7 +269,7 @@ class BankTransactionRuleTest extends TestCase
             'amount' => $rand_amount,
             'balance' => $rand_amount,
             'status_id' => 2,
-            'custom_value1' => substr($hash, 0, 8)
+            'custom_value1' => substr($hash, 0, 8),
         ]);
 
         $this->assertEquals(BankTransaction::STATUS_UNMATCHED, $bt->status_id);
@@ -288,10 +288,10 @@ class BankTransactionRuleTest extends TestCase
     {
 
         $bi = BankIntegration::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                'account_id' => $this->account->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'account_id' => $this->account->id,
+        ]);
 
         $hash = Str::random(32);
         $rand_amount = rand(1000, 10000000);
@@ -302,7 +302,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => $hash,
             'base_type' => 'CREDIT',
-            'amount' => $rand_amount
+            'amount' => $rand_amount,
         ]);
 
         $this->assertNull($bt->payment_id);
@@ -317,8 +317,8 @@ class BankTransactionRuleTest extends TestCase
                 [
                     'search_key' => '$payment.custom1',
                     'operator' => 'starts_with',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $p = Payment::factory()->create([
@@ -326,7 +326,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'client_id' => $this->client->id,
             'amount' => $rand_amount,
-            'custom_value1' => substr($hash, 0, 8)
+            'custom_value1' => substr($hash, 0, 8),
         ]);
 
         $this->assertEquals(BankTransaction::STATUS_UNMATCHED, $bt->status_id);
@@ -345,10 +345,10 @@ class BankTransactionRuleTest extends TestCase
     {
 
         $bi = BankIntegration::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                'account_id' => $this->account->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'account_id' => $this->account->id,
+        ]);
 
         $hash = Str::random(32);
         $rand_amount = rand(1000, 10000000);
@@ -359,7 +359,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => $hash,
             'base_type' => 'CREDIT',
-            'amount' => $rand_amount
+            'amount' => $rand_amount,
         ]);
 
         $this->assertNull($bt->payment_id);
@@ -374,8 +374,8 @@ class BankTransactionRuleTest extends TestCase
                 [
                     'search_key' => '$payment.transaction_reference',
                     'operator' => 'starts_with',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $p = Payment::factory()->create([
@@ -383,7 +383,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'client_id' => $this->client->id,
             'amount' => $rand_amount,
-            'transaction_reference' => substr($hash, 0, 8)
+            'transaction_reference' => substr($hash, 0, 8),
         ]);
 
         $this->assertEquals(BankTransaction::STATUS_UNMATCHED, $bt->status_id);
@@ -403,10 +403,10 @@ class BankTransactionRuleTest extends TestCase
     {
 
         $bi = BankIntegration::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                'account_id' => $this->account->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'account_id' => $this->account->id,
+        ]);
 
         $hash = md5(time());
         $rand_amount = rand(1000, 10000000);
@@ -417,7 +417,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => $hash,
             'base_type' => 'CREDIT',
-            'amount' => $rand_amount
+            'amount' => $rand_amount,
         ]);
 
         $this->assertNull($bt->payment_id);
@@ -432,8 +432,8 @@ class BankTransactionRuleTest extends TestCase
                 [
                     'search_key' => '$payment.amount',
                     'operator' => '=',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $p = Payment::factory()->create([
@@ -441,7 +441,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'client_id' => $this->client->id,
             'amount' => $rand_amount,
-            'transaction_reference' => 'nein'
+            'transaction_reference' => 'nein',
         ]);
 
         $this->assertEquals(BankTransaction::STATUS_UNMATCHED, $bt->status_id);
@@ -461,10 +461,10 @@ class BankTransactionRuleTest extends TestCase
     {
 
         $bi = BankIntegration::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                'account_id' => $this->account->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'account_id' => $this->account->id,
+        ]);
 
         $hash = md5(time());
         $rand_amount = rand(1000, 10000000);
@@ -475,7 +475,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => $hash,
             'base_type' => 'CREDIT',
-            'amount' => $rand_amount
+            'amount' => $rand_amount,
         ]);
 
         $this->assertNull($bt->payment_id);
@@ -490,8 +490,8 @@ class BankTransactionRuleTest extends TestCase
                 [
                     'search_key' => '$payment.transaction_reference',
                     'operator' => 'is',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $p = Payment::factory()->create([
@@ -499,7 +499,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'client_id' => $this->client->id,
             'amount' => $rand_amount,
-            'transaction_reference' => $hash
+            'transaction_reference' => $hash,
         ]);
 
         $this->assertEquals(BankTransaction::STATUS_UNMATCHED, $bt->status_id);
@@ -519,10 +519,10 @@ class BankTransactionRuleTest extends TestCase
     {
 
         $bi = BankIntegration::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                'account_id' => $this->account->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'account_id' => $this->account->id,
+        ]);
 
         $hash = Str::random(32);
         $rand_amount = rand(1000, 10000000);
@@ -533,7 +533,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => $hash,
             'base_type' => 'CREDIT',
-            'amount' => $rand_amount
+            'amount' => $rand_amount,
         ]);
 
         $this->assertNull($bt->payment_id);
@@ -548,8 +548,8 @@ class BankTransactionRuleTest extends TestCase
                 [
                     'search_key' => '$payment.transaction_reference',
                     'operator' => 'contains',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $p = Payment::factory()->create([
@@ -557,7 +557,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'client_id' => $this->client->id,
             'amount' => $rand_amount,
-            'transaction_reference' => substr($hash, 3, 13)
+            'transaction_reference' => substr($hash, 3, 13),
         ]);
 
         $this->assertEquals(BankTransaction::STATUS_UNMATCHED, $bt->status_id);
@@ -579,10 +579,10 @@ class BankTransactionRuleTest extends TestCase
     {
 
         $bi = BankIntegration::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                'account_id' => $this->account->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'account_id' => $this->account->id,
+        ]);
 
         $hash = md5(time());
 
@@ -592,7 +592,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => $hash,
             'base_type' => 'CREDIT',
-            'amount' => 100
+            'amount' => 100,
         ]);
 
         $br = BankTransactionRule::factory()->create([
@@ -605,8 +605,8 @@ class BankTransactionRuleTest extends TestCase
                 [
                     'search_key' => '$invoice.number',
                     'operator' => 'is',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $bt = $bt->refresh();
@@ -633,7 +633,7 @@ class BankTransactionRuleTest extends TestCase
     {
         $data = [
             'action' => 'archive',
-            'ids' => [$this->bank_transaction_rule]
+            'ids' => [$this->bank_transaction_rule],
         ];
 
         $response = $this->withHeaders([
@@ -644,7 +644,7 @@ class BankTransactionRuleTest extends TestCase
 
         $data = [
             'ids' => [$this->bank_transaction_rule->hashed_id],
-            'action' => 'restore'
+            'action' => 'restore',
         ];
 
         $response = $this->withHeaders([
@@ -655,7 +655,7 @@ class BankTransactionRuleTest extends TestCase
 
         $data = [
             'ids' => [$this->bank_transaction_rule->hashed_id],
-            'action' => 'delete'
+            'action' => 'delete',
         ];
 
         $response = $this->withHeaders([
@@ -679,7 +679,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => 'HellO ThErE CowBoY',
             'base_type' => 'DEBIT',
-            'amount' => 100
+            'amount' => 100,
         ]);
 
         $br = BankTransactionRule::factory()->create([
@@ -696,8 +696,8 @@ class BankTransactionRuleTest extends TestCase
                     'search_key' => 'description',
                     'operator' => 'contains',
                     'value' => 'hello',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $bt = $bt->refresh();
@@ -731,8 +731,8 @@ class BankTransactionRuleTest extends TestCase
                     'search_key' => 'amount',
                     'operator' => '<=',
                     'value' => 100,
-                ]
-            ]
+                ],
+            ],
         ]);
 
 
@@ -746,15 +746,15 @@ class BankTransactionRuleTest extends TestCase
             "matches_on_all" => true,
             "name" => "TEST 22",
             "updated_at" => 1669060432,
-            "vendor_id" => $this->vendor->hashed_id
-            ];
+            "vendor_id" => $this->vendor->hashed_id,
+        ];
 
         $response = null;
 
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/bank_transaction_rules/'. $br->hashed_id. '?include=expense_category', $data);
+        ])->putJson('/api/v1/bank_transaction_rules/' . $br->hashed_id . '?include=expense_category', $data);
 
         $response->assertStatus(200);
 
@@ -775,7 +775,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => 'xx',
             'base_type' => 'DEBIT',
-            'amount' => 100
+            'amount' => 100,
         ]);
 
         $br = BankTransactionRule::factory()->create([
@@ -791,8 +791,8 @@ class BankTransactionRuleTest extends TestCase
                     'search_key' => 'amount',
                     'operator' => '<=',
                     'value' => 100,
-                ]
-            ]
+                ],
+            ],
         ]);
 
 
@@ -823,8 +823,8 @@ class BankTransactionRuleTest extends TestCase
                     'search_key' => 'amount',
                     'operator' => '<',
                     'value' => 100,
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $bi = BankIntegration::factory()->create([
@@ -839,7 +839,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => '',
             'base_type' => 'DEBIT',
-            'amount' => 99
+            'amount' => 99,
         ]);
 
 
@@ -865,8 +865,8 @@ class BankTransactionRuleTest extends TestCase
                     'search_key' => 'amount',
                     'operator' => '>',
                     'value' => 100,
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $bi = BankIntegration::factory()->create([
@@ -881,7 +881,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => '',
             'base_type' => 'DEBIT',
-            'amount' => 101
+            'amount' => 101,
         ]);
 
 
@@ -908,8 +908,8 @@ class BankTransactionRuleTest extends TestCase
                     'search_key' => 'amount',
                     'operator' => '=',
                     'value' => 100,
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $bi = BankIntegration::factory()->create([
@@ -924,7 +924,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => '',
             'base_type' => 'DEBIT',
-            'amount' => 101
+            'amount' => 101,
         ]);
 
 
@@ -950,8 +950,8 @@ class BankTransactionRuleTest extends TestCase
                     'search_key' => 'amount',
                     'operator' => '=',
                     'value' => 100,
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $bi = BankIntegration::factory()->create([
@@ -966,7 +966,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => '',
             'base_type' => 'DEBIT',
-            'amount' => 100
+            'amount' => 100,
         ]);
 
 
@@ -993,8 +993,8 @@ class BankTransactionRuleTest extends TestCase
                     'search_key' => 'description',
                     'operator' => 'is_empty',
                     'value' => '',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $bi = BankIntegration::factory()->create([
@@ -1009,7 +1009,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => '',
             'base_type' => 'DEBIT',
-            'amount' => 100
+            'amount' => 100,
         ]);
 
         $bt = $bt->refresh();
@@ -1035,7 +1035,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => 'asdadsa',
             'base_type' => 'DEBIT',
-            'amount' => 100
+            'amount' => 100,
         ]);
 
 
@@ -1052,8 +1052,8 @@ class BankTransactionRuleTest extends TestCase
                     'search_key' => 'description',
                     'operator' => 'is_empty',
                     'value' => '',
-                ]
-            ]
+                ],
+            ],
         ]);
 
 
@@ -1082,8 +1082,8 @@ class BankTransactionRuleTest extends TestCase
                     'search_key' => 'description',
                     'operator' => 'starts_with',
                     'value' => 'chesst',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $bi = BankIntegration::factory()->create([
@@ -1098,7 +1098,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => 'ChESSSty coughs are terrible',
             'base_type' => 'DEBIT',
-            'amount' => 100
+            'amount' => 100,
         ]);
 
 
@@ -1126,8 +1126,8 @@ class BankTransactionRuleTest extends TestCase
                     'search_key' => 'description',
                     'operator' => 'starts_with',
                     'value' => 'chess',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $bi = BankIntegration::factory()->create([
@@ -1142,7 +1142,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => 'ChESSSty coughs are terrible',
             'base_type' => 'DEBIT',
-            'amount' => 100
+            'amount' => 100,
         ]);
 
 
@@ -1169,8 +1169,8 @@ class BankTransactionRuleTest extends TestCase
                     'search_key' => 'description',
                     'operator' => 'contains',
                     'value' => 'asdddfd',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $bi = BankIntegration::factory()->create([
@@ -1185,7 +1185,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => 'Something asd bizarre',
             'base_type' => 'DEBIT',
-            'amount' => 100
+            'amount' => 100,
         ]);
 
 
@@ -1212,8 +1212,8 @@ class BankTransactionRuleTest extends TestCase
                     'search_key' => 'description',
                     'operator' => 'contains',
                     'value' => 'asd',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $bi = BankIntegration::factory()->create([
@@ -1228,7 +1228,7 @@ class BankTransactionRuleTest extends TestCase
             'user_id' => $this->user->id,
             'description' => 'Something asd bizarre',
             'base_type' => 'DEBIT',
-            'amount' => 100
+            'amount' => 100,
         ]);
 
 
@@ -1254,8 +1254,8 @@ class BankTransactionRuleTest extends TestCase
                     'search_key' => 'description',
                     'operator' => 'is',
                     'value' => 'wallaby',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $bi = BankIntegration::factory()->create([
@@ -1295,8 +1295,8 @@ class BankTransactionRuleTest extends TestCase
                     'search_key' => 'description',
                     'operator' => 'is',
                     'value' => 'wallaby',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $bi = BankIntegration::factory()->create([

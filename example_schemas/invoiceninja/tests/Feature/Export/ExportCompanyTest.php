@@ -31,7 +31,7 @@ class ExportCompanyTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         // $this->faker = \Faker\Factory::create();

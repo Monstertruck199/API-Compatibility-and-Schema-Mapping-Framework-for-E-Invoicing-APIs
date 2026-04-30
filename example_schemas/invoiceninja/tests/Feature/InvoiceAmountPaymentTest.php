@@ -35,7 +35,7 @@ class InvoiceAmountPaymentTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 
@@ -183,7 +183,7 @@ class InvoiceAmountPaymentTest extends TestCase
 
         $invoice = Invoice::find($this->decodePrimaryKey($invoice_one_hashed_id));
 
-        $line_items = (array)$invoice->line_items;
+        $line_items = (array) $invoice->line_items;
         $item = InvoiceItemFactory::create();
         $item->quantity = 1;
         $item->cost = 5;

@@ -31,7 +31,7 @@ class EncodeWithoutClassFailureTest extends TestCase
             str_contains($corrupted, 'Ã©') || // Double-encoded é
             str_contains($corrupted, 'ðŸš€') || // Corrupted emoji
             strlen($corrupted) < strlen($original), // Characters lost
-            "Expected emoji corruption but content seems intact. Original: {$original}, Corrupted: {$corrupted}"
+            "Expected emoji corruption but content seems intact. Original: {$original}, Corrupted: {$corrupted}",
         );
     }
 
@@ -83,12 +83,12 @@ class EncodeWithoutClassFailureTest extends TestCase
             'é',
             'à',
             'ç',
-            'ù'
+            'ù',
         ], [
             'e',
             'a',
             'c',
-            'u'
+            'u',
         ], $original);
 
         // Still has the emoji problem - can't handle all Unicode
@@ -206,7 +206,7 @@ class EncodeWithoutClassFailureTest extends TestCase
             str_contains($doubleEncoded, 'Ã©') || // é becomes Ã©
             str_contains($doubleEncoded, 'Ã¢â‚¬') || // Other artifacts
             !str_contains($doubleEncoded, '🚀'), // Emoji lost
-            "Expected double-encoding artifacts but got: " . $doubleEncoded
+            "Expected double-encoding artifacts but got: " . $doubleEncoded,
         );
     }
 
@@ -271,7 +271,7 @@ class EncodeWithoutClassFailureTest extends TestCase
             // In some PHP versions or configurations, this might alter the data
             $this->assertTrue(
                 $decoded['subject'] === $original,
-                "Proper JSON handling preserves Unicode"
+                "Proper JSON handling preserves Unicode",
             );
         }
     }

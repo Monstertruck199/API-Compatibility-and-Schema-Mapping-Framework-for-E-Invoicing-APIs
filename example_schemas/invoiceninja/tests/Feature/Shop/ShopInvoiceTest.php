@@ -33,7 +33,7 @@ class ShopInvoiceTest extends TestCase
         parent::setUp();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
         Model::reguard();
 
@@ -105,7 +105,7 @@ class ShopInvoiceTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-COMPANY-KEY' => $this->company->company_key,
-        ])->get('/api/v1/shop/product/'.$product->product_key);
+        ])->get('/api/v1/shop/product/' . $product->product_key);
 
         $response->assertStatus(200);
 
@@ -122,7 +122,7 @@ class ShopInvoiceTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-COMPANY-KEY' => $this->company->company_key,
-        ])->get('/api/v1/shop/client/'.$this->client->contacts->first()->contact_key);
+        ])->get('/api/v1/shop/client/' . $this->client->contacts->first()->contact_key);
 
         $response->assertStatus(200);
         $arr = $response->json();

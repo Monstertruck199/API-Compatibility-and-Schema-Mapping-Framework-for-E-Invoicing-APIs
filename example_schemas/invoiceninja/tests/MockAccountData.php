@@ -69,7 +69,6 @@ use Illuminate\Support\Facades\Storage;
 use App\Factory\InvoiceInvitationFactory;
 use App\DataMapper\ClientRegistrationFields;
 use App\Jobs\Company\CreateCompanyTaskStatuses;
-
 use App\Repositories\RecurringInvoiceRepository;
 use App\Factory\InvoiceToRecurringInvoiceFactory;
 
@@ -88,7 +87,7 @@ trait MockAccountData
     public $quote_calc;
 
     public $recurring_invoice_calc;
-    
+
     /**
      * @var Project|null
      */
@@ -217,7 +216,7 @@ trait MockAccountData
     public $recurring_invoice;
 
     public $faker;
-    
+
     public function makeTestData()
     {
         config(['database.default' => config('ninja.db.default')]);
@@ -260,8 +259,8 @@ trait MockAccountData
 
         $this->company->client_registration_fields = ClientRegistrationFields::generate();
 
-        Storage::makeDirectory($this->company->company_key.'/documents', 0755, true);
-        Storage::makeDirectory($this->company->company_key.'/images', 0755, true);
+        Storage::makeDirectory($this->company->company_key . '/documents', 0755, true);
+        Storage::makeDirectory($this->company->company_key . '/images', 0755, true);
 
         $settings = CompanySettings::defaults();
 
@@ -353,9 +352,9 @@ trait MockAccountData
             // 'settings' => $client_settings,
         ]);
 
-        Storage::makeDirectory($this->company->company_key.'/'.$this->client->client_hash.'/invoices', 0755, true);
-        Storage::makeDirectory($this->company->company_key.'/'.$this->client->client_hash.'/credits', 0755, true);
-        Storage::makeDirectory($this->company->company_key.'/'.$this->client->client_hash.'/quotes', 0755, true);
+        Storage::makeDirectory($this->company->company_key . '/' . $this->client->client_hash . '/invoices', 0755, true);
+        Storage::makeDirectory($this->company->company_key . '/' . $this->client->client_hash . '/credits', 0755, true);
+        Storage::makeDirectory($this->company->company_key . '/' . $this->client->client_hash . '/quotes', 0755, true);
 
         $contact = ClientContact::factory()->create([
             'user_id' => $user_id,

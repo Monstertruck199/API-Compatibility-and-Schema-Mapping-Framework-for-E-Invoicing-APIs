@@ -48,7 +48,7 @@ class AutoUnappliedPaymentTest extends TestCase
         // $this->withoutExceptionHandling();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
     }
 
@@ -133,7 +133,7 @@ class AutoUnappliedPaymentTest extends TestCase
             'user_id' => $this->user->id,
             'client_id' => $client->id,
             'auto_bill_enabled' => true,
-            'status_id' => 2
+            'status_id' => 2,
         ]);
         $invoice  = $invoice->calc()->getInvoice();
         $invoice_balance = $invoice->balance;
@@ -145,7 +145,7 @@ class AutoUnappliedPaymentTest extends TestCase
             'amount' => 100,
             'applied' => 0,
             'refunded' => 0,
-            'status_id' => Payment::STATUS_COMPLETED
+            'status_id' => Payment::STATUS_COMPLETED,
         ]);
 
         $invoice->service()->markSent()->save();

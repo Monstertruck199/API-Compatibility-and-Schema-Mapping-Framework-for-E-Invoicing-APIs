@@ -14,13 +14,14 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
  * Test AR Summary Report optimization strategy.
- * 
+ *
  * This test compares the current N+1 query approach (6 queries per client)
  * against an optimized single-query approach using CASE statements.
  */
 class ARSummaryReportOptimizationTest extends TestCase
 {
-    use DatabaseTransactions, MakesHash;
+    use DatabaseTransactions;
+    use MakesHash;
 
     protected Company $company;
     protected User $user;
@@ -30,13 +31,13 @@ class ARSummaryReportOptimizationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $account = Account::factory()->create();
-        
+
         $this->company = Company::factory()->create([
             'account_id' => $account->id,
         ]);
-        
+
         $this->user = User::factory()->create([
             'account_id' => $account->id,
         ]);
@@ -64,20 +65,20 @@ class ARSummaryReportOptimizationTest extends TestCase
                 // Current (due in future or no due date)
                 ['balance' => 100, 'due_date' => $now->copy()->addDays(10), 'status' => Invoice::STATUS_SENT],
                 ['balance' => 50, 'due_date' => null, 'status' => Invoice::STATUS_SENT],
-                
+
                 // 0-30 days overdue
                 ['balance' => 200, 'due_date' => $now->copy()->subDays(15), 'status' => Invoice::STATUS_SENT],
                 ['balance' => 150, 'due_date' => $now->copy()->subDays(25), 'status' => Invoice::STATUS_PARTIAL],
-                
+
                 // 31-60 days overdue
                 ['balance' => 300, 'due_date' => $now->copy()->subDays(45), 'status' => Invoice::STATUS_SENT],
-                
+
                 // 61-90 days overdue
                 ['balance' => 400, 'due_date' => $now->copy()->subDays(75), 'status' => Invoice::STATUS_SENT],
-                
+
                 // 91-120 days overdue
                 ['balance' => 500, 'due_date' => $now->copy()->subDays(105), 'status' => Invoice::STATUS_SENT],
-                
+
                 // 120+ days overdue
                 ['balance' => 600, 'due_date' => $now->copy()->subDays(150), 'status' => Invoice::STATUS_SENT],
                 ['balance' => 700, 'due_date' => $now->copy()->subDays(365), 'status' => Invoice::STATUS_PARTIAL],
@@ -272,43 +273,43 @@ class ARSummaryReportOptimizationTest extends TestCase
             $this->assertEquals(
                 $currentResults['current'],
                 $optimizedResult->current,
-                "Current balance mismatch for client {$client->name}"
+                "Current balance mismatch for client {$client->name}",
             );
 
             $this->assertEquals(
                 $currentResults['age_30'],
                 $optimizedResult->age_30,
-                "0-30 days balance mismatch for client {$client->name}"
+                "0-30 days balance mismatch for client {$client->name}",
             );
 
             $this->assertEquals(
                 $currentResults['age_60'],
                 $optimizedResult->age_60,
-                "31-60 days balance mismatch for client {$client->name}"
+                "31-60 days balance mismatch for client {$client->name}",
             );
 
             $this->assertEquals(
                 $currentResults['age_90'],
                 $optimizedResult->age_90,
-                "61-90 days balance mismatch for client {$client->name}"
+                "61-90 days balance mismatch for client {$client->name}",
             );
 
             $this->assertEquals(
                 $currentResults['age_120'],
                 $optimizedResult->age_120,
-                "91-120 days balance mismatch for client {$client->name}"
+                "91-120 days balance mismatch for client {$client->name}",
             );
 
             $this->assertEquals(
                 $currentResults['age_120_plus'],
                 $optimizedResult->age_120_plus,
-                "120+ days balance mismatch for client {$client->name}"
+                "120+ days balance mismatch for client {$client->name}",
             );
 
             $this->assertEquals(
                 $currentResults['total'],
                 $optimizedResult->total,
-                "Total balance mismatch for client {$client->name}"
+                "Total balance mismatch for client {$client->name}",
             );
         }
     }
@@ -483,7 +484,7 @@ class ARSummaryReportOptimizationTest extends TestCase
         }
         $currentQueries = DB::getQueryLog();
         // Only count invoice queries (not time zone or other queries)
-        $currentQueryCount = count(array_filter($currentQueries, function($query) {
+        $currentQueryCount = count(array_filter($currentQueries, function ($query) {
             return strpos($query['query'], 'from `invoices`') !== false;
         }));
         DB::disableQueryLog();
@@ -494,7 +495,7 @@ class ARSummaryReportOptimizationTest extends TestCase
         $this->getOptimizedImplementationResults($clientIds);
         $optimizedQueries = DB::getQueryLog();
         // Only count invoice queries
-        $optimizedQueryCount = count(array_filter($optimizedQueries, function($query) {
+        $optimizedQueryCount = count(array_filter($optimizedQueries, function ($query) {
             return strpos($query['query'], 'from `invoices`') !== false;
         }));
         DB::disableQueryLog();
@@ -531,7 +532,7 @@ class ARSummaryReportOptimizationTest extends TestCase
 
         // Optimized should be significantly faster
         $this->assertLessThan($currentTime, $optimizedTime, 'Optimized should be faster');
-        
+
         $speedup = $currentTime / $optimizedTime;
         // dump([
         //     'clients' => 50,
@@ -587,7 +588,7 @@ class ARSummaryReportOptimizationTest extends TestCase
             $this->assertEquals(
                 $currentResults[$bucket],
                 $optimizedResult->$bucket,
-                "Bucket boundary mismatch for {$bucket}"
+                "Bucket boundary mismatch for {$bucket}",
             );
         }
     }

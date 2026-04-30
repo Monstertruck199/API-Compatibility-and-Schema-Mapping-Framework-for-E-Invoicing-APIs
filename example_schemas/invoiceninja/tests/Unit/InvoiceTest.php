@@ -67,13 +67,13 @@ class InvoiceTest extends TestCase
                     "tax_name1" => "gst",
                     "tax_rate1" => 18,
                     "type_id" => "2",
-                    "tax_id" => "2"
-                ]
+                    "tax_id" => "2",
+                ],
             ],
             "custom_surcharge1" => 4,
             "custom_surcharge2" => 3,
             "custom_surcharge3" => 2,
-            "custom_surcharge4" => 1
+            "custom_surcharge4" => 1,
         ];
 
 
@@ -106,13 +106,13 @@ class InvoiceTest extends TestCase
                     "tax_name1" => "gst",
                     "tax_rate1" => 18,
                     "type_id" => "2",
-                    "tax_id" => "2"
-                ]
+                    "tax_id" => "2",
+                ],
             ],
             "custom_surcharge1" => 4,
             "custom_surcharge2" => 3,
             "custom_surcharge3" => 2,
-            "custom_surcharge4" => 1
+            "custom_surcharge4" => 1,
         ];
 
 
@@ -181,7 +181,7 @@ class InvoiceTest extends TestCase
             'line_items' => $line_items,
             'status_id' => 1,
             'uses_inclusive_taxes' => false,
-            'is_amount_discount' => false
+            'is_amount_discount' => false,
         ]);
 
         $invoice_calc = new InvoiceSum($i);
@@ -233,7 +233,7 @@ class InvoiceTest extends TestCase
             'line_items' => $line_items,
             'status_id' => 1,
             'uses_inclusive_taxes' => false,
-            'is_amount_discount' => true
+            'is_amount_discount' => true,
         ]);
 
         $invoice_calc = new InvoiceSum($i);
@@ -469,7 +469,7 @@ class InvoiceTest extends TestCase
         $refund_data['gateway_refund'] = false;
         $refund_data['invoices'][] = [
             'invoice_id' => $ii->id,
-            'amount' => 10
+            'amount' => 10,
         ];
 
         $p->service()->refundPayment($refund_data);
@@ -494,7 +494,7 @@ class InvoiceTest extends TestCase
             'settings' => $c_settings,
         ]);
 
-       
+
         $this->assertEquals(0, $c->balance);
 
         $item = InvoiceItemFactory::create();
@@ -597,7 +597,7 @@ class InvoiceTest extends TestCase
         ->create([
             'company_id' => $this->company->id,
             'user_id' => $this->user->id,
-            'client_id' => $this->client->id
+            'client_id' => $this->client->id,
         ]);
 
         $this->assertNull($i->partial_due_date);

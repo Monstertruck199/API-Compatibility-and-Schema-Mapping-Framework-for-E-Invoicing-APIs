@@ -315,7 +315,7 @@ class BcMathRoundTest extends TestCase
             $this->assertEquals(
                 $expected,
                 Number::roundValue($value, $precision),
-                "Failed for roundValue({$value}, {$precision})"
+                "Failed for roundValue({$value}, {$precision})",
             );
         }
     }
@@ -381,7 +381,7 @@ class BcMathRoundTest extends TestCase
             $this->assertEquals(
                 $expected,
                 BcMath::round($input, $precision),
-                "BcMath::round('{$input}', {$precision}) should be '{$expected}'"
+                "BcMath::round('{$input}', {$precision}) should be '{$expected}'",
             );
         }
     }

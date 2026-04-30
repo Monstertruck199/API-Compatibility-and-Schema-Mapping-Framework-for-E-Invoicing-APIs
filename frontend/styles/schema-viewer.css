@@ -25,7 +25,6 @@
   color: var(--text);
   border: 1px solid var(--border2);
   border-radius: var(--r);
-  font-family: var(--mono);
   font-size: 12px; 
   outline: none; 
   font-family: var(--mono); 
@@ -105,7 +104,7 @@
 
 .sv-item.on { 
     border-color: var(--accent); 
-    background: rgba(127,119,221,0.1);
+    background: rgb(127 119 221 / 10%);
     color: #a09ae8;
 }
 
@@ -186,10 +185,12 @@
     flex-shrink: 0; 
     display: inline-block;
 }
+
 .td-req { 
     background: #e24b4a; 
     background: var(--green);
 }
+
 .td-opt { 
     background: var(--bg3); 
     border: 1px solid var(--border2); 
@@ -231,27 +232,27 @@
 /* ---------------- Tree type badges --------------- */
 
 .tt-string { 
-    background: rgba(93,202,165,0.15);  
+    background: rgb(93 202 165 / 15%);  
     color: #5dcaa5; 
 }
 
 .tt-integer, .tt-number { 
-    background: rgba(56,138,221,0.15);  
+    background: rgb(56 138 221 / 15%);  
     color: #85b7eb; 
 }
 
 .tt-boolean { 
-    background: rgba(239,159,39,0.15);  
+    background: rgb(239 159 39 / 15%);  
     color: #ef9f27; 
 }
 
 .tt-object { 
-    background: rgba(127,119,221,0.15); 
+    background: rgb(127 119 221 / 15%); 
     color: #a09ae8; 
 }
 
 .tt-array {
-    background: rgba(212,83,126,0.15);  
+    background: rgb(212 83 126 / 15%);  
     color: #ed93b1; 
 }
 

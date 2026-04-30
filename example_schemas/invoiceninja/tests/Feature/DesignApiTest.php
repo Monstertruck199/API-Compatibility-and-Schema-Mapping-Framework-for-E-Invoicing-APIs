@@ -47,7 +47,7 @@ class DesignApiTest extends TestCase
 
     public function testCloneDesign()
     {
-     
+
         $design = Design::find(2);
 
         $this->assertNotNull($design);
@@ -61,8 +61,8 @@ class DesignApiTest extends TestCase
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
         ])->post('/api/v1/designs/bulk', $data);
-   
-        
+
+
         $response->assertStatus(204);
 
 
@@ -71,7 +71,7 @@ class DesignApiTest extends TestCase
 
         $this->assertEquals($this->user->id, $d->user_id);
         $this->assertEquals($this->company->id, $d->company_id);
-        $this->assertStringContainsString($design->name.' clone ', $d->name);
+        $this->assertStringContainsString($design->name . ' clone ', $d->name);
         // $dsd = Design::all()->pluck('name')->toArray();
     }
 
@@ -84,14 +84,14 @@ class DesignApiTest extends TestCase
         $c = Client::factory()->create([
             'company_id' => $this->company->id,
             'user_id' => $this->user->id,
-            'settings' => $settings
+            'settings' => $settings,
         ]);
 
         $i = Invoice::factory()->create([
             'company_id' => $this->company->id,
             'user_id' => $this->user->id,
             'client_id' => $c->id,
-            'design_id' => 5
+            'design_id' => 5,
         ]);
 
         $this->assertEquals(5, $i->design_id);
@@ -121,7 +121,7 @@ class DesignApiTest extends TestCase
             'entity' => 'invoice',
             'design_id' => $new_design_hash,
             'settings_level' => 'client',
-            'client_id' => $c->hashed_id
+            'client_id' => $c->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -147,10 +147,10 @@ class DesignApiTest extends TestCase
         $gs->save();
 
         $c2 = Client::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                'group_settings_id' => $gs->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'group_settings_id' => $gs->id,
+        ]);
 
 
         $this->assertNotNull($c2->group_settings_id);
@@ -159,7 +159,7 @@ class DesignApiTest extends TestCase
             'company_id' => $this->company->id,
             'user_id' => $this->user->id,
             'client_id' => $c2->id,
-            'design_id' => 4
+            'design_id' => 4,
         ]);
 
         $new_gs_design_hash = $this->encodePrimaryKey(1);
@@ -168,7 +168,7 @@ class DesignApiTest extends TestCase
             'entity' => 'invoice',
             'design_id' => $new_gs_design_hash,
             'settings_level' => 'group_settings',
-            'group_settings_id' => $gs->hashed_id
+            'group_settings_id' => $gs->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -193,14 +193,14 @@ class DesignApiTest extends TestCase
         $c = Client::factory()->create([
             'company_id' => $this->company->id,
             'user_id' => $this->user->id,
-            'settings' => $settings
+            'settings' => $settings,
         ]);
 
         $i = \App\Models\Quote::factory()->create([
             'company_id' => $this->company->id,
             'user_id' => $this->user->id,
             'client_id' => $c->id,
-            'design_id' => 5
+            'design_id' => 5,
         ]);
 
         $this->assertEquals(5, $i->design_id);
@@ -230,7 +230,7 @@ class DesignApiTest extends TestCase
             'entity' => 'quote',
             'design_id' => $new_design_hash,
             'settings_level' => 'client',
-            'client_id' => $c->hashed_id
+            'client_id' => $c->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -256,10 +256,10 @@ class DesignApiTest extends TestCase
         $gs->save();
 
         $c2 = Client::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                'group_settings_id' => $gs->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'group_settings_id' => $gs->id,
+        ]);
 
 
         $this->assertNotNull($c2->group_settings_id);
@@ -268,7 +268,7 @@ class DesignApiTest extends TestCase
             'company_id' => $this->company->id,
             'user_id' => $this->user->id,
             'client_id' => $c2->id,
-            'design_id' => 4
+            'design_id' => 4,
         ]);
 
         $new_gs_design_hash = $this->encodePrimaryKey(1);
@@ -277,7 +277,7 @@ class DesignApiTest extends TestCase
             'entity' => 'quote',
             'design_id' => $new_gs_design_hash,
             'settings_level' => 'group_settings',
-            'group_settings_id' => $gs->hashed_id
+            'group_settings_id' => $gs->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -302,14 +302,14 @@ class DesignApiTest extends TestCase
         $c = Client::factory()->create([
             'company_id' => $this->company->id,
             'user_id' => $this->user->id,
-            'settings' => $settings
+            'settings' => $settings,
         ]);
 
         $i = Credit::factory()->create([
             'company_id' => $this->company->id,
             'user_id' => $this->user->id,
             'client_id' => $c->id,
-            'design_id' => 5
+            'design_id' => 5,
         ]);
 
         $this->assertEquals(5, $i->design_id);
@@ -339,7 +339,7 @@ class DesignApiTest extends TestCase
             'entity' => 'credit',
             'design_id' => $new_design_hash,
             'settings_level' => 'client',
-            'client_id' => $c->hashed_id
+            'client_id' => $c->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -365,10 +365,10 @@ class DesignApiTest extends TestCase
         $gs->save();
 
         $c2 = Client::factory()->create([
-                'company_id' => $this->company->id,
-                'user_id' => $this->user->id,
-                'group_settings_id' => $gs->id,
-            ]);
+            'company_id' => $this->company->id,
+            'user_id' => $this->user->id,
+            'group_settings_id' => $gs->id,
+        ]);
 
 
         $this->assertNotNull($c2->group_settings_id);
@@ -377,7 +377,7 @@ class DesignApiTest extends TestCase
             'company_id' => $this->company->id,
             'user_id' => $this->user->id,
             'client_id' => $c2->id,
-            'design_id' => 4
+            'design_id' => 4,
         ]);
 
         $new_gs_design_hash = $this->encodePrimaryKey(1);
@@ -386,7 +386,7 @@ class DesignApiTest extends TestCase
             'entity' => 'credit',
             'design_id' => $new_gs_design_hash,
             'settings_level' => 'group_settings',
-            'group_settings_id' => $gs->hashed_id
+            'group_settings_id' => $gs->hashed_id,
         ];
 
         $response = $this->withHeaders([
@@ -422,8 +422,8 @@ class DesignApiTest extends TestCase
         $this->assertEquals(1, $q->count());
 
         $response = $this->withHeaders([
-        'X-API-SECRET' => config('ninja.api_secret'),
-        'X-API-TOKEN' => $this->token,
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
         ])->get('/api/v1/designs?entities=payment');
 
         $response->assertStatus(200);
@@ -432,8 +432,8 @@ class DesignApiTest extends TestCase
         $this->assertCount(1, $arr['data']);
 
         $response = $this->withHeaders([
-        'X-API-SECRET' => config('ninja.api_secret'),
-        'X-API-TOKEN' => $this->token,
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
         ])->get('/api/v1/designs?entities=,,,3,3,3,');
 
         $response->assertStatus(200);
@@ -441,8 +441,8 @@ class DesignApiTest extends TestCase
         $arr = $response->json();
 
         $response = $this->withHeaders([
-        'X-API-SECRET' => config('ninja.api_secret'),
-        'X-API-TOKEN' => $this->token,
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
         ])->get('/api/v1/designs?entities=unsearchable');
 
         $response->assertStatus(200);
@@ -490,9 +490,9 @@ class DesignApiTest extends TestCase
         $design->save();
 
         $response = $this->withHeaders([
-          'X-API-SECRET' => config('ninja.api_secret'),
-          'X-API-TOKEN' => $this->token,
-          ])->get('/api/v1/designs?template=true');
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->get('/api/v1/designs?template=true');
 
         $response->assertStatus(200);
 
@@ -509,9 +509,9 @@ class DesignApiTest extends TestCase
         $design->save();
 
         $response = $this->withHeaders([
-          'X-API-SECRET' => config('ninja.api_secret'),
-          'X-API-TOKEN' => $this->token,
-          ])->get('/api/v1/designs?template=false');
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->get('/api/v1/designs?template=false');
 
         $response->assertStatus(200);
 
@@ -520,9 +520,9 @@ class DesignApiTest extends TestCase
         $this->assertCount(11, $arr['data']);
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-                ])->get('/api/v1/designs');
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->get('/api/v1/designs');
 
         $response->assertStatus(200);
 
@@ -576,7 +576,7 @@ class DesignApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/designs/'.$this->id);
+        ])->get('/api/v1/designs/' . $this->id);
 
         $response->assertStatus(200);
 
@@ -592,7 +592,7 @@ class DesignApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/designs/'.$this->id, $data);
+        ])->put('/api/v1/designs/' . $this->id, $data);
 
         $response->assertStatus(200);
 
@@ -604,7 +604,7 @@ class DesignApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->delete('/api/v1/designs/'.$this->id, $data);
+        ])->delete('/api/v1/designs/' . $this->id, $data);
 
         $response->assertStatus(200);
 

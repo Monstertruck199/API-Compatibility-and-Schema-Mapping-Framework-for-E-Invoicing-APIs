@@ -53,7 +53,7 @@ class ZohoTest extends TestCase
     public function testClientZohoImport()
     {
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/zoho_contacts.csv'
+            base_path() . '/tests/Feature/Import/zoho_contacts.csv',
         );
         $hash = Str::random(32);
 
@@ -118,7 +118,7 @@ class ZohoTest extends TestCase
             'import_type' => 'zoho',
         ];
 
-        Cache::put($hash.'-client', base64_encode($csv), 360);
+        Cache::put($hash . '-client', base64_encode($csv), 360);
 
         $csv_importer = new Zoho($data, $this->company);
 
@@ -144,7 +144,7 @@ class ZohoTest extends TestCase
     {
         //first import all the clients
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/zoho_contacts.csv'
+            base_path() . '/tests/Feature/Import/zoho_contacts.csv',
         );
         $hash = Str::random(32);
 
@@ -209,7 +209,7 @@ class ZohoTest extends TestCase
             'import_type' => 'zoho',
         ];
 
-        Cache::put($hash.'-client', base64_encode($csv), 360);
+        Cache::put($hash . '-client', base64_encode($csv), 360);
 
         $csv_importer = new Zoho($data, $this->company);
 
@@ -218,7 +218,7 @@ class ZohoTest extends TestCase
         //now import the invoices
 
         $csv = file_get_contents(
-            base_path().'/tests/Feature/Import/zoho_invoices.csv'
+            base_path() . '/tests/Feature/Import/zoho_invoices.csv',
         );
         $hash = Str::random(32);
 
@@ -315,7 +315,7 @@ class ZohoTest extends TestCase
             'import_type' => 'zoho',
         ];
 
-        Cache::put($hash.'-invoice', base64_encode($csv), 360);
+        Cache::put($hash . '-invoice', base64_encode($csv), 360);
 
         $csv_importer = new Zoho($data, $this->company);
 

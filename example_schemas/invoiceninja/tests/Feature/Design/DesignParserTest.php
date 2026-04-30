@@ -21,7 +21,7 @@ class DesignParserTest extends TestCase
     use MakesHash;
     use DatabaseTransactions;
     use MockAccountData;
-    
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -30,7 +30,7 @@ class DesignParserTest extends TestCase
 
     public function test_design_parser()
     {
-        
+
         $designjson = file_get_contents(base_path('tests/Feature/Design/stubs/test_design_1.json'));
         $design = json_decode($designjson, true);
 
@@ -73,7 +73,7 @@ class DesignParserTest extends TestCase
         // $mock->build();
         // $html = $mock->getHtml();
         // $this->assertNotNull($html);
-        
+
 
 
         $item = InvoiceItemFactory::create();

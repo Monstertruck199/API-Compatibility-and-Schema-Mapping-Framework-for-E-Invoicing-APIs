@@ -104,10 +104,10 @@ class GeneratesCounterTest extends TestCase
         $this->travelTo('2026-02-01');
 
         $invoice = Invoice::factory()->create([
-                    'client_id' => $client->id,
-                    'company_id' => $company->id,
-                    'user_id' => $this->user->id,
-                ]);
+            'client_id' => $client->id,
+            'company_id' => $company->id,
+            'user_id' => $this->user->id,
+        ]);
 
         $invoice->number = null;
         $invoice->status_id = Invoice::STATUS_DRAFT;
@@ -166,10 +166,10 @@ class GeneratesCounterTest extends TestCase
         $this->travelTo('2026-02-01');
 
         $invoice = Invoice::factory()->create([
-                    'client_id' => $client->id,
-                    'company_id' => $company->id,
-                    'user_id' => $this->user->id,
-                ]);
+            'client_id' => $client->id,
+            'company_id' => $company->id,
+            'user_id' => $this->user->id,
+        ]);
 
         $invoice->number = null;
         $invoice->status_id = Invoice::STATUS_DRAFT;
@@ -206,13 +206,13 @@ class GeneratesCounterTest extends TestCase
         $gs->save();
 
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0001', $invoice_number);
+        $this->assertEquals($date_formatted . '-0001', $invoice_number);
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0002', $invoice_number);
+        $this->assertEquals($date_formatted . '-0002', $invoice_number);
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0003', $invoice_number);
+        $this->assertEquals($date_formatted . '-0003', $invoice_number);
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0004', $invoice_number);
+        $this->assertEquals($date_formatted . '-0004', $invoice_number);
 
         $settings->reset_counter_date = now($timezone->name)->format('Y-m-d');
         $settings->reset_counter_frequency_id = RecurringInvoice::FREQUENCY_DAILY;
@@ -223,13 +223,13 @@ class GeneratesCounterTest extends TestCase
         $date_formatted = now($timezone->name)->format('Ymd');
 
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0001', $invoice_number);
+        $this->assertEquals($date_formatted . '-0001', $invoice_number);
 
         $this->invoice->number = $invoice_number;
         $this->invoice->save();
 
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0002', $invoice_number);
+        $this->assertEquals($date_formatted . '-0002', $invoice_number);
 
         $settings->reset_counter_date = now($timezone->name)->format('Y-m-d');
         $settings->reset_counter_frequency_id = RecurringInvoice::FREQUENCY_DAILY;
@@ -240,7 +240,7 @@ class GeneratesCounterTest extends TestCase
         $date_formatted = now($timezone->name)->format('Ymd');
 
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0001', $invoice_number);
+        $this->assertEquals($date_formatted . '-0001', $invoice_number);
 
         $this->travelBack();
     }
@@ -259,13 +259,13 @@ class GeneratesCounterTest extends TestCase
         $this->client->save();
 
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0001', $invoice_number);
+        $this->assertEquals($date_formatted . '-0001', $invoice_number);
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0002', $invoice_number);
+        $this->assertEquals($date_formatted . '-0002', $invoice_number);
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0003', $invoice_number);
+        $this->assertEquals($date_formatted . '-0003', $invoice_number);
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0004', $invoice_number);
+        $this->assertEquals($date_formatted . '-0004', $invoice_number);
 
         $settings->reset_counter_date = now($timezone->name)->format('Y-m-d');
         $settings->reset_counter_frequency_id = RecurringInvoice::FREQUENCY_DAILY;
@@ -276,13 +276,13 @@ class GeneratesCounterTest extends TestCase
         $date_formatted = now($timezone->name)->format('Ymd');
 
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0001', $invoice_number);
+        $this->assertEquals($date_formatted . '-0001', $invoice_number);
 
         $this->invoice->number = $invoice_number;
         $this->invoice->save();
 
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0002', $invoice_number);
+        $this->assertEquals($date_formatted . '-0002', $invoice_number);
 
         $settings->reset_counter_date = now($timezone->name)->format('Y-m-d');
         $settings->reset_counter_frequency_id = RecurringInvoice::FREQUENCY_DAILY;
@@ -293,7 +293,7 @@ class GeneratesCounterTest extends TestCase
         $date_formatted = now($timezone->name)->format('Ymd');
 
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0001', $invoice_number);
+        $this->assertEquals($date_formatted . '-0001', $invoice_number);
 
         $this->travelBack();
     }
@@ -314,13 +314,13 @@ class GeneratesCounterTest extends TestCase
         $this->client->save();
 
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0001', $invoice_number);
+        $this->assertEquals($date_formatted . '-0001', $invoice_number);
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0002', $invoice_number);
+        $this->assertEquals($date_formatted . '-0002', $invoice_number);
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0003', $invoice_number);
+        $this->assertEquals($date_formatted . '-0003', $invoice_number);
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0004', $invoice_number);
+        $this->assertEquals($date_formatted . '-0004', $invoice_number);
 
         $settings->reset_counter_date = now($timezone->name)->format('Y-m-d');
         $settings->reset_counter_frequency_id = RecurringInvoice::FREQUENCY_DAILY;
@@ -334,13 +334,13 @@ class GeneratesCounterTest extends TestCase
         $date_formatted = now($timezone->name)->format('Ymd');
 
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0001', $invoice_number);
+        $this->assertEquals($date_formatted . '-0001', $invoice_number);
 
         $this->invoice->number = $invoice_number;
         $this->invoice->save();
 
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0002', $invoice_number);
+        $this->assertEquals($date_formatted . '-0002', $invoice_number);
 
         $settings->reset_counter_date = now($timezone->name)->format('Y-m-d');
         $settings->reset_counter_frequency_id = RecurringInvoice::FREQUENCY_DAILY;
@@ -351,7 +351,7 @@ class GeneratesCounterTest extends TestCase
         $date_formatted = now($timezone->name)->format('Ymd');
 
         $invoice_number = $this->getNextInvoiceNumber($this->client->fresh(), $this->invoice->fresh());
-        $this->assertEquals($date_formatted.'-0001', $invoice_number);
+        $this->assertEquals($date_formatted . '-0001', $invoice_number);
 
         $this->travelBack();
     }
@@ -421,14 +421,14 @@ class GeneratesCounterTest extends TestCase
     {
 
         $invoice = $this->invoice->fresh();
-        $invoice->load('client','company');
+        $invoice->load('client', 'company');
 
         $company = $invoice->company->fresh();
         $settings = $company->settings;
         $settings->invoice_number_counter = 3;
         $company->settings = $settings;
         $company->save();
-        $invoice->load('client','company');
+        $invoice->load('client', 'company');
 
         $this->assertEquals('0002', $invoice->number);
 
@@ -471,8 +471,8 @@ class GeneratesCounterTest extends TestCase
         $invoice_number = $this->getNextInvoiceNumber($this->client, $this->invoice);
         $invoice_number2 = $this->getNextInvoiceNumber($this->client, $this->invoice);
 
-        $this->assertEquals($invoice_number, date('Y').'-0001');
-        $this->assertEquals($invoice_number2, date('Y').'-0002');
+        $this->assertEquals($invoice_number, date('Y') . '-0001');
+        $this->assertEquals($invoice_number2, date('Y') . '-0002');
         $this->assertEquals($this->client->company->settings->invoice_number_counter, 3);
     }
 
@@ -499,8 +499,8 @@ class GeneratesCounterTest extends TestCase
         $quote_number = $this->getNextQuoteNumber($this->client, $quote);
         $quote_number2 = $this->getNextQuoteNumber($this->client, $quote);
 
-        $this->assertEquals($quote_number, date('Y').'-0001');
-        $this->assertEquals($quote_number2, date('Y').'-0002');
+        $this->assertEquals($quote_number, date('Y') . '-0001');
+        $this->assertEquals($quote_number2, date('Y') . '-0002');
         $this->assertEquals($this->client->company->settings->quote_number_counter, 3);
     }
 
@@ -530,8 +530,8 @@ class GeneratesCounterTest extends TestCase
         $quote_number = $this->getNextQuoteNumber($this->client, $quote);
         $quote_number2 = $this->getNextQuoteNumber($this->client, $quote);
 
-        $this->assertEquals($quote_number, date('Y').'-1000');
-        $this->assertEquals($quote_number2, date('Y').'-1001');
+        $this->assertEquals($quote_number, date('Y') . '-1000');
+        $this->assertEquals($quote_number2, date('Y') . '-1001');
         $this->assertEquals($this->client->company->settings->quote_number_counter, 100);
     }
 
@@ -558,12 +558,12 @@ class GeneratesCounterTest extends TestCase
 
         $invoice_number = $this->getNextClientNumber($this->client);
 
-        $this->assertEquals($invoice_number, date('Y').'-0010');
+        $this->assertEquals($invoice_number, date('Y') . '-0010');
         $this->client->number = $invoice_number;
         $this->client->save();
 
         $invoice_number = $this->getNextClientNumber($this->client);
-        $this->assertEquals($invoice_number, date('Y').'-0011');
+        $this->assertEquals($invoice_number, date('Y') . '-0011');
     }
 
     public function testInvoicePadding()
@@ -649,11 +649,11 @@ class GeneratesCounterTest extends TestCase
 
         $client_number = $this->getNextClientNumber($cliz);
 
-        $this->assertEquals($client_number, date('Y').'-'.str_pad($this->client->user_id, 2, '0', STR_PAD_LEFT).'-0001');
+        $this->assertEquals($client_number, date('Y') . '-' . str_pad($this->client->user_id, 2, '0', STR_PAD_LEFT) . '-0001');
 
         $client_number = $this->getNextClientNumber($cliz);
 
-        $this->assertEquals($client_number, date('Y').'-'.str_pad($this->client->user_id, 2, '0', STR_PAD_LEFT).'-0002');
+        $this->assertEquals($client_number, date('Y') . '-' . str_pad($this->client->user_id, 2, '0', STR_PAD_LEFT) . '-0002');
     }
 
     public function testVendorNumberPattern()
@@ -671,11 +671,11 @@ class GeneratesCounterTest extends TestCase
 
         $vendor_number = $this->getNextVendorNumber($vendor);
 
-        $this->assertEquals($vendor_number, date('Y').'-'.str_pad($vendor->user_id, 2, '0', STR_PAD_LEFT).'-0001');
+        $this->assertEquals($vendor_number, date('Y') . '-' . str_pad($vendor->user_id, 2, '0', STR_PAD_LEFT) . '-0001');
 
         $vendor_number = $this->getNextVendorNumber($vendor);
 
-        $this->assertEquals($vendor_number, date('Y').'-'.str_pad($vendor->user_id, 2, '0', STR_PAD_LEFT).'-0002');
+        $this->assertEquals($vendor_number, date('Y') . '-' . str_pad($vendor->user_id, 2, '0', STR_PAD_LEFT) . '-0002');
     }
 
     /*

@@ -43,7 +43,7 @@ class TaxSummaryReportTest extends TestCase
         $this->faker = \Faker\Factory::create();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->withoutExceptionHandling();
@@ -89,7 +89,7 @@ class TaxSummaryReportTest extends TestCase
         $this->user = User::factory()->create([
             'account_id' => $this->account->id,
             'confirmation_code' => 'xyz123',
-            'email' => \Illuminate\Support\Str::random(32).'@example.com',
+            'email' => \Illuminate\Support\Str::random(32) . '@example.com',
         ]);
 
         $settings = CompanySettings::defaults();
@@ -312,8 +312,8 @@ class TaxSummaryReportTest extends TestCase
             'invoices' => [
                 [
                     'invoice_id' => $i2->id,
-                    'amount' => $payment->amount
-                ]
+                    'amount' => $payment->amount,
+                ],
             ],
             'date' => now()->format('Y-m-d'),
             'gateway_refund' => false,
@@ -457,25 +457,25 @@ class TaxSummaryReportTest extends TestCase
         (new InvoiceTransactionEventEntry())->run($i);
 
         $i2 = Invoice::factory()->create([
-                    'client_id' => $this->client->id,
-                    'user_id' => $this->user->id,
-                    'company_id' => $this->company->id,
-                    'amount' => 550,
-                    'balance' => 0,
-                    'status_id' => 2,
-                    'total_taxes' => 1,
-                    'date' => now()->format('Y-m-d'),
-                    'terms' => 'nada',
-                    'discount' => 0,
-                    'tax_rate1' => 10,
-                    'tax_rate2' => 17.5,
-                    'tax_rate3' => 5,
-                    'tax_name1' => 'GST',
-                    'tax_name2' => 'VAT',
-                    'tax_name3' => 'CA Sales Tax',
-                    'uses_inclusive_taxes' => false,
-                    'line_items' => $this->buildLineItems(),
-                ]);
+            'client_id' => $this->client->id,
+            'user_id' => $this->user->id,
+            'company_id' => $this->company->id,
+            'amount' => 550,
+            'balance' => 0,
+            'status_id' => 2,
+            'total_taxes' => 1,
+            'date' => now()->format('Y-m-d'),
+            'terms' => 'nada',
+            'discount' => 0,
+            'tax_rate1' => 10,
+            'tax_rate2' => 17.5,
+            'tax_rate3' => 5,
+            'tax_name1' => 'GST',
+            'tax_name2' => 'VAT',
+            'tax_name3' => 'CA Sales Tax',
+            'uses_inclusive_taxes' => false,
+            'line_items' => $this->buildLineItems(),
+        ]);
 
         $i2 = $i2->calc()->getInvoice();
         $i2->service()->markPaid()->save();

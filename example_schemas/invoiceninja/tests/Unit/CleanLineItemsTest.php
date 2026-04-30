@@ -20,25 +20,25 @@ class CleanLineItemsTest extends TestCase
 {
     use CleanLineItems;
 
-    
+
     public function test_clean_items_returns_empty_array_for_null()
     {
         $this->assertEquals([], $this->cleanItems(null));
     }
 
-    
+
     public function test_clean_items_returns_empty_array_for_non_array()
     {
         $this->assertEquals([], $this->cleanItems('string'));
     }
 
-    
+
     public function test_clean_items_returns_empty_array_for_empty_array()
     {
         $this->assertEquals([], $this->cleanItems([]));
     }
 
-    
+
     public function test_clean_items_processes_multiple_items()
     {
         $items = [
@@ -55,7 +55,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertEquals('B', $result[1]['product_key']);
     }
 
-    
+
     public function test_missing_keys_get_defaults()
     {
         $result = $this->cleanItems([[]]);
@@ -87,7 +87,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertEquals('C62', $item['unit_code']);
     }
 
-    
+
     public function test_all_properties_from_invoice_item_are_present()
     {
         $result = $this->cleanItems([[]]);
@@ -100,7 +100,7 @@ class CleanLineItemsTest extends TestCase
         }
     }
 
-    
+
     public function test_values_are_cast_to_correct_types()
     {
         $items = [[
@@ -130,7 +130,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertSame('1', $item['type_id']);
     }
 
-    
+
     public function test_type_id_defaults_to_1_when_missing()
     {
         $result = $this->cleanItems([[]]);
@@ -138,7 +138,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertEquals('1', $result[0]['type_id']);
     }
 
-    
+
     public function test_type_id_zero_is_normalized_to_1()
     {
         $result = $this->cleanItems([['type_id' => '0']]);
@@ -146,7 +146,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertEquals('1', $result[0]['type_id']);
     }
 
-    
+
     public function test_type_id_preserves_valid_values()
     {
         foreach (['1', '2', '3', '4', '5', '6'] as $type) {
@@ -155,7 +155,7 @@ class CleanLineItemsTest extends TestCase
         }
     }
 
-    
+
     public function test_tax_id_defaults_to_1_when_missing()
     {
         $result = $this->cleanItems([[]]);
@@ -163,7 +163,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertEquals('1', $result[0]['tax_id']);
     }
 
-    
+
     public function test_tax_id_defaults_to_1_when_empty_for_products()
     {
         $result = $this->cleanItems([['tax_id' => '', 'type_id' => '1']]);
@@ -171,7 +171,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertEquals('1', $result[0]['tax_id']);
     }
 
-    
+
     public function test_tax_id_defaults_to_2_when_empty_for_services()
     {
         $result = $this->cleanItems([['tax_id' => '', 'type_id' => '2']]);
@@ -179,7 +179,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertEquals('2', $result[0]['tax_id']);
     }
 
-    
+
     public function test_tax_id_preserves_valid_value()
     {
         $result = $this->cleanItems([['tax_id' => '5']]);
@@ -187,7 +187,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertEquals('5', $result[0]['tax_id']);
     }
 
-    
+
     public function test_xss_sanitization_on_notes()
     {
         $result = $this->cleanItems([['notes' => '<script>alert("xss")</script>']]);
@@ -195,14 +195,14 @@ class CleanLineItemsTest extends TestCase
         $this->assertStringNotContainsString('alert(', $result[0]['notes']);
     }
 
-    
+
     public function test_xss_sanitization_on_product_key()
     {
         $result = $this->cleanItems([['product_key' => 'test onerror=hack']]);
         $this->assertStringNotContainsString('onerror', $result[0]['product_key']);
     }
 
-    
+
     public function test_xss_sanitization_on_custom_values()
     {
         $xss_payloads = [
@@ -221,7 +221,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertStringNotContainsString('alert(', $item['custom_value4']);
     }
 
-    
+
     public function test_clean_text_is_not_affected_by_xss_filter()
     {
         $result = $this->cleanItems([['notes' => 'This is a normal product description with no XSS.']]);
@@ -229,7 +229,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertEquals('This is a normal product description with no XSS.', $result[0]['notes']);
     }
 
-    
+
     public function test_id_field_is_removed()
     {
         $result = $this->cleanItems([['id' => 99]]);
@@ -237,7 +237,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertArrayNotHasKey('id', $result[0]);
     }
 
-    
+
     public function test_underscore_id_field_is_removed()
     {
         $result = $this->cleanItems([['_id' => 'abc123']]);
@@ -245,7 +245,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertArrayNotHasKey('_id', $result[0]);
     }
 
-    
+
     public function test_both_id_fields_are_removed()
     {
         $result = $this->cleanItems([['id' => 1, '_id' => 'x']]);
@@ -254,7 +254,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertArrayNotHasKey('_id', $result[0]);
     }
 
-    
+
     public function test_extra_keys_not_in_invoice_item_are_preserved()
     {
         $result = $this->cleanItems([['some_extra_field' => 'value']]);
@@ -263,7 +263,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertEquals('value', $result[0]['some_extra_field']);
     }
 
-    
+
     public function test_null_values_are_replaced_with_defaults()
     {
         $result = $this->cleanItems([['cost' => null, 'notes' => null, 'is_amount_discount' => null]]);
@@ -274,7 +274,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertFalse($item['is_amount_discount']);
     }
 
-    
+
     public function test_object_items_are_handled()
     {
         $obj = new \stdClass();
@@ -289,7 +289,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertSame('Widget', $result[0]['product_key']);
     }
 
-    
+
     public function test_clean_fee_items_removes_gateway_fee_types()
     {
         $items = [
@@ -307,7 +307,7 @@ class CleanLineItemsTest extends TestCase
         }
     }
 
-    
+
     public function test_clean_fee_items_preserves_non_gateway_types()
     {
         $items = [
@@ -322,7 +322,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertCount(4, $result);
     }
 
-    
+
     public function test_entity_total_amount()
     {
         $items = [
@@ -336,7 +336,7 @@ class CleanLineItemsTest extends TestCase
         $this->assertEquals(120, $total);
     }
 
-    
+
     public function test_realistic_invoice_line_items()
     {
         $items = [

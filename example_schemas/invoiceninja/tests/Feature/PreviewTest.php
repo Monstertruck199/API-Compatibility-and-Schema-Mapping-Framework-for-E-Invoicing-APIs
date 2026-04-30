@@ -33,7 +33,7 @@ class PreviewTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         if (config('ninja.testvars.travis') !== false) {
@@ -59,9 +59,9 @@ class PreviewTest extends TestCase
         $data = $this->getData();
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->post('/api/v1/preview/purchase_order', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->post('/api/v1/preview/purchase_order', $data);
 
         $response->assertStatus(200);
     }
@@ -71,9 +71,9 @@ class PreviewTest extends TestCase
         $data = $this->getData();
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-            ])->post('/api/v1/preview/purchase_order?html=true', $data);
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+        ])->post('/api/v1/preview/purchase_order?html=true', $data);
 
         $response->assertStatus(200);
     }

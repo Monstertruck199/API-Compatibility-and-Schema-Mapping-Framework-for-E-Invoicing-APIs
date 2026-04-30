@@ -96,8 +96,8 @@ class ClientModelTest extends TestCase
         ]);
 
         $response = $this->withHeaders([
-        'X-API-SECRET' => config('ninja.api_secret'),
-        'X-API-TOKEN' => $this->token,
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
         ])->get('/api/v1/invoices?status=active');
 
         $response->assertStatus(200);

@@ -105,7 +105,7 @@ class EventTest extends TestCase
 
         $this->withoutMiddleware(
             ThrottleRequests::class,
-            PasswordProtection::class
+            PasswordProtection::class,
         );
     }
 
@@ -446,8 +446,8 @@ class EventTest extends TestCase
             'client_id' => $this->client->hashed_id,
             'invoices' => [
                 [
-                'invoice_id' => $this->invoice->hashed_id,
-                'amount' => $this->invoice->amount,
+                    'invoice_id' => $this->invoice->hashed_id,
+                    'amount' => $this->invoice->amount,
                 ],
             ],
             'date' => '2020/12/12',
@@ -463,7 +463,7 @@ class EventTest extends TestCase
         $arr = $response->json();
 
         $data = [
-            'transaction_reference' => 'testing'
+            'transaction_reference' => 'testing',
         ];
 
         $response = $this->withHeaders([
@@ -715,16 +715,16 @@ class EventTest extends TestCase
             'last_name' => 'you',
             'email' => 'bob1@good.ole.boys.com',
             'company_user' => [
-                    'is_admin' => false,
-                    'is_owner' => false,
-                    'permissions' => 'create_client,create_invoice',
-                ],
+                'is_admin' => false,
+                'is_owner' => false,
+                'permissions' => 'create_client,create_invoice',
+            ],
         ];
 
         $response = $this->withHeaders([
-                'X-API-SECRET' => config('ninja.api_secret'),
-                'X-API-TOKEN' => $this->token,
-                'X-API-PASSWORD' => 'ALongAndBriliantPassword',
+            'X-API-SECRET' => config('ninja.api_secret'),
+            'X-API-TOKEN' => $this->token,
+            'X-API-PASSWORD' => 'ALongAndBriliantPassword',
         ])->postJson('/api/v1/users?include=company_user', $data)
           ->assertStatus(200);
 
@@ -735,10 +735,10 @@ class EventTest extends TestCase
             'last_name' => 'you',
             'email' => 'bob1@good.ole.boys.com',
             'company_user' => [
-                    'is_admin' => false,
-                    'is_owner' => false,
-                    'permissions' => 'create_client,create_invoice',
-                ],
+                'is_admin' => false,
+                'is_owner' => false,
+                'permissions' => 'create_client,create_invoice',
+            ],
         ];
 
         $response = $this->withHeaders([

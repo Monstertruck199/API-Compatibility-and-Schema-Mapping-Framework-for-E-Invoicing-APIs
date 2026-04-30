@@ -224,7 +224,7 @@ class CompanyTransformer extends EntityTransformer
             'legal_entity_id' =>  $company->legal_entity_id ? (int) $company->legal_entity_id : null,
             'quickbooks' => $company->getRawOriginal('quickbooks') ? $company->quickbooks->toArray() : null,
             'legal_entity_id' => $company->legal_entity_id ?? null,
-            'enable_modules' => (bool)$company->enable_modules,
+            'enable_modules' => (bool) $company->enable_modules,
         ];
 
     }

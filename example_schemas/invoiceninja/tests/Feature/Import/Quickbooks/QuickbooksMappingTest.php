@@ -50,7 +50,7 @@ class QuickbooksMappingTest extends TestCase
 
         $this->makeTestData();
 
-        if(!$this->company->quickbooks->accessTokenKey) {
+        if (!$this->company->quickbooks->accessTokenKey) {
             $this->markTestSkipped('Company does not have Quickbooks connected');
         }
     }

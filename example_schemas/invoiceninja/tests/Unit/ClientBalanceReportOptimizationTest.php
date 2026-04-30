@@ -115,8 +115,11 @@ class ClientBalanceReportOptimizationTest extends TestCase
 
         // Optimized: ~10-15 queries (client fetch + aggregate + framework overhead)
         // Legacy: 100 queries (50 clients × 2)
-        $this->assertLessThan($clientCount * 0.5, $queryCount,
-            "Expected < " . ($clientCount * 0.5) . " queries (optimized), got {$queryCount}");
+        $this->assertLessThan(
+            $clientCount * 0.5,
+            $queryCount,
+            "Expected < " . ($clientCount * 0.5) . " queries (optimized), got {$queryCount}",
+        );
     }
 
     /**

@@ -36,7 +36,7 @@ class LiveDesignTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         if (config('ninja.testvars.travis') !== false) {
@@ -72,7 +72,7 @@ class LiveDesignTest extends TestCase
         $data = [
             'entity_type' => 'invoice',
             'settings_type' => 'company',
-            'settings' => (array)$this->company->settings,
+            'settings' => (array) $this->company->settings,
         ];
 
         $response = $this->withHeaders([
@@ -92,8 +92,8 @@ class LiveDesignTest extends TestCase
         $data = [
             'entity_type' => 'invoice',
             'settings_type' => 'company',
-            'settings' => (array)$this->company->settings,
-            'design' => (array)$d->design,
+            'settings' => (array) $this->company->settings,
+            'design' => (array) $d->design,
         ];
 
         $response = $this->withHeaders([

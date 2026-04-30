@@ -34,7 +34,7 @@ class InvitationTest extends TestCase
         $this->makeTestData();
 
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         $this->withoutExceptionHandling();
@@ -67,7 +67,7 @@ class InvitationTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/invoices/'.$this->invoice->hashed_id, $data);
+        ])->putJson('/api/v1/invoices/' . $this->invoice->hashed_id, $data);
 
         $response->assertStatus(200);
 
@@ -95,7 +95,7 @@ class InvitationTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->putJson('/api/v1/invoices/'.$this->encodePrimaryKey($this->invoice->id), $this->invoice->toArray())
+        ])->putJson('/api/v1/invoices/' . $this->encodePrimaryKey($this->invoice->id), $this->invoice->toArray())
         ->assertStatus(200);
 
         $arr = $response->json();

@@ -41,7 +41,7 @@ class LicenseTest extends TestCase
             $te = new TaxEntity([
                 'legal_entity_id' => $te['legal_entity_id'] ?? 1,
                 'company_key' => $te['company_key'] ?? '',
-                'received_documents' => $te['received_documents'] ?? []
+                'received_documents' => $te['received_documents'] ?? [],
             ]);
 
             $entities[] = $te;
@@ -65,18 +65,18 @@ class LicenseTest extends TestCase
             [
                 'legal_entity_id' => 22,
                 'company_key' => \Illuminate\Support\Str::random(32),
-                'received_documents' => []
+                'received_documents' => [],
             ],
             [
                 'legal_entity_id' => 33,
                 'company_key' => \Illuminate\Support\Str::random(32),
-                'received_documents' => []
+                'received_documents' => [],
             ],
             [
                 'legal_entity_id' => 50,
                 'company_key' => 'abcd',
-                'received_documents' => []
-            ]
+                'received_documents' => [],
+            ],
         ];
 
         $l = $this->stubLicense($tes);
@@ -104,7 +104,7 @@ class LicenseTest extends TestCase
         $te = new TaxEntity([
             'legal_entity_id' => 123,
             'company_key' => 'qqqq',
-            'received_documents' => []
+            'received_documents' => [],
         ]);
 
         $l->addEntity($te);
@@ -130,7 +130,7 @@ class LicenseTest extends TestCase
         $te = new TaxEntity([
             'legal_entity_id' => 123,
             'company_key' => 'qqqq',
-            'received_documents' => []
+            'received_documents' => [],
         ]);
 
         $l->addEntity($te);
@@ -225,18 +225,18 @@ class LicenseTest extends TestCase
             [
                 'legal_entity_id' => 22,
                 'company_key' => \Illuminate\Support\Str::random(32),
-                'received_documents' => []
+                'received_documents' => [],
             ],
             [
                 'legal_entity_id' => 11,
                 'company_key' => \Illuminate\Support\Str::random(32),
-                'received_documents' => []
+                'received_documents' => [],
             ],
             [
                 'legal_entity_id' => 50,
                 'company_key' => 'abcd',
-                'received_documents' => $docs
-            ]
+                'received_documents' => $docs,
+            ],
         ];
 
         $l = $this->stubLicense($tes);
@@ -248,7 +248,7 @@ class LicenseTest extends TestCase
         $this->assertCount(10, $tax_entity->received_documents);
 
         $tax_entity->received_documents = array_values(
-            array_diff($tax_entity->received_documents, $processed_docs)
+            array_diff($tax_entity->received_documents, $processed_docs),
         );
 
         $l->updateEntity($tax_entity);

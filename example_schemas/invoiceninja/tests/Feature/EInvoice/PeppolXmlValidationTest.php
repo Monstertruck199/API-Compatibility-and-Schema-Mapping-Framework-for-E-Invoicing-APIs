@@ -7,8 +7,7 @@ use App\Services\EDocument\Standards\Validation\XsltDocumentValidator;
 
 class PeppolXmlValidationTest extends TestCase
 {
-
-private string $xml = '<?xml version="1.0" encoding="UTF-8"?>
+    private string $xml = '<?xml version="1.0" encoding="UTF-8"?>
   <Invoice xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
       xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
       xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
@@ -344,21 +343,21 @@ private string $xml = '<?xml version="1.0" encoding="UTF-8"?>
 ';
 
 
-public function setUp(): void
-{
-    parent::setUp();
+    public function setUp(): void
+    {
+        parent::setUp();
 
-    try {
-        $processor = new \Saxon\SaxonProcessor();
-    } catch (\Throwable $e) {
-        $this->markTestSkipped('saxon not installed');
+        try {
+            $processor = new \Saxon\SaxonProcessor();
+        } catch (\Throwable $e) {
+            $this->markTestSkipped('saxon not installed');
+        }
+
     }
 
-}
+    public function testPeppolXmlValidation()
+    {
 
-public function testPeppolXmlValidation()
-{
-        
         try {
             $processor = new \Saxon\SaxonProcessor();
         } catch (\Throwable $e) {

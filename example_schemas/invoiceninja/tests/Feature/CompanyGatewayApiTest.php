@@ -71,7 +71,7 @@ class CompanyGatewayApiTest extends TestCase
 
         $this->assertNotNull($cg_id);
 
-        $response->assertStatus(200);        
+        $response->assertStatus(200);
 
         $company = $this->company->fresh();
 
@@ -91,7 +91,7 @@ class CompanyGatewayApiTest extends TestCase
 
         $data = [
             'action' => 'archive',
-            'ids' => [$cg->hashed_id]
+            'ids' => [$cg->hashed_id],
         ];
 
         $response = $this->withHeaders([
@@ -102,7 +102,7 @@ class CompanyGatewayApiTest extends TestCase
 
         $data = [
             'ids' => [$cg->hashed_id],
-            'action' => 'restore'
+            'action' => 'restore',
         ];
 
         $response = $this->withHeaders([
@@ -113,7 +113,7 @@ class CompanyGatewayApiTest extends TestCase
 
         $data = [
             'ids' => [$cg->hashed_id],
-            'action' => 'delete'
+            'action' => 'delete',
         ];
 
         $response = $this->withHeaders([
@@ -186,7 +186,7 @@ class CompanyGatewayApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->put('/api/v1/company_gateways/'.$cg_id, $data);
+        ])->put('/api/v1/company_gateways/' . $cg_id, $data);
 
         $response->assertStatus(200);
 
@@ -237,7 +237,7 @@ class CompanyGatewayApiTest extends TestCase
         $response = $this->withHeaders([
             'X-API-SECRET' => config('ninja.api_secret'),
             'X-API-TOKEN' => $this->token,
-        ])->get('/api/v1/company_gateways/'.$this->encodePrimaryKey($cg['data']['id']));
+        ])->get('/api/v1/company_gateways/' . $this->encodePrimaryKey($cg['data']['id']));
 
         $cg = $response->json();
 

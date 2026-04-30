@@ -28,7 +28,7 @@ class ReportApiTest extends TestCase
     {
         parent::setUp();
         $this->withoutMiddleware(
-            ThrottleRequests::class
+            ThrottleRequests::class,
         );
 
         // $this->withoutExceptionHandling();

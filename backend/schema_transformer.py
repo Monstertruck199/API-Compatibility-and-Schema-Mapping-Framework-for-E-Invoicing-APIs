@@ -24,6 +24,7 @@ import sys
 import xml.etree.ElementTree as ET
 from typing import Any, Callable, Dict, List, Optional
 
+
 def build_transformer(mapping) -> Callable[[Dict[str, Any]], Dict[str, Any]]:
     """
     Accept a SchemaMapping (from schema_mapper.build_mapping) and return a
