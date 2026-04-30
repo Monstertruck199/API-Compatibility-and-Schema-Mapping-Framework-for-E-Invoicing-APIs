@@ -271,7 +271,7 @@ Then run the backend test suite:
 
 ```bash
 cd backend
-python3 -m unittest test_db.py -v
+python3 -m unittest test_db.py test_app.py -v
 ```
 
 The backend database tests cover:
