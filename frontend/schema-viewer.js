@@ -314,20 +314,22 @@ function buildTree(container, node, key, depth, isRoot) {
   container.appendChild(div);
 }
 
-module.exports = {
-  setFmt,
-  svAnalyse,
-  highlightError,
-  renderSVList,
-  svPick,
-  cntFields,
-  renderViewer,
-  buildTree,
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    setFmt,
+    svAnalyse,
+    highlightError,
+    renderSVList,
+    svPick,
+    cntFields,
+    renderViewer,
+    buildTree,
 
-  _internal: {
-    get svSchemas() { return svSchemas },
-    set svSchemas(v) { svSchemas = v },
-    get svActive() { return svActive },
-    set svActive(v) { svActive = v }
-  }
-};
+    _internal: {
+      get svSchemas() { return svSchemas; },
+      set svSchemas(v) { svSchemas = v; },
+      get svActive() { return svActive; },
+      set svActive(v) { svActive = v; }
+    }
+  };
+}
